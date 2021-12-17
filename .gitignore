@@ -360,5 +360,5 @@ appsettings.Production.json
 *.min.js
 
 #migrations-folder
-src/Ngnet/Ngnet.Database/Migrations/
-src/Ngnet/Ngnet.Database/SqLite/
+src/Ngnet_Authentication/Database/Migrations/
+src/Ngnet_Authentication/Database/SqLite/
