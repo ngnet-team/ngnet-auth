@@ -1,0 +1,122 @@
+﻿{
+  "NotEqualPasswords": {
+    "EN": [
+      "Both passwords should be equal!"
+    ],
+    "BG": [
+      "Паролите трябва да бъдат еднакви!"
+    ]
+  },
+  "InvalidEmail": {
+    "EN": [
+      "The email is invalid!"
+    ],
+    "BG": [
+      "Невалиден имейл!"
+    ]
+  },
+  "InvalidUsername": {
+    "EN": [
+      "The username is invalid!"
+    ],
+    "BG": [
+      "Грешно потребителско име!"
+    ]
+  },
+  "InvalidPasswords": {
+    "EN": [
+      "The password is invalid!"
+    ],
+    "BG": [
+      "Грешнa парола!"
+    ]
+  },
+  "UserNotFound": {
+    "EN": [
+      "No user found!"
+    ],
+    "BG": [
+      "Няма такъв потребител!"
+    ]
+  },
+  "UsersNotFound": {
+    "EN": [
+      "No users found!"
+    ],
+    "BG": [
+      "Не са намерени потребители!"
+    ]
+  },
+  "ExistingUserName": {
+    "EN": [
+      "The Username is already taken!"
+    ],
+    "BG": [
+      "Потребителското име е вече заето!"
+    ]
+  },
+  "NoPermissions": {
+    "EN": [
+      "You do NOT have permissions!"
+    ],
+    "BG": [
+      "Отказан достъп!"
+    ]
+  },
+  "VehicleCareNotFound": {
+    "EN": [
+      "There is no vehicle service found!"
+    ],
+    "BG": [
+      "Няма такава автомобилна услуга!"
+    ]
+  },
+  "VehicleCareNamesNotFound": {
+    "EN": [
+      "There are no vehicle care names found!"
+    ],
+    "BG": [
+      "Не са намерени автомобилни услуги!"
+    ]
+  },
+  "CompanyNamesNotFound": {
+    "EN": [
+      "There are no company names found!"
+    ],
+    "BG": [
+      "Не са намерени компании!"
+    ]
+  },
+  "HealthCareNamesNotFound": {
+    "EN": [
+      "There are no health care names found!"
+    ],
+    "BG": [
+      "Не са намерени здравни услуги!"
+    ]
+  },
+  "HealthCareNotFound": {
+    "EN": [
+      "There is no health service found!"
+    ],
+    "BG": [
+      "Няма такава здравна услуга!"
+    ]
+  },
+  "HealthCaresNotFound": {
+    "EN": [
+      "There are no health services found!"
+    ],
+    "BG": [
+      "Не са намерени здравни услуги!"
+    ]
+  },
+  "NotEqualFields": {
+    "EN": [
+      "Both fields should be equal!"
+    ],
+    "BG": [
+      "Полетата трябва да бъдат еднакви!"
+    ]
+  }
+}
