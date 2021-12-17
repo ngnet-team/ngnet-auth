@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "a2EevughEHeeguqe2qb0x2U5W65SfZGfRTSYTAFekxoF7XcW2hww+2/xel+wz0EbycLc8cJDtuiYR5qaFOJqHw==",
+  "success": true,
+  "projectFilePath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\system.text.json\\5.0.2\\system.text.json.5.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}

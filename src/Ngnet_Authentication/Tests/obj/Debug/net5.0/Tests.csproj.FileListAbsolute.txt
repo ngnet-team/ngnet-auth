@@ -1,0 +1,12 @@
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\bin\Debug\net5.0\Tests.deps.json
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\bin\Debug\net5.0\Tests.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\bin\Debug\net5.0\ref\Tests.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\bin\Debug\net5.0\Tests.pdb
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.csproj.AssemblyReference.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.AssemblyInfoInputs.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.AssemblyInfo.cs
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.csproj.CoreCompileInputs.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\ref\Tests.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.pdb
