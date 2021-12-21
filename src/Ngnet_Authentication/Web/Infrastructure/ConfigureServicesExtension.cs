@@ -13,6 +13,7 @@ using Services.Auth;
 using Common.Json.Service;
 using Services.Admins;
 using Services.Users;
+using Services.Owners;
 
 namespace Web.Infrastructure
 {
@@ -85,6 +86,7 @@ namespace Web.Infrastructure
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IUserService, UserService>()
                 .AddTransient<IAdminService, AdminService>()
+                .AddTransient<IOwnerService, OwnerService>()
                 .AddSingleton<IEmailSenderService, EmailSenderService>(x => new EmailSenderService(configuration))
                 .AddSingleton<JsonService>();
         }

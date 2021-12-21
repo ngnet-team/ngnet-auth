@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Common
 {
@@ -7,12 +8,14 @@ namespace Common
     {
         public static string CreatePassword(string password)
         {
-            using (var deriveBytes = new Rfc2898DeriveBytes(password, Global.HashBytes))
-            {
-                byte[] salt = deriveBytes.Salt;
-                byte[] key = deriveBytes.GetBytes(Global.HashBytes);
+            byte[] data = Encoding.UTF8.GetBytes(password);
 
-                return BitConverter.ToString(salt) + BitConverter.ToString(key);
+            using (SHA512 shaM = new SHA512Managed())
+            {
+                byte[] hash = shaM.ComputeHash(data);
+                string result = BitConverter.ToString(hash).Replace("-", "");
+
+                return result; 
             }
         }
     }

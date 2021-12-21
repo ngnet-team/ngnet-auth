@@ -30,6 +30,9 @@ namespace Web.Controllers
         [Route(nameof(Profile))]
         public override ActionResult<object> Profile()
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.GetClaims().UserId);
             //Add current user's role
             response.RoleName = this.GetClaims().RoleTitle.ToString();
@@ -46,6 +49,9 @@ namespace Web.Controllers
         [Route(nameof(GetUsers))]
         public ActionResult<AdminResponseModel[]> GetUsers()
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             AdminResponseModel[] users = this.adminService.GetUsers();
             if (users.Length == 0)
             {
@@ -60,6 +66,9 @@ namespace Web.Controllers
         [Route(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             model.Id = this.GetClaims().UserId;
             this.response = await this.adminService.ChangeRole(model);
             if (this.response.Errors != null)
@@ -72,6 +81,9 @@ namespace Web.Controllers
         [Route(nameof(Update))]
         public async Task<ActionResult> Update(AdminRequestModel model)
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             model.Id = this.GetClaims().UserId;
             if (model.Id == null)
             {
@@ -86,6 +98,9 @@ namespace Web.Controllers
         [Route(nameof(ChangeEmail))]
         public async Task<ActionResult> ChangeEmail(AdminChangeModel model)
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             User user = this.GetUser(model.Id);
             if (user == null)
             {
@@ -110,6 +125,9 @@ namespace Web.Controllers
         [Route(nameof(ChangePassword))]
         public async Task<ActionResult> ChangePassword(AdminChangeModel model)
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             User user = this.GetUser(model.Id);
             if (user == null)
             {

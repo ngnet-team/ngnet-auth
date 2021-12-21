@@ -71,9 +71,14 @@ namespace Web.Controllers.Base
             if (http == null)
                 return null;
 
-            return http.Request.Headers
+            string token = http.Request.Headers
               .FirstOrDefault(x => x.Key == "Authorization").Value
               .ToString().Replace("Bearer ", "");
+
+            if (token == "")
+                return null;
+
+            return token;
         }
     }
 }
