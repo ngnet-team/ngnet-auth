@@ -32,6 +32,9 @@ namespace Web.Controllers
         [HttpGet(nameof(Profile))]
         public virtual ActionResult<object> Profile()
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             UserResponseModel response = this.userService.Profile<UserResponseModel>(this.GetClaims().UserId);
             if (response == null)
             {
@@ -47,6 +50,9 @@ namespace Web.Controllers
         [Route(nameof(Logout))]
         public async Task<ActionResult> Logout()
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             this.response = await this.authService.Logout(this.GetClaims().UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
@@ -58,6 +64,9 @@ namespace Web.Controllers
         [Route(nameof(Update))]
         public async Task<ActionResult> Update(UserRequestModel model)
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             model.Id = this.GetClaims().UserId;
             if (model.Id == null)
             {
@@ -72,6 +81,9 @@ namespace Web.Controllers
         [Route(nameof(ChangeEmail))]
         public async Task<ActionResult> ChangeEmail(UserChangeModel model)
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             User user = this.GetUser();
             if (user == null)
             {
@@ -96,6 +108,9 @@ namespace Web.Controllers
         [Route(nameof(ChangePassword))]
         public async Task<ActionResult> ChangePassword(UserChangeModel model)
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             User user = this.GetUser();
             if (user == null)
             {
@@ -120,6 +135,9 @@ namespace Web.Controllers
         [Route(nameof(ResetPassword))]
         public async Task<ActionResult> ResetPassword()
         {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
             User user = this.GetUser();
             if (user == null)
             {

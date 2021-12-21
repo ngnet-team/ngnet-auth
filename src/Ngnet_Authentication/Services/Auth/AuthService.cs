@@ -75,7 +75,8 @@ namespace Services.Auth
             if (user == null)
                 return new ServiceResponseModel(GetErrors().InvalidUsername, null);
             //Invalid password
-            if (user.PasswordHash == Hash.CreatePassword(model.Password))
+            string hashedPassword = Hash.CreatePassword(model.Password);
+            if (user.PasswordHash != hashedPassword)
                 return new ServiceResponseModel(GetErrors().InvalidPassword, null);
 
             await this.AddExperience(new UserExperience()

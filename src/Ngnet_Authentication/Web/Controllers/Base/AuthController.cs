@@ -34,6 +34,9 @@ namespace Web.Controllers.Base
         [Route(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
+            if (this.IsAuthenticated)
+                return this.BadRequest();
+
             this.response = await this.authService.Register(model);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
@@ -45,6 +48,9 @@ namespace Web.Controllers.Base
         [Route(nameof(Login))]
         public async Task<ActionResult<LoginResponseModel>> Login(LoginRequestModel model)
         {
+            if (this.IsAuthenticated)
+                return this.BadRequest();
+
             this.response = await this.authService.Login(model);
 
             if (this.response.Errors != null)
