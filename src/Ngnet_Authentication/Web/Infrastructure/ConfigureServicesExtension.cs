@@ -12,6 +12,7 @@ using Services.Email;
 using Services.Auth;
 using Common.Json.Service;
 using Services.Admins;
+using Services.Users;
 
 namespace Web.Infrastructure
 {
@@ -51,23 +52,6 @@ namespace Web.Infrastructure
             });
         }
 
-        //public static IServiceCollection AddIdentity(this IServiceCollection services)
-        //{
-        //    services
-        //        .AddIdentity<User, Role>(options => 
-        //        {
-        //            options.Password.RequiredLength = 6;
-        //            options.Password.RequireDigit = false;
-        //            options.Password.RequireLowercase = false;
-        //            options.Password.RequireNonAlphanumeric = false;
-        //            options.Password.RequireUppercase = false;
-        //        })
-        //        .AddEntityFrameworkStores<NgnetAuthDbContext>()
-        //        .AddDefaultTokenProviders();
-
-        //    return services;
-        //}
-
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, ApplicationSettingsModel appSettings)
         {
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -99,6 +83,7 @@ namespace Web.Infrastructure
             //chain the services
             return services
                 .AddTransient<IAuthService, AuthService>()
+                .AddTransient<IUserService, UserService>()
                 .AddTransient<IAdminService, AdminService>()
                 .AddSingleton<IEmailSenderService, EmailSenderService>(x => new EmailSenderService(configuration))
                 .AddSingleton<JsonService>();

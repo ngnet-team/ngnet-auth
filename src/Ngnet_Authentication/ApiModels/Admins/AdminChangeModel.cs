@@ -1,4 +1,4 @@
-﻿using ApiModels.Auth;
+﻿using ApiModels.Users;
 
 namespace ApiModels.Admins
 {

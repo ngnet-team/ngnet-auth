@@ -1,5 +1,5 @@
 ﻿{
-  "UserRegistered": {
+  "Registered": {
     "EN": [
       "The user is registered successfully!"
     ],
@@ -7,15 +7,7 @@
       "Потребителят е регистриран успешно!"
     ]
   },
-  "UserUpdated": {
-    "EN": [
-      "The user is updated successfully!"
-    ],
-    "BG": [
-      "Промените са записани успешно!"
-    ]
-  },
-  "UserLoggedIn": {
+  "LoggedIn": {
     "EN": [
       "You are logged in successfully!"
     ],
@@ -23,28 +15,36 @@
       "Влязохте в системата успешно!"
     ]
   },
-  "Created": {
+  "LoggedOut": {
     "EN": [
-      "The record has been created successfully!"
+      "You are logged out successfully!"
     ],
     "BG": [
-      "Записът е създаден успешно!"
+      "Излязохте в системата успешно!"
+    ]
+  },
+  "Created": {
+    "EN": [
+      "Created successfully!"
+    ],
+    "BG": [
+      "Създаден успешно!"
     ]
   },
   "Updated": {
     "EN": [
-      "The record has been updated successfully!"
+      "Updated successfully!"
     ],
     "BG": [
-      "Записът е променен успешно!"
+      "Променен успешно!"
     ]
   },
   "Deleted": {
     "EN": [
-      "The record has been deleted successfully!"
+      "Deleted successfully!"
     ],
     "BG": [
-      "Записът е изтрит успешно!"
+      "Изтрит успешно!"
     ]
   }
 }

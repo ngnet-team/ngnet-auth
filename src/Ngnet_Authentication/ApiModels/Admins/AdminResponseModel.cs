@@ -28,8 +28,6 @@ namespace ApiModels.Admins
 
         public bool IsDeleted { get; set; }
 
-        public bool PermanentDeletion { get; set; }
-
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<User, AdminResponseModel>()

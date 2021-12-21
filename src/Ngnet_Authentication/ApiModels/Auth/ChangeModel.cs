@@ -2,7 +2,7 @@
 
 namespace ApiModels.Auth
 {
-    public abstract class UserChangeModel
+    public abstract class ChangeModel
     {
         [Required]
         public string Old { get; set; }

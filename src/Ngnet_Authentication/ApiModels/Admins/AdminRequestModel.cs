@@ -1,14 +1,10 @@
 ﻿using ApiModels.Auth;
 using ApiModels.Users;
-using AutoMapper;
-using Common;
-using Database.Models;
-using Mapper;
 using System.Collections.Generic;
 
 namespace ApiModels.Admins
 {
-    public class AdminRequestModel : UserRequestModel, IMapTo<User>
+    public class AdminRequestModel : UserRequestModel
     {
         public AdminRequestModel()
         {
@@ -28,11 +24,5 @@ namespace ApiModels.Admins
         public bool IsDeleted { get; set; }
 
         public bool PermanentDeletion { get; set; }
-
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<AdminRequestModel, User>()
-                .ForMember(x => x.PasswordHash, opt => opt.MapFrom(x => Hash.CreatePassword(x.Password)));
-        }
     }
 }

@@ -23,7 +23,7 @@
       "Грешно потребителско име!"
     ]
   },
-  "InvalidPasswords": {
+  "InvalidPassword": {
     "EN": [
       "The password is invalid!"
     ],
@@ -61,54 +61,6 @@
     ],
     "BG": [
       "Отказан достъп!"
-    ]
-  },
-  "VehicleCareNotFound": {
-    "EN": [
-      "There is no vehicle service found!"
-    ],
-    "BG": [
-      "Няма такава автомобилна услуга!"
-    ]
-  },
-  "VehicleCareNamesNotFound": {
-    "EN": [
-      "There are no vehicle care names found!"
-    ],
-    "BG": [
-      "Не са намерени автомобилни услуги!"
-    ]
-  },
-  "CompanyNamesNotFound": {
-    "EN": [
-      "There are no company names found!"
-    ],
-    "BG": [
-      "Не са намерени компании!"
-    ]
-  },
-  "HealthCareNamesNotFound": {
-    "EN": [
-      "There are no health care names found!"
-    ],
-    "BG": [
-      "Не са намерени здравни услуги!"
-    ]
-  },
-  "HealthCareNotFound": {
-    "EN": [
-      "There is no health service found!"
-    ],
-    "BG": [
-      "Няма такава здравна услуга!"
-    ]
-  },
-  "HealthCaresNotFound": {
-    "EN": [
-      "There are no health services found!"
-    ],
-    "BG": [
-      "Не са намерени здравни услуги!"
     ]
   },
   "NotEqualFields": {

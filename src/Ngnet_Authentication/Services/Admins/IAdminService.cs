@@ -1,16 +1,15 @@
 ﻿using ApiModels.Admins;
-using Common.Enums;
-using Services.Auth;
+using Services.Users;
 using System.Threading.Tasks;
 
 namespace Services.Admins
 {
-    public interface IAdminService : IAuthService
+    public interface IAdminService : IUserService
     {
-        public bool HasPermissions(AdminRequestModel model);
-
-        public Task<CRUD> ChangeRole(AdminRequestModel model);
+        public Task<ServiceResponseModel> ChangeRole(AdminRequestModel model);
 
         public AdminResponseModel[] GetUsers(int count = 10000);
+
+        public T GetUserIncludedDeleted<T>(string userId);
     }
 }

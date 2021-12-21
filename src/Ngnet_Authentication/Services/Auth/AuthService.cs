@@ -25,63 +25,58 @@ namespace Services.Auth
         {
         }
 
-        public async Task<CRUD> Register(RegisterRequestModel model)
+        public virtual RoleTitle RoleTitle { get; set; } = RoleTitle.Guest;
+
+        /// <summary>
+        /// Insert the required role name as an input.
+        /// </summary>
+        public bool HasPermissions(string roleName)
+        {
+            Role role = this.GetRoleByString(roleName);
+            if (role == null)
+                return false;
+            if (this.RoleTitle == RoleTitle.Owner) 
+                return true;
+
+            return (int)this.RoleTitle < (int)role.Title;
+        }
+
+        public async Task<ServiceResponseModel> Register(RegisterRequestModel model)
         {
             //Equal passwords check
             if (model.Password != model.RepeatPassword)
-                return CRUD.Invalid;
+                return new ServiceResponseModel(GetErrors().NotEqualPasswords, null);
             //Username exists
-            User user = this.database.Users.FirstOrDefault(x => x.Username == model.Username);
+            User user = this.GetUserByUsername(model.Username);
             if (user != null)
-                return CRUD.Invalid;
+                return new ServiceResponseModel(GetErrors().ExistingUserName, null);
             //TODO: Email validator
+            Role role = this.GetRole(RoleTitle.User);
+            if (role == null)
+                return new ServiceResponseModel(GetErrors().InvalidRole, null);
+            //Assign role if logged user has permissions
+            if (this.HasPermissions(model.RoleName))
+                role = this.GetRoleByString(model.RoleName);
 
             user = MappingFactory.Mapper.Map<User>(model);
-            //user = new User
-            //{
-            //    Email = model.Email,
-            //    Username = model.UserName,
-            //    FirstName = model.FirstName,
-            //    LastName = model.LastName,
-            //    CreatedOn = DateTime.UtcNow
-            //};
+            user.Role = role;
+            user.PasswordHash = Hash.CreatePassword(model.Password);
 
             await this.database.Users.AddAsync(user);
-            Role role = this.database.Roles.FirstOrDefault(x => x.Title == model.Role) ??
-                        this.database.Roles.FirstOrDefault(x => x.Title == RoleTitle.User);
+            await this.database.SaveChangesAsync();
 
-            await this.database.UserRoles.AddAsync(new UserRole()
-            {
-                User = user,
-                Role = role
-            });
-
-            return CRUD.Created;
-
-            //sendgrid is not ready yet
-            //EmailSenderModel email = new EmailSenderModel(this.Admin.Email, model.Email)
-            //{
-            //    Content = this.emailSenderService.GetTemplate(Paths.SuccessfulRegistration)
-            //};
-            //var response = await this.emailSenderService.EmailConfirmation(email);
-
-            //return this.Ok(this.GetSuccessMsg().UserRegistered);
-
-            //return this.response;
+            return new ServiceResponseModel(null, this.GetSuccessMsg().Registered);
         }
 
-        public async Task<CRUD> Login(LoginRequestModel model)
+        public async Task<ServiceResponseModel> Login(LoginRequestModel model)
         {
             //Username does Not exist
-            User user = this.database.Users.FirstOrDefault(x => x.Username == model.Username);
-            if (user != null)
-                return CRUD.NotFound;
+            User user = this.GetUserByUsername(model.Username);
+            if (user == null)
+                return new ServiceResponseModel(GetErrors().InvalidUsername, null);
             //Invalid password
             if (user.PasswordHash == Hash.CreatePassword(model.Password))
-                return CRUD.Invalid;
-            //Already deleted user
-            if (user.IsDeleted)
-                return CRUD.Invalid;
+                return new ServiceResponseModel(GetErrors().InvalidPassword, null);
 
             await this.AddExperience(new UserExperience()
             {
@@ -89,22 +84,23 @@ namespace Services.Auth
                 LoggedIn = DateTime.UtcNow
             });
 
-            return CRUD.Created;
+            return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedIn, user);
         }
 
-        public string CreateJwtToken(string userId, string username, string secret)
+        public string CreateJwtToken(JwtTokenModel tokenModel)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secret);
+            var key = Encoding.ASCII.GetBytes(tokenModel.SecretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, userId),
-                    new Claim(ClaimTypes.Name, username)
+                    new Claim(ClaimTypes.NameIdentifier, tokenModel.UserId),
+                    new Claim(ClaimTypes.Name, tokenModel.Username),
+                    new Claim(ClaimTypes.Role, tokenModel.RoleName)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(Global.JwtTokenExpires),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -113,7 +109,7 @@ namespace Services.Auth
             return encryptedToken;
         }
 
-        public async Task<CRUD> Logout(string userId)
+        public async Task<ServiceResponseModel> Logout(string userId)
         {
             await this.AddExperience(new UserExperience()
             {
@@ -121,70 +117,19 @@ namespace Services.Auth
                 LoggedOut = DateTime.UtcNow
             });
 
-            return CRUD.Created;
+            return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedOut);
         }
 
-        public UserResponseModel Profile(string userId)
+        public async Task<ServiceResponseModel> AddExperience(UserExperience exp)
         {
-            //User Not found
-            User user = this.database.Users.FirstOrDefault(x => x.Id == userId);
-            if (user == null || user.IsDeleted)
-                return null;
-
-            return MappingFactory.Mapper.Map<UserResponseModel>(user);
-
-            //return new UserResponseModel()
-            //{
-            //    Email = user.Email,
-            //    UserName = user.Username,
-            //    FirstName = user.FirstName,
-            //    LastName = user.LastName,
-            //    Gender = user.Gender,
-            //    //Age = user.Age
-            //};
-        }
-
-        public async Task<CRUD> Update<T>(T model)
-        {
-            CRUD response = CRUD.None;
-
-            User mappedModel = MappingFactory.Mapper.Map<User>(model);
-
-            User user = this.database.Users.FirstOrDefault(x => x.Id == mappedModel.Id);
+            User user = this.GetUserById(exp.UserId);
             if (user == null)
-            {
-                response = CRUD.NotFound;
-            }
-
-            user = this.ModifyEntity(mappedModel, user);
-
-            var result = await this.database.SaveChangesAsync();
-            if (result > 0)
-            {
-                response = CRUD.Updated;
-            }
-
-            return response;
-        }
-
-        public async Task<CRUD> AddExperience(UserExperience exp)
-        {
-            CRUD response = CRUD.None;
-
-            User user = this.database.Users.FirstOrDefault(x => x.Id == exp.UserId);
-            if (user == null)
-            {
-                return response = CRUD.NotFound;
-            }
+                return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
             user.Experiences.Add(exp);
-            var result = await this.database.SaveChangesAsync();
-            if (result > 0)
-            {
-                response = CRUD.Updated;
-            }
+            await this.database.SaveChangesAsync();
 
-            return response;
+            return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
         public ICollection<ExperienceModel> GetExperiences(string UserId)
@@ -199,24 +144,19 @@ namespace Services.Auth
                 .ToHashSet();
         }
 
-        public User GetUser(string userId)
+        public async Task<ServiceResponseModel> Update<T>(T model)
         {
-            return this.database.Users.FirstOrDefault(x => x.Id == userId);
-        }
+            User mappedModel = MappingFactory.Mapper.Map<User>(model);
 
-        public Role GetRoleByString(string roleName)
-        {
-            RoleTitle roleTitle;
-            bool valid = Enum.TryParse<RoleTitle>(roleName, out roleTitle);
-            if (!valid)
-                return null;
+            User user = this.GetUserById(mappedModel.Id);
+            if (user == null)
+                return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
-            return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
-        }
+            user = this.ModifyEntity(mappedModel, user);
 
-        public Role GetRoleByEnum(RoleTitle roleTitle)
-        {
-            return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            await this.database.SaveChangesAsync();
+
+            return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
         public bool ValidEmail(UserChangeModel model, User user)
@@ -246,8 +186,49 @@ namespace Services.Auth
             return true;
         }
 
-        // ------------------- Private ------------------- 
-        private User ModifyEntity(User mappedModel, User user)
+        public User GetUserById(string id)
+        {
+            return this.database.Users
+                .Where(x => x.Id == id)
+                .Where(x => !x.IsDeleted)
+                .FirstOrDefault();
+        }
+
+        public User GetUserByUsername(string username)
+        {
+            return this.database.Users
+                .Where(x => x.Username == username)
+                .Where(x => !x.IsDeleted)
+                .FirstOrDefault();
+        }
+
+        public RoleTitle GetUserRole(User user)
+        {
+            Role role = this.database.Roles.FirstOrDefault(x => x.Id == user.RoleId);
+            if (role == null)
+                return RoleTitle.Guest;
+
+            return role.Title;
+        }
+
+        public Role GetRoleByString(string roleName)
+        {
+            RoleTitle roleTitle;
+            bool valid = Enum.TryParse<RoleTitle>(roleName, out roleTitle);
+            if (!valid)
+                return null;
+
+            return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+        }
+
+        public Role GetRole(RoleTitle roleTitle)
+        {
+            return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+        }
+
+        // ------------------- Protected ------------------- 
+
+        protected User ModifyEntity(User mappedModel, User user)
         {
             user.Email = mappedModel.Email == null ? user.Email : mappedModel.Email;
             user.PasswordHash = mappedModel.PasswordHash == null ? user.PasswordHash : mappedModel.PasswordHash;
@@ -263,20 +244,20 @@ namespace Services.Auth
             return user;
         }
 
-        private bool ValidChange(UserChangeModel model, string userId)
+        protected bool ValidChange(ChangeModel model, string userId)
         {
             //Should be equal
             if (model.New != model.Old)
                 return false;
             //User Not Exists
-            User user = this.GetUser(userId);
+            User user = this.GetUserById(userId);
             if (user == null || user.IsDeleted)
                 return false;
 
             return true;
         }
 
-        private bool EmailValidator(string emailAddress)
+        protected bool EmailValidator(string emailAddress)
         {
             // ------- Local validation ------- 
             string pattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; //needs to be upgraded, copied from: regexr.com/3e48o

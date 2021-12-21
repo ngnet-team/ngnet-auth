@@ -8,6 +8,8 @@ using Database;
 using Mapper;
 using Web.Infrastructure;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace Web
 {
@@ -23,7 +25,6 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                //.AddAutoMapper()
                 .AddDatabase(this.Configuration)
                 .AddDbContext<NgnetAuthDbContext>()
                 //.AddIdentity()

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Common;
-using Common.Enums;
 using Database.Models;
 using Mapper;
 using System;
@@ -12,32 +11,38 @@ namespace ApiModels.Auth
     {
         [Required]
         [EmailAddress]
+        [MinLength(Global.EmailMinLength), MaxLength(Global.EmailMaxLength)]
         public string Email { get; set; }
 
         [Required]
+        [MinLength(Global.UsernameMinLength), MaxLength(Global.UsernameMaxLength)]
         public string Username { get; set; }
 
         [Required]
-        [MinLength(6)]
+        [MinLength(Global.PasswordMinLength), MaxLength(Global.PasswordMaxLength)]
         public string Password { get; set; }
 
+        //TODO: Only for admins and above
+        public string RoleName { get; set; }
+
         [Required]
-        [MinLength(6)]
+        [MinLength(Global.PasswordMinLength), MaxLength(Global.PasswordMaxLength)]
         public string RepeatPassword { get; set; }
 
-        public RoleTitle Role { get; set; }
-
+        [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
         public string FirstName { get; set; }
 
+        [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
         public string LastName { get; set; }
 
+        [Range(Global.AgeMin, Global.AgeMax)]
         public int? Age { get; set; }
 
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<RegisterRequestModel, User>()
-                .ForMember(x => x.CreatedOn, opt => opt.MapFrom(x => DateTime.UtcNow))
-                .ForMember(x => x.PasswordHash, opt => opt.MapFrom(x => Hash.CreatePassword(x.Password)));
+                .ForMember(x => x.PasswordHash, opt => opt.MapFrom(x => Hash.CreatePassword(x.Password)))// Don't work?
+                .ForMember(x => x.CreatedOn, opt => opt.MapFrom(x => DateTime.UtcNow));
         }
     }
 }

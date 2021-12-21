@@ -1,4 +1,5 @@
-﻿using Common.Enums;
+﻿using Common;
+using Common.Enums;
 using Database.Models.Base;
 using System;
 using System.Collections.Generic;
@@ -11,27 +12,31 @@ namespace Database.Models
         public User()
         {
             this.Id = Guid.NewGuid().ToString();
+            this.Experiences = new HashSet<UserExperience>();
         }
 
-        [MaxLength(50)]
+        public string RoleId { get; set; }
+
+        public Role Role { get; set; }
+
+        [MinLength(Global.EmailMinLength), MaxLength(Global.EmailMaxLength)]
         public string Email { get; set; }
 
-        [MaxLength(50)]
+        [MinLength(Global.UsernameMinLength), MaxLength(Global.UsernameMaxLength)]
         public string Username { get; set; }
 
-        [MaxLength(250)]
         public string PasswordHash { get; set; }
 
-        [MaxLength(50)]
+        [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
         public string FirstName { get; set; }
 
-        [MaxLength(50)]
+        [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
         public string LastName { get; set; }
 
-        public string Gender { get; set; }
+        public GenderType? Gender { get; set; }
 
-        [Range(0, 120)]
-         public GenderType? Age { get; set; }
+        [Range(Global.AgeMin, Global.AgeMax)]
+         public int? Age { get; set; }
 
         public ICollection<UserExperience> Experiences { get; set; }
     }

@@ -1,1 +1,1 @@
-dotnet ef migrations add UserRoleCtor
+dotnet ef migrations add Initial

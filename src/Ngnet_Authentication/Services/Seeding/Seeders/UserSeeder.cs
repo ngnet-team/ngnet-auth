@@ -1,4 +1,5 @@
-﻿using Common.Enums;
+﻿using Common;
+using Common.Enums;
 using Database;
 using Database.Models;
 using Mapper;
@@ -38,28 +39,26 @@ namespace Services.Seeding.Seeder
         private async Task SeedUser(UserSeederModel u, RoleTitle roleTitle)
         {
             User user = this.database.Users.FirstOrDefault(x => x.Username == u.Username);
-            if (user == null)
+
+            if (user != null)
+                return;
+
+            Role role = this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            //user = MappingFactory.Mapper.Map<User>(u);
+            //user.CreatedOn = DateTime.UtcNow;
+            //user.Role = role;
+            user = new User()
             {
-                //user = MappingFactory.Mapper.Map<User>(u);
-                //user.CreatedOn = DateTime.UtcNow;
-                user = new User()
-                {
-                    Email = u.Email,
-                    Username = u.Username,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                    CreatedOn = DateTime.UtcNow,
-                };
+                Email = u.Email,
+                Username = u.Username,
+                FirstName = u.FirstName,
+                PasswordHash = Hash.CreatePassword(u.Password),
+                LastName = u.LastName,
+                CreatedOn = DateTime.UtcNow,
+                Role = role,
+            };
 
-                await this.database.Users.AddAsync(user);
-
-                Role role = this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
-                await this.database.UserRoles.AddAsync(new UserRole()
-                {
-                    User = user,
-                    Role = role
-                });
-            }
+            await this.database.Users.AddAsync(user);
         }
     }
 }

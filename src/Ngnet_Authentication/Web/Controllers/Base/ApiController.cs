@@ -4,6 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Common.Json.Service;
 using Microsoft.Extensions.Configuration;
 using Services.Seeding;
+using Services;
+using System.Linq;
+using ApiModels.Auth;
+using System.IdentityModel.Tokens.Jwt;
+using Common.Enums;
+using System;
 
 namespace Web.Controllers.Base
 {
@@ -13,6 +19,7 @@ namespace Web.Controllers.Base
     {
         protected readonly JsonService jsonService;
         protected readonly IConfiguration configuration;
+        protected ServiceResponseModel response;
 
         protected ApiController(JsonService jsonService, IConfiguration configuration)
         {
@@ -20,7 +27,33 @@ namespace Web.Controllers.Base
             this.configuration = configuration;
         }
 
-        protected UserSeederModel Admin => configuration.GetSection("Admin").Get<UserSeederModel>();
+        protected bool IsAuthenticated => this.JwtToken() != null;
+
+        protected bool IsAuthorized => this.GetClaims().RoleTitle <= this.RoleRequired;
+
+        protected abstract RoleTitle RoleRequired { get; }
+
+        protected ClaimModel GetClaims()
+        {
+            string token = this.JwtToken();
+            if (token == null)
+                return new ClaimModel();
+
+            var claims = new JwtSecurityTokenHandler().ReadJwtToken(token).Claims;
+
+            RoleTitle roleTitle;
+            Enum.TryParse<RoleTitle>(claims.FirstOrDefault(x => x.Type == "role").Value, out roleTitle);
+
+            return new ClaimModel(roleTitle)
+            {
+                UserId = claims.FirstOrDefault(x => x.Type == "nameid").Value,
+                Username = claims.FirstOrDefault(x => x.Type == "unique_name").Value,
+            };
+        }
+
+        protected UserSeederModel[] Owners => configuration.GetSection("Owners").Get<UserSeederModel[]>();
+
+        protected UserSeederModel[] Admins => configuration.GetSection("Admins").Get<UserSeederModel[]>();
 
         protected ErrorMessagesModel GetErrors()
         {
@@ -30,6 +63,17 @@ namespace Web.Controllers.Base
         protected SuccessMessagesModel GetSuccessMsg()
         {
             return this.jsonService.Deserialiaze<SuccessMessagesModel>(Paths.SuccessMessages);
+        }
+
+        private string JwtToken()
+        {
+            var http = this.HttpContext;
+            if (http == null)
+                return null;
+
+            return http.Request.Headers
+              .FirstOrDefault(x => x.Key == "Authorization").Value
+              .ToString().Replace("Bearer ", "");
         }
     }
 }

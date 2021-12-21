@@ -1,37 +1,64 @@
-﻿using Microsoft.Extensions.Configuration;
-using Common.Json.Service;
-using Services.Auth;
-using Services.Email;
+﻿using Common.Json.Service;
 using Web.Controllers.Base;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Web.Infrastructure;
 using ApiModels.Users;
-using ApiModels.Auth;
 using Database.Models;
 using System;
 using Common;
+using Services.Users;
+using Microsoft.Extensions.Configuration;
+using Services.Email;
+using Common.Enums;
 
 namespace Web.Controllers
 {
     public class UserController : AuthController
     {
+        private readonly IUserService userService;
+
         public UserController
-            (IAuthService userService,
+            (IUserService userService,
+             IEmailSenderService emailSenderService,
              IConfiguration configuration,
-             JsonService jsonService,
-             IEmailSenderService emailSenderService)
-            : base(userService, configuration, jsonService, emailSenderService)
+             JsonService jsonService)
+            : base(null, emailSenderService, configuration, jsonService)
         {
+            this.userService = userService;
         }
 
-        [Authorize]
+        protected override RoleTitle RoleRequired { get; } = RoleTitle.User;
+
+        [HttpGet(nameof(Profile))]
+        public virtual ActionResult<object> Profile()
+        {
+            UserResponseModel response = this.userService.Profile<UserResponseModel>(this.GetClaims().UserId);
+            if (response == null)
+            {
+                this.errors = this.GetErrors().UserNotFound;
+                return this.Unauthorized(this.errors);
+            }
+
+            return response;
+        }
+            
+
+        [HttpGet]
+        [Route(nameof(Logout))]
+        public async Task<ActionResult> Logout()
+        {
+            this.response = await this.authService.Logout(this.GetClaims().UserId);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response.Success);
+        }
+
         [HttpPost]
         [Route(nameof(Update))]
         public async Task<ActionResult> Update(UserRequestModel model)
         {
-            model.Id = this.User.GetId();
+            model.Id = this.GetClaims().UserId;
             if (model.Id == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -41,12 +68,11 @@ namespace Web.Controllers
             return await this.UpdateBase<UserRequestModel>(model);
         }
 
-        [Authorize]
         [HttpPost]
         [Route(nameof(ChangeEmail))]
         public async Task<ActionResult> ChangeEmail(UserChangeModel model)
         {
-            User user = this.GetUser(this.User.GetId());
+            User user = this.GetUser();
             if (user == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -66,12 +92,11 @@ namespace Web.Controllers
             });
         }
 
-        [Authorize]
         [HttpPost]
         [Route(nameof(ChangePassword))]
         public async Task<ActionResult> ChangePassword(UserChangeModel model)
         {
-            User user = this.GetUser(this.User.GetId());
+            User user = this.GetUser();
             if (user == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -91,7 +116,6 @@ namespace Web.Controllers
             });
         }
 
-        [Authorize]
         [HttpPost]
         [Route(nameof(ResetPassword))]
         public async Task<ActionResult> ResetPassword()
@@ -112,8 +136,14 @@ namespace Web.Controllers
             return this.Ok(new
             {
                 NewPassword = newPassword,
-                Msg = this.GetSuccessMsg().UserUpdated
+                Msg = this.GetSuccessMsg().Updated
             });
+        }
+
+        protected User GetUser(string userId = null)
+        {
+            return this.authService.GetUserById(userId) ??
+                   this.authService.GetUserById(this.GetClaims().UserId);
         }
     }
 }

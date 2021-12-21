@@ -1,29 +1,45 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
 using Common.Json.Service;
 using Database.Models;
-using Services.Email;
 using System.Threading.Tasks;
 using ApiModels.Admins;
 using Services.Admins;
+using Microsoft.Extensions.Configuration;
+using Services.Email;
 using Common.Enums;
 
 namespace Web.Controllers
 {
-    [Authorize(/*Roles = "Admin"*/)]
     public class AdminController : UserController
     {
         private readonly IAdminService adminService;
 
         public AdminController
             (IAdminService adminService,
+             IEmailSenderService emailSenderService,
              IConfiguration configuration,
-             JsonService jsonService,
-             IEmailSenderService emailSenderService)
-            : base(null, configuration, jsonService, emailSenderService)
+             JsonService jsonService)
+            : base(null, emailSenderService, configuration, jsonService)
         {
             this.adminService = adminService;
+        }
+
+        protected override RoleTitle RoleRequired { get; } = RoleTitle.Admin;
+
+        [HttpGet]
+        [Route(nameof(Profile))]
+        public override ActionResult<object> Profile()
+        {
+            AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.GetClaims().UserId);
+            //Add current user's role
+            response.RoleName = this.GetClaims().RoleTitle.ToString();
+            if (response == null)
+            {
+                this.errors = this.GetErrors().UserNotFound;
+                return this.Unauthorized(this.errors);
+            }
+
+            return response;
         }
 
         [HttpGet]
@@ -44,28 +60,19 @@ namespace Web.Controllers
         [Route(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
         {
-            model.Id = this.GetUser(model.Id).Id;
-            CRUD response = await this.adminService.ChangeRole(model);
-            if (response.Equals(CRUD.NoPermissions))
-            {
-                this.errors = this.GetErrors().NoPermissions;
-                return this.BadRequest(this.errors);
-            }
-            else if (response.Equals(CRUD.NotFound))
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.BadRequest(this.errors);
-            }
+            model.Id = this.GetClaims().UserId;
+            this.response = await this.adminService.ChangeRole(model);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
 
-            return this.Ok(this.GetSuccessMsg().UserUpdated);
+            return this.Ok(this.response.Success);
         }
 
-        [Authorize]
         [HttpPost]
         [Route(nameof(Update))]
         public async Task<ActionResult> Update(AdminRequestModel model)
         {
-            model.Id = this.GetUser(model.Id).Id;
+            model.Id = this.GetClaims().UserId;
             if (model.Id == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -75,7 +82,6 @@ namespace Web.Controllers
             return await this.UpdateBase<AdminRequestModel>(model);
         }
 
-        [Authorize]
         [HttpPost]
         [Route(nameof(ChangeEmail))]
         public async Task<ActionResult> ChangeEmail(AdminChangeModel model)
@@ -100,7 +106,6 @@ namespace Web.Controllers
             });
         }
 
-        [Authorize]
         [HttpPost]
         [Route(nameof(ChangePassword))]
         public async Task<ActionResult> ChangePassword(AdminChangeModel model)
