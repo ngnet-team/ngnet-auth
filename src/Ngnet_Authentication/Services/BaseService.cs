@@ -1,8 +1,7 @@
-﻿using Common.Json.Service;
+﻿using ApiModels;
+using Common;
+using Common.Json.Service;
 using Database;
-using Database.Models.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Services
 {
@@ -10,6 +9,7 @@ namespace Services
     {
         protected readonly NgnetAuthDbContext database;
         protected readonly JsonService jsonService;
+        protected ServiceResponseModel response;
 
         protected BaseService(NgnetAuthDbContext database, JsonService jsonService)
         {
@@ -17,9 +17,14 @@ namespace Services
             this.jsonService = jsonService;
         }
 
-        protected HashSet<IBaseModel> ExcludeDeleted(HashSet<IBaseModel> collection)
+        protected ErrorMessagesModel GetErrors()
         {
-            return collection.Where(x => !x.IsDeleted).ToHashSet();
+            return this.jsonService.Deserialiaze<ErrorMessagesModel>(Paths.ErrorMessages);
+        }
+
+        protected SuccessMessagesModel GetSuccessMsg()
+        {
+            return this.jsonService.Deserialiaze<SuccessMessagesModel>(Paths.SuccessMessages);
         }
     }
 }

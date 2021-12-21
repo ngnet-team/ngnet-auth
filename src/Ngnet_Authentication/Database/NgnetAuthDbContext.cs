@@ -13,8 +13,6 @@ namespace Database
 
         public DbSet<Role> Roles { get; set; }
 
-        public DbSet<UserRole> UserRoles { get; set; }
-
         public DbSet<UserExperience> UserExperiences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

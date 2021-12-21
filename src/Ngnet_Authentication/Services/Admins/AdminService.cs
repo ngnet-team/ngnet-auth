@@ -4,53 +4,45 @@ using Common.Json.Service;
 using Database;
 using Database.Models;
 using Mapper;
-using Services.Auth;
+using Services.Users;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Services.Admins
 {
-    public class AdminService : AuthService, IAdminService
+    public class AdminService : UserService, IAdminService
     {
-        private readonly RoleTitle roleTitle = RoleTitle.Admin;
-
         public AdminService(NgnetAuthDbContext database, JsonService jsonService)
             : base(database, jsonService)
         {
         }
 
-        public bool HasPermissions(AdminRequestModel model)
+        public override RoleTitle RoleTitle { get; set; } = RoleTitle.Admin;
+
+        public T GetUserIncludedDeleted<T>(string userId)
         {
-            Role role = this.GetRoleByString(model.RoleName);
-            return (int)role.Title < (int)this.roleTitle;
+            return this.database.Users
+                .To<T>()
+                .FirstOrDefault();
         }
 
-        public async Task<CRUD> ChangeRole(AdminRequestModel model)
+        public async Task<ServiceResponseModel> ChangeRole(AdminRequestModel model)
         {
-            if (this.HasPermissions(model))
-                return CRUD.NoPermissions;
+            if (this.HasPermissions(model.RoleName))
+                return new ServiceResponseModel(GetErrors().NoPermissions, null);
 
             Role role = this.GetRoleByString(model.RoleName);
             if (role == null)
-                return CRUD.NotFound;
+                return new ServiceResponseModel(GetErrors().InvalidRole, null);
 
-            User user = this.GetUser(model.Id);
+            User user = this.GetUserIncludedDeleted<User>(model.Id);
             if (user == null)
-                return CRUD.NotFound;
+                return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
-            UserRole userRole = this.database.UserRoles.FirstOrDefault(x => x.UserId == user.Id);
-            if (userRole == null)
-                return CRUD.NotFound;
-
-            this.database.UserRoles.Remove(userRole);
-            await this.database.UserRoles.AddAsync(new UserRole()
-            {
-                User = user,
-                Role = role,
-            });
-
+            user.Role = role;
             await this.database.SaveChangesAsync();
-            return CRUD.Created;
+
+            return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
         public AdminResponseModel[] GetUsers(int count = 10000)
@@ -62,7 +54,6 @@ namespace Services.Admins
 
             foreach (var user in users)
             {
-                user.RoleName = this.database.UserRoles.FirstOrDefault(x => x.UserId == x.Id).Role.Title.ToString();
                 user.Experiances = this.GetExperiences(user.Id);
             }
 

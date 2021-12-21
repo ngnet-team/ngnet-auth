@@ -10,7 +10,7 @@ namespace ApiModels
 
         public LanguagesModel InvalidUsername { get; set; }
 
-        public LanguagesModel InvalidPasswords { get; set; }
+        public LanguagesModel InvalidPassword { get; set; }
 
         public LanguagesModel UserNotFound { get; set; }
 
@@ -18,22 +18,10 @@ namespace ApiModels
 
         public LanguagesModel ExistingUserName { get; set; }
 
-        public LanguagesModel VehicleCareNotFound { get; set; }
-
-        public LanguagesModel VehicleCaresNotFound { get; set; }
-
         public LanguagesModel NoPermissions { get; set; }
 
-        public LanguagesModel VehicleCareNamesNotFound { get; set; }
-
-        public LanguagesModel CompanyNamesNotFound { get; set; }
-
-        public LanguagesModel HealthCareNamesNotFound { get; set; }
-
-        public LanguagesModel HealthCareNotFound { get; set; }
-
-        public LanguagesModel HealthCaresNotFound { get; set; }
-
         public LanguagesModel NotEqualFields { get; set; }
+
+        public LanguagesModel InvalidRole { get; set; }
     }
 }

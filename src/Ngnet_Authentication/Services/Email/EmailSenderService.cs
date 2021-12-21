@@ -30,7 +30,7 @@ namespace Services
         {
             if (string.IsNullOrWhiteSpace(model.FromAddress) && string.IsNullOrWhiteSpace(model.ToAddress))
             {
-                throw new ArgumentException(ValidationMessages.EmptryEmailSenderAddresses);
+                throw new ArgumentException(DevValidationMessages.EmptryEmailSenderAddresses);
             }
 
             var from = new EmailAddress(model.FromAddress, model.FromName);

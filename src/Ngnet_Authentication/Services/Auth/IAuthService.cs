@@ -9,23 +9,29 @@ namespace Services.Auth
 {
     public interface IAuthService
     {
-        public Task<CRUD> Register(RegisterRequestModel model);
+        public Task<ServiceResponseModel> Register(RegisterRequestModel model);
 
-        public Task<CRUD> Login(LoginRequestModel model);
+        public Task<ServiceResponseModel> Login(LoginRequestModel model);
 
-        public string CreateJwtToken(string userId, string username, string secret);
+        public string CreateJwtToken(JwtTokenModel tokenModel);
 
-        public Task<CRUD> Logout(string userId);
+        public Task<ServiceResponseModel> Logout(string userId);
 
-        public UserResponseModel Profile(string userId);
-
-        public Task<CRUD> Update<T>(T model);
-
-        public Task<CRUD> AddExperience(UserExperience exp);
+        public Task<ServiceResponseModel> AddExperience(UserExperience exp);
 
         public ICollection<ExperienceModel> GetExperiences(string UserId);
 
-        public User GetUser(string userId);
+        public Task<ServiceResponseModel> Update<T>(T model);
+
+        public User GetUserById(string id);
+
+        public User GetUserByUsername(string username);
+
+        public RoleTitle GetUserRole(User user);
+
+        public Role GetRoleByString(string roleName);
+
+        public Role GetRole(RoleTitle roleTitle);
 
         public bool ValidEmail(UserChangeModel model, User user);
 
