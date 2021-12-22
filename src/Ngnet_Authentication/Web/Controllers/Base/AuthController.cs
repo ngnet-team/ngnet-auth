@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ApiModels.Auth;
 using Database.Models;
 using Common.Enums;
+using System.Linq;
 
 namespace Web.Controllers.Base
 {
@@ -76,6 +77,15 @@ namespace Web.Controllers.Base
                 return this.BadRequest(this.response.Errors);
 
             return this.Ok(this.response.Success);
+        }
+
+        protected bool SeededOwner()
+        {
+            string username = this.GetClaims().Username;
+            if (this.Owners.Any(x => x.Username == username))
+                return true;
+
+            return false;
         }
     }
 }

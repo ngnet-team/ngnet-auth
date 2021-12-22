@@ -7,7 +7,6 @@ using Services.Admins;
 using Microsoft.Extensions.Configuration;
 using Services.Email;
 using Common.Enums;
-using System.Linq;
 
 namespace Web.Controllers
 {
@@ -172,14 +171,5 @@ namespace Web.Controllers
                 Password = model.New,
             });
         }
-
-        protected bool SeededOwner(string userId = null)
-        {
-            User user = this.GetUser(userId);
-            if (this.Owners.Any(x => x.Username == user.Username))
-                return true;
-
-            return false;
-        } 
     }
 }
