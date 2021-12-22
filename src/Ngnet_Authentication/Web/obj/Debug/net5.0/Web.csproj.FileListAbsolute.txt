@@ -1,10 +1,3 @@
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.csproj.AssemblyReference.cache
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.GeneratedMSBuildEditorConfig.editorconfig
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.AssemblyInfoInputs.cache
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.AssemblyInfo.cs
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.csproj.CoreCompileInputs.cache
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.MvcApplicationPartsAssemblyInfo.cs
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.MvcApplicationPartsAssemblyInfo.cache
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\appsettings.Development.json
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\appsettings.json
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Web.StaticWebAssets.xml
@@ -17,6 +10,8 @@ C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\ref\We
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Web.pdb
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\AutoMapper.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\System.Net.Http.Formatting.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\System.Web.Http.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.Internal.dll
@@ -45,6 +40,7 @@ C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Micros
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Microsoft.OpenApi.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Newtonsoft.Json.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\SendGrid.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\SQLitePCLRaw.batteries_v2.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\SQLitePCLRaw.nativelibrary.dll
@@ -95,6 +91,13 @@ C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Common
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Services.pdb
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Database.pdb
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Mapper.pdb
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.csproj.AssemblyReference.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.AssemblyInfoInputs.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.AssemblyInfo.cs
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.csproj.CoreCompileInputs.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.MvcApplicationPartsAssemblyInfo.cs
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.MvcApplicationPartsAssemblyInfo.cache
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\staticwebassets\Web.StaticWebAssets.Manifest.cache
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\staticwebassets\Web.StaticWebAssets.xml
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\scopedcss\bundle\Web.styles.css
@@ -104,6 +107,5 @@ C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.dl
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\ref\Web.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.pdb
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.genruntimeconfig.cache
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\System.Net.Http.Formatting.dll
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\System.Web.Http.dll
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\System.Runtime.CompilerServices.Unsafe.dll
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\System.Text.Encodings.Web.dll

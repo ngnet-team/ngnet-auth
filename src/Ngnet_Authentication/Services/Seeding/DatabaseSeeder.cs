@@ -27,7 +27,7 @@ namespace Services.Seeding
 
             var seeders = new List<ISeeder>
             {
-                new RoleSeeder(new MaxRoles(this.owners.Length, this.admins.Length)),
+                new RoleSeeder(new MaxRoles() { Owners = this.owners.Length, Admins = this.admins.Length }),
                 new UserSeeder(this.owners, this.admins),
             };
 

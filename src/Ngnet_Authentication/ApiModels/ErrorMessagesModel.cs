@@ -23,5 +23,7 @@ namespace ApiModels
         public LanguagesModel NotEqualFields { get; set; }
 
         public LanguagesModel InvalidRole { get; set; }
+
+        public LanguagesModel AlreadyLoggedIn { get; set; }
     }
 }

@@ -17,8 +17,6 @@ namespace Database.Models
 
         public string RoleId { get; set; }
 
-        public Role Role { get; set; }
-
         [MinLength(Global.EmailMinLength), MaxLength(Global.EmailMaxLength)]
         public string Email { get; set; }
 

@@ -35,7 +35,7 @@ namespace Web.Controllers.Base
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
             if (this.IsAuthenticated)
-                return this.BadRequest();
+                return this.BadRequest(this.GetErrors().AlreadyLoggedIn);
 
             this.response = await this.authService.Register(model);
             if (this.response.Errors != null)
@@ -49,7 +49,7 @@ namespace Web.Controllers.Base
         public async Task<ActionResult<LoginResponseModel>> Login(LoginRequestModel model)
         {
             if (this.IsAuthenticated)
-                return this.BadRequest();
+                return this.BadRequest(this.GetErrors().AlreadyLoggedIn);
 
             this.response = await this.authService.Login(model);
 

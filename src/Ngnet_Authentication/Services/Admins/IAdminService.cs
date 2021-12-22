@@ -8,8 +8,8 @@ namespace Services.Admins
     {
         public Task<ServiceResponseModel> ChangeRole(AdminRequestModel model);
 
-        public AdminResponseModel[] GetUsers(int count = 10000);
+        public AdminResponseModel[] GetUsers(int? count = null);
 
-        public T GetUserIncludedDeleted<T>(string userId);
+        public RoleResponseModel[] GetRoles(int? count = null);
     }
 }

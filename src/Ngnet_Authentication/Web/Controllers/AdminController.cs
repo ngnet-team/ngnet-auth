@@ -7,6 +7,7 @@ using Services.Admins;
 using Microsoft.Extensions.Configuration;
 using Services.Email;
 using Common.Enums;
+using System.Linq;
 
 namespace Web.Controllers
 {
@@ -19,7 +20,7 @@ namespace Web.Controllers
              IEmailSenderService emailSenderService,
              IConfiguration configuration,
              JsonService jsonService)
-            : base(null, emailSenderService, configuration, jsonService)
+            : base(adminService, emailSenderService, configuration, jsonService)
         {
             this.adminService = adminService;
         }
@@ -62,14 +63,38 @@ namespace Web.Controllers
             return users;
         }
 
+        [HttpGet]
+        [Route(nameof(GetRoles))]
+        public ActionResult<RoleResponseModel[]> GetRoles()
+        {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
+            RoleResponseModel[] roles = this.adminService.GetRoles();
+            if (roles.Length == 0)
+            {
+                this.errors = this.GetErrors().InvalidRole;
+                return this.BadRequest(this.errors);
+            }
+
+            return roles;
+        }
+
         [HttpPost]
         [Route(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
+            //Set current logged user id if the model id is null
+            if (model.Id == null)
+            {
+                if (SeededOwner())
+                    return this.BadRequest(this.GetErrors().NoPermissions);
 
-            model.Id = this.GetClaims().UserId;
+                model.Id = this.GetClaims().UserId;
+            }
+
             this.response = await this.adminService.ChangeRole(model);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
@@ -147,5 +172,14 @@ namespace Web.Controllers
                 Password = model.New,
             });
         }
+
+        protected bool SeededOwner(string userId = null)
+        {
+            User user = this.GetUser(userId);
+            if (this.Owners.Any(x => x.Username == user.Username))
+                return true;
+
+            return false;
+        } 
     }
 }

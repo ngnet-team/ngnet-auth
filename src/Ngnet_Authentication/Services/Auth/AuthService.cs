@@ -27,20 +27,6 @@ namespace Services.Auth
 
         public virtual RoleTitle RoleTitle { get; set; } = RoleTitle.Guest;
 
-        /// <summary>
-        /// Insert the required role name as an input.
-        /// </summary>
-        public bool HasPermissions(string roleName)
-        {
-            Role role = this.GetRoleByString(roleName);
-            if (role == null)
-                return false;
-            if (this.RoleTitle == RoleTitle.Owner) 
-                return true;
-
-            return (int)this.RoleTitle < (int)role.Title;
-        }
-
         public async Task<ServiceResponseModel> Register(RegisterRequestModel model)
         {
             //Equal passwords check
@@ -50,16 +36,22 @@ namespace Services.Auth
             User user = this.GetUserByUsername(model.Username);
             if (user != null)
                 return new ServiceResponseModel(GetErrors().ExistingUserName, null);
+
             //TODO: Email validator
+
+            //Get role User
             Role role = this.GetRole(RoleTitle.User);
             if (role == null)
                 return new ServiceResponseModel(GetErrors().InvalidRole, null);
-            //Assign role if logged user has permissions
-            if (this.HasPermissions(model.RoleName))
-                role = this.GetRoleByString(model.RoleName);
 
             user = MappingFactory.Mapper.Map<User>(model);
-            user.Role = role;
+            //Get role User
+            user.RoleId = role.Id;
+            //Change user role if have permissions to do it.
+            User changedUser = this.AddUserToRole(user, model.RoleName);
+            if (changedUser != null)
+                user = changedUser;
+
             user.PasswordHash = Hash.CreatePassword(model.Password);
 
             await this.database.Users.AddAsync(user);
@@ -215,7 +207,7 @@ namespace Services.Auth
         public Role GetRoleByString(string roleName)
         {
             RoleTitle roleTitle;
-            bool valid = Enum.TryParse<RoleTitle>(roleName, out roleTitle);
+            bool valid = Enum.TryParse<RoleTitle>(this.Capitalize(roleName), out roleTitle);
             if (!valid)
                 return null;
 
@@ -280,15 +272,52 @@ namespace Services.Auth
             //return null;
         }
 
-        protected bool CanAddRole(RoleTitle roleTitle)
+        protected User AddUserToRole(User user, string roleName)
         {
-            //RoleConfiguration roleConfig = this.database.RoleConfigurations
-            //    .FirstOrDefault(x => x.RoleId == roleTitle);
-            //this.database.Users
-            //    .Where(x => !x.IsDeleted)
-            //    .Where(x => x.RoleId)
+            //There's room for more roles or have permissions to do it.
+            if (this.CanAddRole(roleName) && this.HasPermissions(roleName))
+            {
+                Role role = this.GetRoleByString(roleName);
+                user.RoleId = role.Id;
+                return user;
+            }
+
+            return null;
+        }
+
+        // ------------------- Private ------------------- 
+
+        private bool CanAddRole(string roleName)
+        {
+            Role role = this.GetRoleByString(roleName);
+            if (role?.MaxCount == null)
+                return true;
+
+            int usersInRole = this.database.Users
+                .Where(x => !x.IsDeleted)
+                .Where(x => x.RoleId == role.Id)
+                .Count();
+
+            if (role.MaxCount <= usersInRole)
+                return false;
 
             return true;
+        }
+
+        private bool HasPermissions(string roleName)
+        {
+            Role role = this.GetRoleByString(roleName);
+            if (role == null)
+                return false;
+            if (this.RoleTitle == RoleTitle.Owner)
+                return true;
+
+            return (int)this.RoleTitle < (int)role.Title;
+        }
+
+        private string Capitalize(string input)
+        {
+            return char.ToUpper(input[0]) + input.Substring(1);
         }
     }
 }

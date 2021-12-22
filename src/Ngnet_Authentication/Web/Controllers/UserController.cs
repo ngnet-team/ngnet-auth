@@ -22,7 +22,7 @@ namespace Web.Controllers
              IEmailSenderService emailSenderService,
              IConfiguration configuration,
              JsonService jsonService)
-            : base(null, emailSenderService, configuration, jsonService)
+            : base(userService, emailSenderService, configuration, jsonService)
         {
             this.userService = userService;
         }

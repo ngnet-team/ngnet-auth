@@ -55,7 +55,7 @@ namespace Services.Seeding.Seeder
                 PasswordHash = Hash.CreatePassword(u.Password),
                 LastName = u.LastName,
                 CreatedOn = DateTime.UtcNow,
-                Role = role,
+                RoleId = role.Id,
             };
 
             await this.database.Users.AddAsync(user);
