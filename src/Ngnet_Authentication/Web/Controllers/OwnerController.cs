@@ -1,10 +1,12 @@
 ﻿using ApiModels.Admins;
+using ApiModels.Owners;
 using Common.Enums;
 using Common.Json.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Services.Email;
 using Services.Owners;
+using System.Threading.Tasks;
 
 namespace Web.Controllers
 {
@@ -17,7 +19,7 @@ namespace Web.Controllers
              IEmailSenderService emailSenderService,
              IConfiguration configuration,
              JsonService jsonService)
-            : base(null, emailSenderService, configuration, jsonService)
+            : base(ownerService, emailSenderService, configuration, jsonService)
         {
             this.ownerService = ownerService;
         }
@@ -41,6 +43,21 @@ namespace Web.Controllers
             }
 
             return response;
+        }
+
+        
+        [HttpPost]
+        [Route(nameof(SetRoleMembers))]
+        public async Task<ActionResult> SetRoleMembers(MaxRoles model)
+        {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
+            this.response = await this.ownerService.SetRoleMembers(model);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response.Success);
         }
     }
 }

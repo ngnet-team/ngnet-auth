@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "a2EevughEHeeguqe2qb0x2U5W65SfZGfRTSYTAFekxoF7XcW2hww+2/xel+wz0EbycLc8cJDtuiYR5qaFOJqHw==",
+  "dgSpecHash": "sL+RxYEOl2hI26k/mS5SzFBOn5EjgS7Tex0fgjtxUhEoEfX7CltwLiISID3aDzEp9oA2ogd/yf2u3UTyRCFtmw==",
   "success": true,
   "projectFilePath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\system.text.json\\5.0.2\\system.text.json.5.0.2.nupkg.sha512"
+    "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
+    "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\system.text.json\\6.0.1\\system.text.json.6.0.1.nupkg.sha512"
   ],
   "logs": []
 }

@@ -8,8 +8,4 @@
     <ProjectReference Include="..\Mapper\Mapper.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Owners\" />
-  </ItemGroup>
-
 </Project>

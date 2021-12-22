@@ -6,5 +6,7 @@ namespace Services.Users
     public interface IUserService : IAuthService
     {
         public T Profile<T>(string userId);
+
+        public Task<ServiceResponseModel> DeleteAccount(string userId);
     }
 }

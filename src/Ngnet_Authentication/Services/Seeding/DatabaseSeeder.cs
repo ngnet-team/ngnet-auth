@@ -1,4 +1,5 @@
-﻿using Database;
+﻿using ApiModels.Owners;
+using Database;
 using Services.Seeding.Seeder;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace Services.Seeding
 
             var seeders = new List<ISeeder>
             {
-                new RoleSeeder(),
+                new RoleSeeder(new MaxRoles() { Owners = this.owners.Length, Admins = this.admins.Length }),
                 new UserSeeder(this.owners, this.admins),
             };
 

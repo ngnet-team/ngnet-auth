@@ -19,38 +19,31 @@ namespace Services.Admins
 
         public override RoleTitle RoleTitle { get; set; } = RoleTitle.Admin;
 
-        public T GetUserIncludedDeleted<T>(string userId)
-        {
-            return this.database.Users
-                .To<T>()
-                .FirstOrDefault();
-        }
-
         public async Task<ServiceResponseModel> ChangeRole(AdminRequestModel model)
         {
-            if (this.HasPermissions(model.RoleName))
-                return new ServiceResponseModel(GetErrors().NoPermissions, null);
-
-            Role role = this.GetRoleByString(model.RoleName);
-            if (role == null)
-                return new ServiceResponseModel(GetErrors().InvalidRole, null);
-
-            User user = this.GetUserIncludedDeleted<User>(model.Id);
+            //Valid user check
+            User user = this.GetUserById(model.Id);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
+            //Permissions check
+            User changedUser = this.AddUserToRole(user, model.RoleName);
+            if (changedUser == null)
+                return new ServiceResponseModel(GetErrors().NoPermissions, null);
 
-            user.Role = role;
+            user = changedUser;
             await this.database.SaveChangesAsync();
 
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
-        public AdminResponseModel[] GetUsers(int count = 10000)
+        public AdminResponseModel[] GetUsers(int? count = null)
         {
             var users = this.database.Users
             .To<AdminResponseModel>()
-            .Take(count)
             .ToArray();
+
+            if (count != null)
+                users.Take((int)count);
 
             foreach (var user in users)
             {
@@ -58,6 +51,32 @@ namespace Services.Admins
             }
 
             return users;
+        }
+
+        public RoleResponseModel[] GetRoles(int? count = null)
+        {
+            var roles = this.database.Roles
+                //Can't apply custom mapping, should be fixed!
+                .Select(x => new RoleResponseModel() 
+                { 
+                    Id = x.Id,
+                    Name = x.Title.ToString(),
+                    MaxCount = x.MaxCount,
+                    CreatedOn = x.CreatedOn,
+                    ModifiedOn = x.ModifiedOn,
+                    DeletedOn = x.DeletedOn,
+                    IsDeleted = x.IsDeleted,
+                })
+                .ToArray();
+
+            //var roles = this.database.Roles
+            //    .To<RoleResponseModel>()
+            //    .ToArray();
+
+            if (count != null)
+                roles.Take((int)count);
+
+            return roles;
         }
     }
 }

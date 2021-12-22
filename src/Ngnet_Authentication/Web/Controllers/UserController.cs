@@ -22,7 +22,7 @@ namespace Web.Controllers
              IEmailSenderService emailSenderService,
              IConfiguration configuration,
              JsonService jsonService)
-            : base(null, emailSenderService, configuration, jsonService)
+            : base(userService, emailSenderService, configuration, jsonService)
         {
             this.userService = userService;
         }
@@ -75,6 +75,21 @@ namespace Web.Controllers
             }
 
             return await this.UpdateBase<UserRequestModel>(model);
+        }
+
+
+        [HttpGet]
+        [Route(nameof(DeleteAccount))]
+        public async Task<ActionResult> DeleteAccount()
+        {
+            if (!this.IsAuthenticated || this.SeededOwner())
+                return this.Unauthorized();
+
+            this.response = await this.userService.DeleteAccount(this.GetClaims().UserId);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response.Success);
         }
 
         [HttpPost]

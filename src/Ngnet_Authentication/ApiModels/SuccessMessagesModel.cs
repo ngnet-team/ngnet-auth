@@ -15,5 +15,7 @@ namespace ApiModels
         public LanguagesModel Updated { get; set; }
 
         public LanguagesModel Deleted { get; set; }
+
+        public LanguagesModel AlreadyStored { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ApiModels.Auth;
 using Database.Models;
 using Common.Enums;
+using System.Linq;
 
 namespace Web.Controllers.Base
 {
@@ -35,7 +36,7 @@ namespace Web.Controllers.Base
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
             if (this.IsAuthenticated)
-                return this.BadRequest();
+                return this.BadRequest(this.GetErrors().AlreadyLoggedIn);
 
             this.response = await this.authService.Register(model);
             if (this.response.Errors != null)
@@ -49,7 +50,7 @@ namespace Web.Controllers.Base
         public async Task<ActionResult<LoginResponseModel>> Login(LoginRequestModel model)
         {
             if (this.IsAuthenticated)
-                return this.BadRequest();
+                return this.BadRequest(this.GetErrors().AlreadyLoggedIn);
 
             this.response = await this.authService.Login(model);
 
@@ -76,6 +77,15 @@ namespace Web.Controllers.Base
                 return this.BadRequest(this.response.Errors);
 
             return this.Ok(this.response.Success);
+        }
+
+        protected bool SeededOwner()
+        {
+            string username = this.GetClaims().Username;
+            if (this.Owners.Any(x => x.Username == username))
+                return true;
+
+            return false;
         }
     }
 }

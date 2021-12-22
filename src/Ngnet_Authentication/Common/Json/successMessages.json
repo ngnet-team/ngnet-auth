@@ -46,5 +46,13 @@
     "BG": [
       "Изтрит успешно!"
     ]
+  },
+  "AlreadyStored": {
+    "EN": [
+      "It has been already stored!"
+    ],
+    "BG": [
+      "Вече е било записано!"
+    ]
   }
 }
