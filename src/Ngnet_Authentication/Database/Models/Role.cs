@@ -13,5 +13,7 @@ namespace Database.Models
         }
 
         public RoleTitle Title { get; set; }
+
+        public int? MaxCount { get; set; }
     }
 }

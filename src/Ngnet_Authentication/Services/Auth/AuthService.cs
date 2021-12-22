@@ -279,5 +279,16 @@ namespace Services.Auth
 
             //return null;
         }
+
+        protected bool CanAddRole(RoleTitle roleTitle)
+        {
+            //RoleConfiguration roleConfig = this.database.RoleConfigurations
+            //    .FirstOrDefault(x => x.RoleId == roleTitle);
+            //this.database.Users
+            //    .Where(x => !x.IsDeleted)
+            //    .Where(x => x.RoleId)
+
+            return true;
+        }
     }
 }
