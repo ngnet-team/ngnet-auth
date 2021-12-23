@@ -1,6 +1,8 @@
-﻿using ApiModels.Admins;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using ApiModels.Admins;
 using Services.Base;
-using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
@@ -11,5 +13,7 @@ namespace Services.Interfaces
         public AdminResponseModel[] GetUsers(int? count = null);
 
         public RoleResponseModel[] GetRoles(int? count = null);
+
+        public ICollection<EntryModel> GetEntries(string UserId);
     }
 }

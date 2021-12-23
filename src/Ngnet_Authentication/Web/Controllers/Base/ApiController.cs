@@ -1,15 +1,15 @@
-﻿using Common;
-using ApiModels;
-using Microsoft.AspNetCore.Mvc;
-using Common.Json.Service;
-using Microsoft.Extensions.Configuration;
-using Services.Seeding;
-using Services;
+﻿using System;
 using System.Linq;
-using ApiModels.Auth;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+
+using ApiModels;
+using ApiModels.Auth;
+using Common;
+using Common.Json.Service;
 using Common.Enums;
-using System;
+using Services.Seeding;
 using Services.Base;
 
 namespace Web.Controllers.Base

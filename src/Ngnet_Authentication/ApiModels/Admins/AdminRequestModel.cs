@@ -8,14 +8,14 @@ namespace ApiModels.Admins
     {
         public AdminRequestModel()
         {
-            this.Experiances = new HashSet<ExperienceModel>();
+            this.Experiances = new HashSet<EntryModel>();
         }
 
         public string RoleName { get; set; }
 
         public string CreatedOn { get; set; }
 
-        public ICollection<ExperienceModel> Experiances { get; set; }
+        public ICollection<EntryModel> Experiances { get; set; }
 
         public string ModifiedOn { get; set; }
 

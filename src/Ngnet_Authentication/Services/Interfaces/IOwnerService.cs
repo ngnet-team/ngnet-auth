@@ -1,11 +1,12 @@
-﻿using ApiModels.Owners;
+﻿using System.Threading.Tasks;
+
+using ApiModels.Owners;
 using Services.Base;
-using System.Threading.Tasks;
 
 namespace Services.Interfaces
 {
     public interface IOwnerService : IAdminService
     {
-        public Task<ServiceResponseModel> SetRoleMembers(MaxRoles maxRoles);
+        public Task<ServiceResponseModel> SetRoleCounts(MaxRoles maxRoles);
     }
 }

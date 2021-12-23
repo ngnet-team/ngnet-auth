@@ -12,7 +12,7 @@ namespace Database.Models
         public User()
         {
             this.Id = Guid.NewGuid().ToString();
-            this.Experiences = new HashSet<UserExperience>();
+            this.Experiences = new HashSet<Entry>();
         }
 
         public string RoleId { get; set; }
@@ -36,6 +36,6 @@ namespace Database.Models
         [Range(Global.AgeMin, Global.AgeMax)]
          public int? Age { get; set; }
 
-        public ICollection<UserExperience> Experiences { get; set; }
+        public ICollection<Entry> Experiences { get; set; }
     }
 }

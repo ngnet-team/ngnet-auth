@@ -2,7 +2,7 @@
 
 namespace Database.Models
 {
-    public class UserExperience
+    public class Entry
     {
         public int Id { get; set; }
 

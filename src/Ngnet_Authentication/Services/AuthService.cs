@@ -1,20 +1,19 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using Common.Json.Service;
-using Database;
-using Database.Models;
-using Mapper;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Common.Enums;
-using Common;
 using System.Text.RegularExpressions;
-using ApiModels.Users;
+using Microsoft.IdentityModel.Tokens;
+
 using ApiModels.Auth;
+using Common;
+using Common.Enums;
+using Common.Json.Service;
+using Database;
+using Database.Models;
+using Mapper;
 using Services.Base;
 using Services.Interfaces;
 
@@ -73,7 +72,7 @@ namespace Services
             if (user.PasswordHash != hashedPassword)
                 return new ServiceResponseModel(GetErrors().InvalidPassword, null);
 
-            await this.AddExperience(new UserExperience()
+            await this.AddEntry(new Entry()
             {
                 UserId = user.Id,
                 LoggedIn = DateTime.UtcNow
@@ -104,18 +103,7 @@ namespace Services
             return encryptedToken;
         }
 
-        public async Task<ServiceResponseModel> Logout(string userId)
-        {
-            await this.AddExperience(new UserExperience()
-            {
-                UserId = userId,
-                LoggedOut = DateTime.UtcNow
-            });
-
-            return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedOut);
-        }
-
-        public async Task<ServiceResponseModel> AddExperience(UserExperience exp)
+        public async Task<ServiceResponseModel> AddEntry(Entry exp)
         {
             User user = this.GetUserById(exp.UserId);
             if (user == null)
@@ -125,18 +113,6 @@ namespace Services
             await this.database.SaveChangesAsync();
 
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
-        }
-
-        public ICollection<ExperienceModel> GetExperiences(string UserId)
-        {
-            return this.database.UserExperiences.Where(x => x.UserId == UserId)
-                .OrderByDescending(x => x.Id)
-                .To<ExperienceModel>()
-                //To avoid too many records in client
-                .Take(20)
-                .OrderByDescending(x => x.LoggedIn)
-                .ThenByDescending(x => x.LoggedOut)
-                .ToHashSet();
         }
 
         public async Task<ServiceResponseModel> Update<T>(T model)
@@ -152,33 +128,6 @@ namespace Services
             await this.database.SaveChangesAsync();
 
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
-        }
-
-        public bool ValidEmail(UserChangeModel model, User user)
-        {
-            //Base change validator
-            if (this.ValidChange(model, user.Id))
-                return false;
-
-            if (user.Email != model.Old)
-                return false;
-
-            if (this.EmailValidator(model.New))
-                return false;
-
-            return true;
-        }
-
-        public bool ValidPassword(UserChangeModel model, User user)
-        {
-            //Base change validator
-            if (this.ValidChange(model, user.Id))
-                return false;
-
-            if (user.PasswordHash != Hash.CreatePassword(model.New))
-                return false;
-
-            return true;
         }
 
         public User GetUserById(string id)
@@ -315,11 +264,6 @@ namespace Services
                 return true;
 
             return (int)this.RoleTitle < (int)role.Title;
-        }
-
-        private string Capitalize(string input)
-        {
-            return char.ToUpper(input[0]) + input.Substring(1);
         }
     }
 }

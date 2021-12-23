@@ -1,14 +1,14 @@
-﻿using Common.Json.Service;
-using Web.Controllers.Base;
-using Microsoft.AspNetCore.Mvc;
+﻿using System;
 using System.Threading.Tasks;
-using ApiModels.Users;
-using Database.Models;
-using System;
-using Common;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Services.Email;
+
+using ApiModels.Users;
+using Common;
 using Common.Enums;
+using Common.Json.Service;
+using Database.Models;
+using Services.Email;
 using Services.Interfaces;
 
 namespace Web.Controllers
@@ -44,24 +44,21 @@ namespace Web.Controllers
 
             return response;
         }
-            
 
-        [HttpGet]
-        [Route(nameof(Logout))]
+        [HttpGet(nameof(Logout))]
         public async Task<ActionResult> Logout()
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            this.response = await this.authService.Logout(this.GetClaims().UserId);
+            this.response = await this.userService.Logout(this.GetClaims().UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
             return this.Ok(this.response.Success);
         }
 
-        [HttpPost]
-        [Route(nameof(Update))]
+        [HttpPost(nameof(Update))]
         public async Task<ActionResult> Update(UserRequestModel model)
         {
             if (!this.IsAuthorized)
@@ -77,9 +74,7 @@ namespace Web.Controllers
             return await this.UpdateBase<UserRequestModel>(model);
         }
 
-
-        [HttpGet]
-        [Route(nameof(DeleteAccount))]
+        [HttpGet(nameof(DeleteAccount))]
         public async Task<ActionResult> DeleteAccount()
         {
             if (!this.IsAuthenticated || this.SeededOwner())
@@ -92,8 +87,7 @@ namespace Web.Controllers
             return this.Ok(this.response.Success);
         }
 
-        [HttpPost]
-        [Route(nameof(ChangeEmail))]
+        [HttpPost(nameof(ChangeEmail))]
         public async Task<ActionResult> ChangeEmail(UserChangeModel model)
         {
             if (!this.IsAuthorized)
@@ -106,7 +100,7 @@ namespace Web.Controllers
                 return this.Unauthorized(this.errors);
             }
 
-            bool valid = this.authService.ValidEmail(model, user);
+            bool valid = this.userService.ValidEmail(model, user);
             if (!valid)
             {
                 this.errors = this.GetErrors().InvalidEmail;
@@ -119,8 +113,7 @@ namespace Web.Controllers
             });
         }
 
-        [HttpPost]
-        [Route(nameof(ChangePassword))]
+        [HttpPost(nameof(ChangePassword))]
         public async Task<ActionResult> ChangePassword(UserChangeModel model)
         {
             if (!this.IsAuthorized)
@@ -133,7 +126,7 @@ namespace Web.Controllers
                 return this.Unauthorized(this.errors);
             }
 
-            bool valid = this.authService.ValidPassword(model, user);
+            bool valid = this.userService.ValidPassword(model, user);
             if (!valid)
             {
                 this.errors = this.GetErrors().InvalidEmail;
@@ -146,8 +139,7 @@ namespace Web.Controllers
             });
         }
 
-        [HttpPost]
-        [Route(nameof(ResetPassword))]
+        [HttpPost(nameof(ResetPassword))]
         public async Task<ActionResult> ResetPassword()
         {
             if (!this.IsAuthorized)
@@ -173,10 +165,12 @@ namespace Web.Controllers
             });
         }
 
+        // ---------------------- Abstract ---------------------- 
+
         protected User GetUser(string userId = null)
         {
-            return this.authService.GetUserById(userId) ??
-                   this.authService.GetUserById(this.GetClaims().UserId);
+            return this.userService.GetUserById(userId) ??
+                   this.userService.GetUserById(this.GetClaims().UserId);
         }
     }
 }

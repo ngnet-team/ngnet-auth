@@ -2,9 +2,9 @@
 using Database.Models;
 using Mapper;
 
-namespace ApiModels.Auth
+namespace ApiModels.Admins
 {
-    public class ExperienceModel : IMapFrom<UserExperience>
+    public class EntryModel : IMapFrom<Entry>
     {
         public string LoggedIn { get; set; }
 
@@ -12,7 +12,7 @@ namespace ApiModels.Auth
 
         public void CreateMappings(IProfileExpression configuration)
         {
-            configuration.CreateMap<UserExperience, ExperienceModel>()
+            configuration.CreateMap<Entry, EntryModel>()
                 .ForMember(x => x.LoggedIn, opt => opt.MapFrom(x => x.LoggedIn.GetValueOrDefault().ToShortDateString()))
                 .ForMember(x => x.LoggedOut, opt => opt.MapFrom(x => x.LoggedOut.GetValueOrDefault().ToShortDateString()));
         }

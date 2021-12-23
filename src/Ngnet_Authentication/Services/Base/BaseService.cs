@@ -26,5 +26,10 @@ namespace Services.Base
         {
             return this.jsonService.Deserialiaze<SuccessMessagesModel>(Paths.SuccessMessages);
         }
+
+        protected string Capitalize(string input)
+        {
+            return char.ToUpper(input[0]) + input.Substring(1);
+        }
     }
 }

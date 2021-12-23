@@ -1,12 +1,13 @@
-﻿using ApiModels.Owners;
+﻿using System.Linq;
+using System.Threading.Tasks;
+
+using ApiModels.Owners;
 using Common.Enums;
 using Common.Json.Service;
 using Database;
 using Database.Models;
 using Services.Base;
 using Services.Interfaces;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -19,7 +20,7 @@ namespace Services
 
         public override RoleTitle RoleTitle { get; set; } = RoleTitle.Owner;
 
-        public async Task<ServiceResponseModel> SetRoleMembers(MaxRoles maxRoles)
+        public async Task<ServiceResponseModel> SetRoleCounts(MaxRoles maxRoles)
         {
             (RoleTitle? roleTitle, int? count) = maxRoles.Get();
             //Nullable input

@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace ApiModels.Admins
 {
-    public class AdminResponseModel : UserResponseModel, IMapFrom<User>
+    public class AdminResponseModel : UserResponseModel
     {
         public AdminResponseModel()
         {
-            this.Experiances = new HashSet<ExperienceModel>();
+            this.Experiances = new HashSet<EntryModel>();
         }
 
         public string Id { get; set; }
@@ -20,7 +20,7 @@ namespace ApiModels.Admins
 
         public string CreatedOn { get; set; }
 
-        public ICollection<ExperienceModel> Experiances { get; set; }
+        public ICollection<EntryModel> Experiances { get; set; }
 
         public string ModifiedOn { get; set; }
 

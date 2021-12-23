@@ -1,4 +1,8 @@
-﻿using ApiModels.Admins;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using ApiModels.Admins;
 using Common.Enums;
 using Common.Json.Service;
 using Database;
@@ -6,8 +10,6 @@ using Database.Models;
 using Mapper;
 using Services.Base;
 using Services.Interfaces;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -48,7 +50,7 @@ namespace Services
 
             foreach (var user in users)
             {
-                user.Experiances = this.GetExperiences(user.Id);
+                user.Experiances = this.GetEntries(user.Id);
             }
 
             return users;
@@ -78,6 +80,18 @@ namespace Services
                 roles.Take((int)count);
 
             return roles;
+        }
+
+        public ICollection<EntryModel> GetEntries(string UserId)
+        {
+            return this.database.Entries.Where(x => x.UserId == UserId)
+                .OrderByDescending(x => x.Id)
+                .To<EntryModel>()
+                //To avoid too many records in client
+                .Take(20)
+                .OrderByDescending(x => x.LoggedIn)
+                .ThenByDescending(x => x.LoggedOut)
+                .ToHashSet();
         }
     }
 }

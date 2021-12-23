@@ -1,5 +1,8 @@
-﻿using Services.Base;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+
+using ApiModels.Users;
+using Database.Models;
+using Services.Base;
 
 namespace Services.Interfaces
 {
@@ -7,6 +10,12 @@ namespace Services.Interfaces
     {
         public T Profile<T>(string userId);
 
+        public Task<ServiceResponseModel> Logout(string userId);
+
         public Task<ServiceResponseModel> DeleteAccount(string userId);
+
+        public bool ValidEmail(UserChangeModel model, User user);
+
+        public bool ValidPassword(UserChangeModel model, User user);
     }
 }
