@@ -1,5 +1,6 @@
-﻿using Database.Models.Interfaces;
-using System;
+﻿using System;
+
+using Database.Models.Interfaces;
 
 namespace Database.Models.Base
 {

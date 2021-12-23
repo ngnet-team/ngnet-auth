@@ -1,19 +1,17 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Database;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Services;
-using AutoMapper;
-using Mapper;
-using Services.Email;
-using Services.Auth;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 using Common.Json.Service;
-using Services.Admins;
-using Services.Users;
-using Services.Owners;
+using Database;
+using Mapper;
+using Services;
+using Services.Email;
+using Services.Interfaces;
 
 namespace Web.Infrastructure
 {
@@ -83,12 +81,12 @@ namespace Web.Infrastructure
         {
             //chain the services
             return services
+                .AddSingleton<JsonService>()
+                .AddSingleton<IEmailSenderService, EmailSenderService>(x => new EmailSenderService(configuration))
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IUserService, UserService>()
                 .AddTransient<IAdminService, AdminService>()
-                .AddTransient<IOwnerService, OwnerService>()
-                .AddSingleton<IEmailSenderService, EmailSenderService>(x => new EmailSenderService(configuration))
-                .AddSingleton<JsonService>();
+                .AddTransient<IOwnerService, OwnerService>();
         }
     }
 }

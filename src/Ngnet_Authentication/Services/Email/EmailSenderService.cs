@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Common;
-using Services.Seeding;
-using Services.Email;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+
+using Common;
+using Services.Email;
+using Services.Seeding;
 
 namespace Services
 {

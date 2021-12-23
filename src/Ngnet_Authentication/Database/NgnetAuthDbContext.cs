@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using Database.Models;
 
 namespace Database
@@ -13,7 +14,7 @@ namespace Database
 
         public DbSet<Role> Roles { get; set; }
 
-        public DbSet<UserExperience> UserExperiences { get; set; }
+        public DbSet<Entry> Entries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

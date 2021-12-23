@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using System;
+
 using Database.Models;
 using Mapper;
-using System;
 
 namespace ApiModels.Admins
 {
@@ -24,7 +25,7 @@ namespace ApiModels.Admins
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<Role, RoleResponseModel>()
-                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Title.ToString())); // Do not work??
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Type.ToString())); // Do not work??
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using ApiModels;
+﻿using System.Text;
+
+using ApiModels;
 using Common;
 using Common.Json.Service;
 using Database;
 
-namespace Services
+namespace Services.Base
 {
     public abstract class BaseService
     {
@@ -25,6 +27,21 @@ namespace Services
         protected SuccessMessagesModel GetSuccessMsg()
         {
             return this.jsonService.Deserialiaze<SuccessMessagesModel>(Paths.SuccessMessages);
+        }
+
+        protected string Capitalize(string input)
+        {
+            StringBuilder output = new StringBuilder();
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (i == 0)
+                    output.Append(char.ToUpper(input[i]));
+                else
+                    output.Append(char.ToLower(input[i]));
+            }
+
+            return output.ToString();
         }
     }
 }

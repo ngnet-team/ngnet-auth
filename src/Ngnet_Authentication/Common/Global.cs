@@ -1,7 +1,12 @@
-﻿namespace Common
+﻿using System.Text.RegularExpressions;
+
+namespace Common
 {
     public static class Global
     {
+        private const string EmailPattern = 
+            @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; //needs to be upgraded, copied from: regexr.com/3e48o
+
         public const int EmailMinLength = 8;
 
         public const int EmailMaxLength = 50;
@@ -27,5 +32,26 @@
         public const int HashBytes = 10;
 
         public const int JwtTokenExpires = 7;
+
+        public static bool EmailValidator(string emailAddress)
+        {
+            // ------- Local validation ------- 
+            var matching = Regex.IsMatch(emailAddress, EmailPattern);
+            if (!matching)
+                return false;
+
+            return true; // need valid send grid api key before code below...
+
+            // ------- real email validation ------- 
+            //EmailSenderModel model = new EmailSenderModel(this.Admin.Email, emailAddress);
+            //Response response = await this.emailSenderService.EmailConfirmation(model);
+
+            //if (response == null || !response.IsSuccessStatusCode)
+            //{
+            //    return this.GetErrors().InvalidEmail;
+            //}
+
+            //return null;
+        }
     }
 }

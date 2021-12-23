@@ -1,6 +1,6 @@
 ﻿namespace Common.Enums
 {
-    public enum RoleTitle
+    public enum RoleType
     {
         Owner = 1,
         Admin = 2,

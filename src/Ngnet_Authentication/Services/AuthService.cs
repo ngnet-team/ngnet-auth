@@ -1,22 +1,22 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using Common.Json.Service;
-using Database;
-using Database.Models;
-using Mapper;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Common.Enums;
-using Common;
-using System.Text.RegularExpressions;
-using ApiModels.Users;
-using ApiModels.Auth;
+using Microsoft.IdentityModel.Tokens;
 
-namespace Services.Auth
+using ApiModels.Auth;
+using Common;
+using Common.Enums;
+using Common.Json.Service;
+using Database;
+using Database.Models;
+using Mapper;
+using Services.Base;
+using Services.Interfaces;
+
+namespace Services
 {
     public class AuthService : BaseService, IAuthService
     {
@@ -25,7 +25,7 @@ namespace Services.Auth
         {
         }
 
-        public virtual RoleTitle RoleTitle { get; set; } = RoleTitle.Guest;
+        public virtual RoleType RoleType { get; set; } = RoleType.Guest;
 
         public async Task<ServiceResponseModel> Register(RegisterRequestModel model)
         {
@@ -40,18 +40,13 @@ namespace Services.Auth
             //TODO: Email validator
 
             //Get role User
-            Role role = this.GetRole(RoleTitle.User);
+            Role role = this.GetRoleByEnum(RoleType.User);
             if (role == null)
                 return new ServiceResponseModel(GetErrors().InvalidRole, null);
 
             user = MappingFactory.Mapper.Map<User>(model);
-            //Get role User
+            //Should be auto mapped
             user.RoleId = role.Id;
-            //Change user role if have permissions to do it.
-            User changedUser = this.AddUserToRole(user, model.RoleName);
-            if (changedUser != null)
-                user = changedUser;
-
             user.PasswordHash = Hash.CreatePassword(model.Password);
 
             await this.database.Users.AddAsync(user);
@@ -71,7 +66,7 @@ namespace Services.Auth
             if (user.PasswordHash != hashedPassword)
                 return new ServiceResponseModel(GetErrors().InvalidPassword, null);
 
-            await this.AddExperience(new UserExperience()
+            await this.AddEntry(new Entry()
             {
                 UserId = user.Id,
                 LoggedIn = DateTime.UtcNow
@@ -102,18 +97,7 @@ namespace Services.Auth
             return encryptedToken;
         }
 
-        public async Task<ServiceResponseModel> Logout(string userId)
-        {
-            await this.AddExperience(new UserExperience()
-            {
-                UserId = userId,
-                LoggedOut = DateTime.UtcNow
-            });
-
-            return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedOut);
-        }
-
-        public async Task<ServiceResponseModel> AddExperience(UserExperience exp)
+        public async Task<ServiceResponseModel> AddEntry(Entry exp)
         {
             User user = this.GetUserById(exp.UserId);
             if (user == null)
@@ -125,22 +109,10 @@ namespace Services.Auth
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
-        public ICollection<ExperienceModel> GetExperiences(string UserId)
-        {
-            return this.database.UserExperiences.Where(x => x.UserId == UserId)
-                .OrderByDescending(x => x.Id)
-                .To<ExperienceModel>()
-                //To avoid too many records in client
-                .Take(20)
-                .OrderByDescending(x => x.LoggedIn)
-                .ThenByDescending(x => x.LoggedOut)
-                .ToHashSet();
-        }
-
         public async Task<ServiceResponseModel> Update<T>(T model)
         {
-            User mappedModel = MappingFactory.Mapper.Map<User>(model);
-
+            User mappedModel = MappingFactory.Mapper.Map<User>(model); // TODO: If it's password update this doesn't work because of auto mapped Password to Password Hash
+            
             User user = this.GetUserById(mappedModel.Id);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
@@ -150,33 +122,6 @@ namespace Services.Auth
             await this.database.SaveChangesAsync();
 
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
-        }
-
-        public bool ValidEmail(UserChangeModel model, User user)
-        {
-            //Base change validator
-            if (this.ValidChange(model, user.Id))
-                return false;
-
-            if (user.Email != model.Old)
-                return false;
-
-            if (this.EmailValidator(model.New))
-                return false;
-
-            return true;
-        }
-
-        public bool ValidPassword(UserChangeModel model, User user)
-        {
-            //Base change validator
-            if (this.ValidChange(model, user.Id))
-                return false;
-
-            if (user.PasswordHash != Hash.CreatePassword(model.New))
-                return false;
-
-            return true;
         }
 
         public User GetUserById(string id)
@@ -195,28 +140,24 @@ namespace Services.Auth
                 .FirstOrDefault();
         }
 
-        public RoleTitle GetUserRole(User user)
+        public Role GetUserRole(User user)
         {
-            Role role = this.database.Roles.FirstOrDefault(x => x.Id == user.RoleId);
-            if (role == null)
-                return RoleTitle.Guest;
-
-            return role.Title;
+            return this.database.Roles.FirstOrDefault(x => x.Id == user.RoleId);
         }
 
         public Role GetRoleByString(string roleName)
         {
-            RoleTitle roleTitle;
-            bool valid = Enum.TryParse<RoleTitle>(this.Capitalize(roleName), out roleTitle);
+            RoleType roleType;
+            bool valid = Enum.TryParse<RoleType>(this.Capitalize(roleName), out roleType);
             if (!valid)
                 return null;
 
-            return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            return this.database.Roles.FirstOrDefault(x => x.Type == roleType);
         }
 
-        public Role GetRole(RoleTitle roleTitle)
+        public Role GetRoleByEnum(RoleType roleType)
         {
-            return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            return this.database.Roles.FirstOrDefault(x => x.Type == roleType);
         }
 
         // ------------------- Protected ------------------- 
@@ -225,6 +166,8 @@ namespace Services.Auth
         {
             user.Email = mappedModel.Email == null ? user.Email : mappedModel.Email;
             user.PasswordHash = mappedModel.PasswordHash == null ? user.PasswordHash : mappedModel.PasswordHash;
+            user.Username = mappedModel.Username == null ? user.Username : mappedModel.Username;
+
             user.FirstName = mappedModel.FirstName == null ? user.FirstName : mappedModel.FirstName;
             user.LastName = mappedModel.LastName == null ? user.LastName : mappedModel.LastName;
             user.Gender = mappedModel.Gender == null ? user.Gender : mappedModel.Gender;
@@ -237,39 +180,16 @@ namespace Services.Auth
             return user;
         }
 
-        protected bool ValidChange(ChangeModel model, string userId)
+        protected bool ValidChange(ChangeModel model, User user)
         {
-            //Should be equal
-            if (model.New != model.Old)
+            //Both new ones should be equal
+            if (model.New != model.RepeatNew)
                 return false;
             //User Not Exists
-            User user = this.GetUserById(userId);
             if (user == null || user.IsDeleted)
                 return false;
 
             return true;
-        }
-
-        protected bool EmailValidator(string emailAddress)
-        {
-            // ------- Local validation ------- 
-            string pattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; //needs to be upgraded, copied from: regexr.com/3e48o
-            var matching = Regex.IsMatch(emailAddress, pattern);
-            if (!matching)
-                return false;
-
-            return true; // need valid send grid api key before code below...
-
-            // ------- real email validation ------- 
-            //EmailSenderModel model = new EmailSenderModel(this.Admin.Email, emailAddress);
-            //Response response = await this.emailSenderService.EmailConfirmation(model);
-
-            //if (response == null || !response.IsSuccessStatusCode)
-            //{
-            //    return this.GetErrors().InvalidEmail;
-            //}
-
-            //return null;
         }
 
         protected User AddUserToRole(User user, string roleName)
@@ -309,15 +229,10 @@ namespace Services.Auth
             Role role = this.GetRoleByString(roleName);
             if (role == null)
                 return false;
-            if (this.RoleTitle == RoleTitle.Owner)
+            if (this.RoleType == RoleType.Owner)
                 return true;
 
-            return (int)this.RoleTitle < (int)role.Title;
-        }
-
-        private string Capitalize(string input)
-        {
-            return char.ToUpper(input[0]) + input.Substring(1);
+            return (int)this.RoleType < (int)role.Type;
         }
     }
 }

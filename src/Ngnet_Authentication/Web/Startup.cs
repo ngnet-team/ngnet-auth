@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
+
 using ApiModels;
 using Database;
 using Mapper;
 using Web.Infrastructure;
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace Web
 {
@@ -27,7 +26,6 @@ namespace Web
             services
                 .AddDatabase(this.Configuration)
                 .AddDbContext<NgnetAuthDbContext>()
-                //.AddIdentity()
                 .AddAuthorization()
                 .AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
                 .AddServices(this.Configuration)
@@ -49,8 +47,6 @@ namespace Web
                       .AllowAnyOrigin()
                       .AllowAnyHeader()
                       .AllowAnyMethod())
-                //.UseAuthentication()
-                //.UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();

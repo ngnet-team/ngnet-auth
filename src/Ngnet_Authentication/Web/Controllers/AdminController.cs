@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+
+using ApiModels.Admins;
+using Common.Enums;
 using Common.Json.Service;
 using Database.Models;
-using System.Threading.Tasks;
-using ApiModels.Admins;
-using Services.Admins;
-using Microsoft.Extensions.Configuration;
 using Services.Email;
-using Common.Enums;
+using Services.Interfaces;
+using ApiModels.Users;
 
 namespace Web.Controllers
 {
@@ -24,29 +26,21 @@ namespace Web.Controllers
             this.adminService = adminService;
         }
 
-        protected override RoleTitle RoleRequired { get; } = RoleTitle.Admin;
+        protected override RoleType RoleRequired { get; } = RoleType.Admin;
 
-        [HttpGet]
-        [Route(nameof(Profile))]
+        [HttpGet(nameof(Profile))]
         public override ActionResult<object> Profile()
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
-
+            
             AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.GetClaims().UserId);
-            //Add current user's role
-            response.RoleName = this.GetClaims().RoleTitle.ToString();
-            if (response == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
+            response.RoleName = this.GetClaims().RoleType.ToString();
 
             return response;
         }
 
-        [HttpGet]
-        [Route(nameof(GetUsers))]
+        [HttpGet(nameof(GetUsers))]
         public ActionResult<AdminResponseModel[]> GetUsers()
         {
             if (!this.IsAuthorized)
@@ -62,8 +56,7 @@ namespace Web.Controllers
             return users;
         }
 
-        [HttpGet]
-        [Route(nameof(GetRoles))]
+        [HttpGet(nameof(GetRoles))]
         public ActionResult<RoleResponseModel[]> GetRoles()
         {
             if (!this.IsAuthorized)
@@ -79,8 +72,7 @@ namespace Web.Controllers
             return roles;
         }
 
-        [HttpPost]
-        [Route(nameof(ChangeRole))]
+        [HttpPost(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
         {
             if (!this.IsAuthorized)
@@ -100,9 +92,8 @@ namespace Web.Controllers
 
             return this.Ok(this.response.Success);
         }
-
-        [HttpPost]
-        [Route(nameof(Update))]
+        //TODO: multiple matches in endpoint update and change
+        [HttpPost(nameof(Update))]
         public async Task<ActionResult> Update(AdminRequestModel model)
         {
             if (!this.IsAuthorized)
@@ -118,58 +109,45 @@ namespace Web.Controllers
             return await this.UpdateBase<AdminRequestModel>(model);
         }
 
-        [HttpPost]
-        [Route(nameof(ChangeEmail))]
-        public async Task<ActionResult> ChangeEmail(AdminChangeModel model)
+        [HttpPost(nameof(Change))]
+        public async Task<ActionResult> Change(AdminChangeModel model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
             User user = this.GetUser(model.Id);
-            if (user == null)
+            //Tring to make change on other user
+            if (model.Id != null)
             {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
+                if (!this.HasPermissionsToUser(user))
+                {
+                    this.errors = this.GetErrors().UserNotFound;
+                    return this.Unauthorized(this.errors);
+                }
             }
 
-            bool valid = this.authService.ValidEmail(model, user);
-            if (!valid)
-            {
-                this.errors = this.GetErrors().InvalidEmail;
-                return this.Unauthorized(this.errors);
-            }
+            this.response = this.adminService.Change(model, user);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
 
-            return await this.Update(new AdminRequestModel()
-            {
-                Email = model.New,
-            });
+            return await this.Update((UserRequestModel)this.response.RawData);
         }
 
-        [HttpPost]
-        [Route(nameof(ChangePassword))]
-        public async Task<ActionResult> ChangePassword(AdminChangeModel model)
+        [HttpPost(nameof(DeleteUser))]
+        public async Task<ActionResult> DeleteUser(AdminRequestModel model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            User user = this.GetUser(model.Id);
-            if (user == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
+            User user = this.adminService.GetDeletableUser(model.Id);
+            if (!this.HasPermissionsToUser(user))
+                return this.Unauthorized(this.GetErrors().NoPermissions);
 
-            bool valid = this.authService.ValidPassword(model, user);
-            if (!valid)
-            {
-                this.errors = this.GetErrors().InvalidEmail;
-                return this.Unauthorized(this.errors);
-            }
+            this.response = await this.adminService.DeleteUser(user);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
 
-            return await this.Update(new AdminRequestModel()
-            {
-                Password = model.New,
-            });
+            return this.Ok(this.response.Success);
         }
     }
 }

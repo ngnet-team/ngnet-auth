@@ -1,6 +1,6 @@
 ﻿using Common.Json.Models;
 
-namespace Services
+namespace Services.Base
 {
     public class ServiceResponseModel
     {

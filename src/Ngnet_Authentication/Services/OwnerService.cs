@@ -1,13 +1,15 @@
-﻿using ApiModels.Owners;
+﻿using System.Linq;
+using System.Threading.Tasks;
+
+using ApiModels.Owners;
 using Common.Enums;
 using Common.Json.Service;
 using Database;
 using Database.Models;
-using Services.Admins;
-using System.Linq;
-using System.Threading.Tasks;
+using Services.Base;
+using Services.Interfaces;
 
-namespace Services.Owners
+namespace Services
 {
     public class OwnerService : AdminService, IOwnerService
     {
@@ -16,16 +18,16 @@ namespace Services.Owners
         {
         }
 
-        public override RoleTitle RoleTitle { get; set; } = RoleTitle.Owner;
+        public override RoleType RoleType { get; set; } = RoleType.Owner;
 
-        public async Task<ServiceResponseModel> SetRoleMembers(MaxRoles maxRoles)
+        public async Task<ServiceResponseModel> SetRoleCounts(MaxRoles maxRoles)
         {
-            (RoleTitle? roleTitle, int? count) = maxRoles.Get();
+            (RoleType? roleType, int? count) = maxRoles.Get();
             //Nullable input
-            if (roleTitle == null || count == null)
+            if (roleType == null || count == null)
                 return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
 
-            Role role = this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            Role role = this.database.Roles.FirstOrDefault(x => x.Type == roleType);
             //New count should be different from current stored max count.
             if (role.MaxCount == count)
             {

@@ -1,16 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using ApiModels.Auth;
+
 using Common.Json.Models;
 using Common.Json.Service;
-using Services.Auth;
-using Services.Email;
-using System.Threading.Tasks;
-using ApiModels.Auth;
-using Database.Models;
 using Common.Enums;
-using System.Linq;
+using Database.Models;
+using Services.Email;
+using Services.Interfaces;
+using Web.Controllers.Base;
 
-namespace Web.Controllers.Base
+namespace Web.Controllers
 {
     public class AuthController : ApiController
     {
@@ -29,10 +31,9 @@ namespace Web.Controllers.Base
             this.emailSenderService = emailSenderService;
         }
 
-        protected override RoleTitle RoleRequired { get; } = RoleTitle.Guest;
+        protected override RoleType RoleRequired { get; } = RoleType.Guest;
 
-        [HttpPost]
-        [Route(nameof(Register))]
+        [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
             if (this.IsAuthenticated)
@@ -45,8 +46,7 @@ namespace Web.Controllers.Base
             return this.Ok(this.response.Success);
         }
 
-        [HttpPost]
-        [Route(nameof(Login))]
+        [HttpPost(nameof(Login))]
         public async Task<ActionResult<LoginResponseModel>> Login(LoginRequestModel model)
         {
             if (this.IsAuthenticated)
@@ -62,13 +62,15 @@ namespace Web.Controllers.Base
             {
                 UserId = user.Id,
                 Username = user.Username,
-                RoleName = this.authService.GetUserRole(user).ToString(),
+                RoleName = this.authService.GetUserRole(user)?.ToString(),
             };
             string token = this.authService
                 .CreateJwtToken(tokenModel);
 
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };
         }
+
+        // ---------------------- Abstract ---------------------- 
 
         protected async Task<ActionResult> UpdateBase<T>(T model)
         {

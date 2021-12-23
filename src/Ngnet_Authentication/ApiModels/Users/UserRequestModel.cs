@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using System.ComponentModel.DataAnnotations;
+
 using Common;
+using Common.Enums;
 using Database.Models;
 using Mapper;
-using System.ComponentModel.DataAnnotations;
 
 namespace ApiModels.Users
 {
@@ -14,7 +16,7 @@ namespace ApiModels.Users
         public string Email { get; set; }
 
         [MinLength(6)]
-        public string UserName { get; set; }
+        public string Username { get; set; }
 
         [MinLength(6)]
         public string Password { get; set; }

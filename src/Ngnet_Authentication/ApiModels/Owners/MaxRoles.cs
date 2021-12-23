@@ -1,5 +1,4 @@
 ﻿using Common.Enums;
-using System;
 
 namespace ApiModels.Owners
 {
@@ -13,12 +12,12 @@ namespace ApiModels.Owners
 
         public int? Guests { get; set; }
 
-        public (RoleTitle?, int?) Get()
+        public (RoleType?, int?) Get()
         {
-            return this.Owners != null ? (RoleTitle.Owner, this.Owners) :
-                  this.Admins != null ? (RoleTitle.Admin, this.Admins) :
-                  this.Users != null ? (RoleTitle.User, this.Users) :
-                  this.Guests != null ? (RoleTitle.Guest, this.Guests) :
+            return this.Owners != null ? (RoleType.Owner, this.Owners) :
+                  this.Admins != null ? (RoleType.Admin, this.Admins) :
+                  this.Users != null ? (RoleType.User, this.Users) :
+                  this.Guests != null ? (RoleType.Guest, this.Guests) :
                   (null, null);
         }
     }

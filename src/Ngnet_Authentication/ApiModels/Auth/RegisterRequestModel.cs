@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using System;
+using System.ComponentModel.DataAnnotations;
+
 using Common;
 using Database.Models;
 using Mapper;
-using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ApiModels.Auth
 {
@@ -21,9 +22,6 @@ namespace ApiModels.Auth
         [Required]
         [MinLength(Global.PasswordMinLength), MaxLength(Global.PasswordMaxLength)]
         public string Password { get; set; }
-
-        //TODO: Only for admins and above
-        public string RoleName { get; set; }
 
         [Required]
         [MinLength(Global.PasswordMinLength), MaxLength(Global.PasswordMaxLength)]

@@ -1,12 +1,12 @@
-﻿using ApiModels.Admins;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+
 using ApiModels.Owners;
 using Common.Enums;
 using Common.Json.Service;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Services.Email;
-using Services.Owners;
-using System.Threading.Tasks;
+using Services.Interfaces;
 
 namespace Web.Controllers
 {
@@ -24,18 +24,17 @@ namespace Web.Controllers
             this.ownerService = ownerService;
         }
 
-        protected override RoleTitle RoleRequired { get; } = RoleTitle.Owner;
+        protected override RoleType RoleRequired { get; } = RoleType.Owner;
 
-        [HttpGet]
-        [Route(nameof(Profile))]
+        [HttpGet(nameof(Profile))]
         public override ActionResult<object> Profile()
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            AdminResponseModel response = this.ownerService.Profile<AdminResponseModel>(this.GetClaims().UserId);
+            OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.GetClaims().UserId);
             //Add current user's role
-            response.RoleName = this.GetClaims().RoleTitle.ToString();
+            response.RoleName = this.GetClaims().RoleType.ToString();
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -46,14 +45,13 @@ namespace Web.Controllers
         }
 
         
-        [HttpPost]
-        [Route(nameof(SetRoleMembers))]
-        public async Task<ActionResult> SetRoleMembers(MaxRoles model)
+        [HttpPost(nameof(SetRoleCounts))]
+        public async Task<ActionResult> SetRoleCounts(MaxRoles model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            this.response = await this.ownerService.SetRoleMembers(model);
+            this.response = await this.ownerService.SetRoleCounts(model);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
