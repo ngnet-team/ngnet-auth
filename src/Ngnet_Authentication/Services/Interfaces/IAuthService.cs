@@ -23,10 +23,10 @@ namespace Services.Interfaces
 
         public User GetUserByUsername(string username);
 
-        public RoleTitle GetUserRole(User user);
+        public Role GetUserRole(User user);
 
         public Role GetRoleByString(string roleName);
 
-        public Role GetRole(RoleTitle roleTitle);
+        public Role GetRoleByEnum(RoleTitle roleTitle);
     }
 }

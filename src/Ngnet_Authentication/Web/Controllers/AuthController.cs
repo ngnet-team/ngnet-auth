@@ -62,7 +62,7 @@ namespace Web.Controllers
             {
                 UserId = user.Id,
                 Username = user.Username,
-                RoleName = this.authService.GetUserRole(user).ToString(),
+                RoleName = this.authService.GetUserRole(user)?.ToString(),
             };
             string token = this.authService
                 .CreateJwtToken(tokenModel);

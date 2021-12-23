@@ -56,6 +56,11 @@ namespace Services
             return users;
         }
 
+        public User GetDeletableUser(string userId)
+        {
+            return this.database.Users.FirstOrDefault(x => x.Id == userId);
+        }
+
         public RoleResponseModel[] GetRoles(int? count = null)
         {
             var roles = this.database.Roles
@@ -92,6 +97,30 @@ namespace Services
                 .OrderByDescending(x => x.LoggedIn)
                 .ThenByDescending(x => x.LoggedOut)
                 .ToHashSet();
+        }
+
+        public async Task<ServiceResponseModel> DeleteUser(User user)
+        {
+            if (user == null)
+                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
+
+            await this.RemoveAllUserRelated(user.Id);
+
+            this.database.Users.Remove(user);
+            await this.database.SaveChangesAsync();
+
+            return new ServiceResponseModel(null, this.GetSuccessMsg().Deleted);
+        }
+
+        // ------------------ Private ------------------
+
+        private async Task RemoveAllUserRelated(string userId)
+        {
+            //Entries:
+            IQueryable<Entry> entries = this.database.Entries.Where(x => x.UserId == userId);
+            this.database.Entries.RemoveRange(entries);
+
+            await this.database.SaveChangesAsync();
         }
     }
 }

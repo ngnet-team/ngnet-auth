@@ -165,5 +165,22 @@ namespace Web.Controllers
                 Password = model.New,
             });
         }
+
+        [HttpPost(nameof(DeleteUser))]
+        public async Task<ActionResult> DeleteUser(AdminRequestModel model)
+        {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
+            User user = this.adminService.GetDeletableUser(model.Id);
+            if (!this.HasPermissionsToUser(user))
+                return this.Unauthorized(this.GetErrors().NoPermissions);
+
+            this.response = await this.adminService.DeleteUser(user);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response.Success);
+        }
     }
 }

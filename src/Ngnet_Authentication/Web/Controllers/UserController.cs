@@ -172,5 +172,16 @@ namespace Web.Controllers
             return this.userService.GetUserById(userId) ??
                    this.userService.GetUserById(this.GetClaims().UserId);
         }
+
+        protected bool HasPermissionsToUser(User user)
+        {
+            if (user == null)
+                return false;
+
+            Role userRole = this.userService.GetUserRole(user);
+            RoleTitle currUserRole = this.GetClaims().RoleTitle;
+            //Higher than the wanted user
+            return currUserRole < userRole.Title;
+        }
     }
 }

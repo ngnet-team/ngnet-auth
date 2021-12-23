@@ -41,7 +41,7 @@ namespace Services
             //TODO: Email validator
 
             //Get role User
-            Role role = this.GetRole(RoleTitle.User);
+            Role role = this.GetRoleByEnum(RoleTitle.User);
             if (role == null)
                 return new ServiceResponseModel(GetErrors().InvalidRole, null);
 
@@ -141,13 +141,9 @@ namespace Services
                 .FirstOrDefault();
         }
 
-        public RoleTitle GetUserRole(User user)
+        public Role GetUserRole(User user)
         {
-            Role role = this.database.Roles.FirstOrDefault(x => x.Id == user.RoleId);
-            if (role == null)
-                return RoleTitle.Guest;
-
-            return role.Title;
+            return this.database.Roles.FirstOrDefault(x => x.Id == user.RoleId);
         }
 
         public Role GetRoleByString(string roleName)
@@ -160,7 +156,7 @@ namespace Services
             return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
         }
 
-        public Role GetRole(RoleTitle roleTitle)
+        public Role GetRoleByEnum(RoleTitle roleTitle)
         {
             return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
         }
