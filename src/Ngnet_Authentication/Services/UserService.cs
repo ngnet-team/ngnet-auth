@@ -3,12 +3,13 @@ using Common.Json.Service;
 using Database;
 using Database.Models;
 using Mapper;
-using Services.Auth;
+using Services.Base;
+using Services.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Services.Users
+namespace Services
 {
     public class UserService : AuthService, IUserService
     {

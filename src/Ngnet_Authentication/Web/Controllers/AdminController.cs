@@ -3,10 +3,10 @@ using Common.Json.Service;
 using Database.Models;
 using System.Threading.Tasks;
 using ApiModels.Admins;
-using Services.Admins;
 using Microsoft.Extensions.Configuration;
 using Services.Email;
 using Common.Enums;
+using Services.Interfaces;
 
 namespace Web.Controllers
 {

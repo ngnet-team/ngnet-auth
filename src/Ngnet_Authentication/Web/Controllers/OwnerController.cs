@@ -5,7 +5,7 @@ using Common.Json.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Services.Email;
-using Services.Owners;
+using Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace Web.Controllers

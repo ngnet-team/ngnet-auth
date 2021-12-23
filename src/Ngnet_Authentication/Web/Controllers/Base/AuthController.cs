@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Common.Json.Models;
 using Common.Json.Service;
-using Services.Auth;
 using Services.Email;
 using System.Threading.Tasks;
 using ApiModels.Auth;
 using Database.Models;
 using Common.Enums;
 using System.Linq;
+using Services.Interfaces;
 
 namespace Web.Controllers.Base
 {

@@ -15,8 +15,10 @@ using Common;
 using System.Text.RegularExpressions;
 using ApiModels.Users;
 using ApiModels.Auth;
+using Services.Base;
+using Services.Interfaces;
 
-namespace Services.Auth
+namespace Services
 {
     public class AuthService : BaseService, IAuthService
     {

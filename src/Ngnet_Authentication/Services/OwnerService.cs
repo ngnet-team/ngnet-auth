@@ -3,11 +3,12 @@ using Common.Enums;
 using Common.Json.Service;
 using Database;
 using Database.Models;
-using Services.Admins;
+using Services.Base;
+using Services.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Services.Owners
+namespace Services
 {
     public class OwnerService : AdminService, IOwnerService
     {

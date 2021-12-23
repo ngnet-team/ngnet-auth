@@ -4,11 +4,12 @@ using Common.Json.Service;
 using Database;
 using Database.Models;
 using Mapper;
-using Services.Users;
+using Services.Base;
+using Services.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Services.Admins
+namespace Services
 {
     public class AdminService : UserService, IAdminService
     {
@@ -24,11 +25,11 @@ namespace Services.Admins
             //Valid user check
             User user = this.GetUserById(model.Id);
             if (user == null)
-                return new ServiceResponseModel(GetErrors().UserNotFound, null);
+                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
             //Permissions check
             User changedUser = this.AddUserToRole(user, model.RoleName);
             if (changedUser == null)
-                return new ServiceResponseModel(GetErrors().NoPermissions, null);
+                return new ServiceResponseModel(this.GetErrors().NoPermissions, null);
 
             user = changedUser;
             await this.database.SaveChangesAsync();

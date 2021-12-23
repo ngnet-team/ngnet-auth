@@ -10,6 +10,7 @@ using ApiModels.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using Common.Enums;
 using System;
+using Services.Base;
 
 namespace Web.Controllers.Base
 {

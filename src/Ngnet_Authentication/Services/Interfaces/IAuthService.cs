@@ -2,10 +2,11 @@
 using ApiModels.Users;
 using Common.Enums;
 using Database.Models;
+using Services.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Services.Auth
+namespace Services.Interfaces
 {
     public interface IAuthService
     {

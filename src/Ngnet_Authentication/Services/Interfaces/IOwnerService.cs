@@ -1,8 +1,8 @@
 ﻿using ApiModels.Owners;
-using Services.Admins;
+using Services.Base;
 using System.Threading.Tasks;
 
-namespace Services.Owners
+namespace Services.Interfaces
 {
     public interface IOwnerService : IAdminService
     {

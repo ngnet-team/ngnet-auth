@@ -1,7 +1,7 @@
-﻿using Services.Auth;
+﻿using Services.Base;
 using System.Threading.Tasks;
 
-namespace Services.Users
+namespace Services.Interfaces
 {
     public interface IUserService : IAuthService
     {

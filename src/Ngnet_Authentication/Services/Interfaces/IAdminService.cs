@@ -1,8 +1,8 @@
 ﻿using ApiModels.Admins;
-using Services.Users;
+using Services.Base;
 using System.Threading.Tasks;
 
-namespace Services.Admins
+namespace Services.Interfaces
 {
     public interface IAdminService : IUserService
     {

@@ -6,10 +6,10 @@ using ApiModels.Users;
 using Database.Models;
 using System;
 using Common;
-using Services.Users;
 using Microsoft.Extensions.Configuration;
 using Services.Email;
 using Common.Enums;
+using Services.Interfaces;
 
 namespace Web.Controllers
 {

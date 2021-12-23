@@ -3,7 +3,7 @@ using Common;
 using Common.Json.Service;
 using Database;
 
-namespace Services
+namespace Services.Base
 {
     public abstract class BaseService
     {
