@@ -1,6 +1,7 @@
-﻿using Common.Enums;
+﻿using System;
+
+using Common.Enums;
 using Database.Models.Base;
-using System;
 
 namespace Database.Models
 {

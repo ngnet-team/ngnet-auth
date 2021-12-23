@@ -1,6 +1,6 @@
-﻿using ApiModels.Auth;
+﻿using System.Collections.Generic;
+
 using ApiModels.Users;
-using System.Collections.Generic;
 
 namespace ApiModels.Admins
 {

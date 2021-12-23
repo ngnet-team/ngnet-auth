@@ -1,6 +1,7 @@
-﻿using Database.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Database.Models;
 using Mapper;
-using System.ComponentModel.DataAnnotations;
 
 namespace ApiModels.Auth
 {

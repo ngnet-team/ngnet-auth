@@ -46,13 +46,8 @@ namespace Services
                 return new ServiceResponseModel(GetErrors().InvalidRole, null);
 
             user = MappingFactory.Mapper.Map<User>(model);
-            //Get role User
+            //Should be auto mapped
             user.RoleId = role.Id;
-            //Change user role if have permissions to do it.
-            User changedUser = this.AddUserToRole(user, model.RoleName);
-            if (changedUser != null)
-                user = changedUser;
-
             user.PasswordHash = Hash.CreatePassword(model.Password);
 
             await this.database.Users.AddAsync(user);

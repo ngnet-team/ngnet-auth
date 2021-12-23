@@ -1,9 +1,8 @@
-﻿using ApiModels.Auth;
-using ApiModels.Users;
-using AutoMapper;
-using Database.Models;
-using Mapper;
+﻿using AutoMapper;
 using System.Collections.Generic;
+
+using ApiModels.Users;
+using Database.Models;
 
 namespace ApiModels.Admins
 {

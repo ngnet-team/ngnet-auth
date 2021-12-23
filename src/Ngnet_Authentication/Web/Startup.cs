@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
+
 using ApiModels;
 using Database;
 using Mapper;
 using Web.Infrastructure;
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace Web
 {

@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using System;
+
 using Database.Models;
 using Mapper;
-using System;
 
 namespace ApiModels.Admins
 {

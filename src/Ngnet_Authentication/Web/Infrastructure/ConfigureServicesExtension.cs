@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Database;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Services;
-using AutoMapper;
-using Mapper;
-using Services.Email;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 using Common.Json.Service;
+using Database;
+using Mapper;
+using Services;
+using Services.Email;
 using Services.Interfaces;
 
 namespace Web.Infrastructure

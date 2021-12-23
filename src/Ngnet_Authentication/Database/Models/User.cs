@@ -1,9 +1,10 @@
-﻿using Common;
-using Common.Enums;
-using Database.Models.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+
+using Common;
+using Common.Enums;
+using Database.Models.Base;
 
 namespace Database.Models
 {

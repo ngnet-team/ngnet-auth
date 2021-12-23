@@ -1,5 +1,4 @@
 ﻿using Common.Enums;
-using System;
 
 namespace ApiModels.Owners
 {

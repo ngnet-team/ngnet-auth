@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using System.ComponentModel.DataAnnotations;
+
 using Common;
 using Database.Models;
 using Mapper;
-using System.ComponentModel.DataAnnotations;
 
 namespace ApiModels.Users
 {
