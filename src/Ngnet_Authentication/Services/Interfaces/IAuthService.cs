@@ -27,6 +27,6 @@ namespace Services.Interfaces
 
         public Role GetRoleByString(string roleName);
 
-        public Role GetRoleByEnum(RoleTitle roleTitle);
+        public Role GetRoleByEnum(RoleType roleType);
     }
 }

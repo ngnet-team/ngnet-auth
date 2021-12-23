@@ -19,40 +19,40 @@ namespace Services.Seeding.Seeder
 
         public async Task SeedAsync(NgnetAuthDbContext database)
         {
-            foreach (var roleTitle in Enum.GetValues<RoleTitle>())
+            foreach (var roleType in Enum.GetValues<RoleType>())
             {
-                await SeedRoleAsync(database, roleTitle);
+                await SeedRoleAsync(database, roleType);
             }
         }
 
-        private async Task SeedRoleAsync(NgnetAuthDbContext database, RoleTitle roleTitle)
+        private async Task SeedRoleAsync(NgnetAuthDbContext database, RoleType roleType)
         {
-            var role = database.Roles.FirstOrDefault(x => x.Title.Equals(roleTitle));
-            if (role == null && Enum.IsDefined(roleTitle))
+            var role = database.Roles.FirstOrDefault(x => x.Type.Equals(roleType));
+            if (role == null && Enum.IsDefined(roleType))
             {
-                await database.Roles.AddAsync(this.CreateRole(roleTitle));
+                await database.Roles.AddAsync(this.CreateRole(roleType));
             }
         }
 
-        private Role CreateRole(RoleTitle roleTitle)
+        private Role CreateRole(RoleType roleType)
         {
-            if (RoleTitle.Owner.Equals(roleTitle))
+            if (RoleType.Owner.Equals(roleType))
             {
-                return new Role(roleTitle) 
+                return new Role(roleType) 
                 { 
                     MaxCount = this.maxRoles.Owners
                 };
             }
-            else if (RoleTitle.Admin.Equals(roleTitle))
+            else if (RoleType.Admin.Equals(roleType))
             {
-                return new Role(roleTitle)
+                return new Role(roleType)
                 {
                     MaxCount = this.maxRoles.Admins
                 };
             }
             else
             {
-                return new Role(roleTitle);
+                return new Role(roleType);
             }
         }
     }

@@ -81,12 +81,12 @@ namespace Web.Infrastructure
         {
             //chain the services
             return services
+                .AddSingleton<JsonService>()
+                .AddSingleton<IEmailSenderService, EmailSenderService>(x => new EmailSenderService(configuration))
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IUserService, UserService>()
                 .AddTransient<IAdminService, AdminService>()
-                .AddTransient<IOwnerService, OwnerService>()
-                .AddSingleton<IEmailSenderService, EmailSenderService>(x => new EmailSenderService(configuration))
-                .AddSingleton<JsonService>();
+                .AddTransient<IOwnerService, OwnerService>();
         }
     }
 }

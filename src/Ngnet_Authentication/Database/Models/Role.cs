@@ -7,13 +7,13 @@ namespace Database.Models
 {
     public class Role : BaseModel<string>
     {
-        public Role(RoleTitle title)
+        public Role(RoleType type)
         {
             this.Id = Guid.NewGuid().ToString();
-            this.Title = title;
+            this.Type = type;
         }
 
-        public RoleTitle Title { get; set; }
+        public RoleType Type { get; set; }
 
         public int? MaxCount { get; set; }
     }

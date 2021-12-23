@@ -26,7 +26,6 @@ namespace Web
             services
                 .AddDatabase(this.Configuration)
                 .AddDbContext<NgnetAuthDbContext>()
-                //.AddIdentity()
                 .AddAuthorization()
                 .AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
                 .AddServices(this.Configuration)
@@ -48,8 +47,6 @@ namespace Web
                       .AllowAnyOrigin()
                       .AllowAnyHeader()
                       .AllowAnyMethod())
-                //.UseAuthentication()
-                //.UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();

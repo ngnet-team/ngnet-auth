@@ -20,7 +20,7 @@ namespace Services
         {
         }
 
-        public override RoleTitle RoleTitle { get; set; } = RoleTitle.Admin;
+        public override RoleType RoleType { get; set; } = RoleType.Admin;
 
         public async Task<ServiceResponseModel> ChangeRole(AdminRequestModel model)
         {
@@ -68,7 +68,7 @@ namespace Services
                 .Select(x => new RoleResponseModel() 
                 { 
                     Id = x.Id,
-                    Name = x.Title.ToString(),
+                    Name = x.Type.ToString(),
                     MaxCount = x.MaxCount,
                     CreatedOn = x.CreatedOn,
                     ModifiedOn = x.ModifiedOn,

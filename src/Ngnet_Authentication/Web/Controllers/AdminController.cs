@@ -8,6 +8,7 @@ using Common.Json.Service;
 using Database.Models;
 using Services.Email;
 using Services.Interfaces;
+using ApiModels.Users;
 
 namespace Web.Controllers
 {
@@ -25,7 +26,7 @@ namespace Web.Controllers
             this.adminService = adminService;
         }
 
-        protected override RoleTitle RoleRequired { get; } = RoleTitle.Admin;
+        protected override RoleType RoleRequired { get; } = RoleType.Admin;
 
         [HttpGet(nameof(Profile))]
         public override ActionResult<object> Profile()
@@ -34,13 +35,7 @@ namespace Web.Controllers
                 return this.Unauthorized();
             
             AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.GetClaims().UserId);
-            //Add current user's role
-            response.RoleName = this.GetClaims().RoleTitle.ToString();
-            if (response == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
+            response.RoleName = this.GetClaims().RoleType.ToString();
 
             return response;
         }
@@ -97,7 +92,7 @@ namespace Web.Controllers
 
             return this.Ok(this.response.Success);
         }
-
+        //TODO: multiple matches in endpoint update and change
         [HttpPost(nameof(Update))]
         public async Task<ActionResult> Update(AdminRequestModel model)
         {
@@ -114,56 +109,28 @@ namespace Web.Controllers
             return await this.UpdateBase<AdminRequestModel>(model);
         }
 
-        [HttpPost(nameof(ChangeEmail))]
-        public async Task<ActionResult> ChangeEmail(AdminChangeModel model)
+        [HttpPost(nameof(Change))]
+        public async Task<ActionResult> Change(AdminChangeModel model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
             User user = this.GetUser(model.Id);
-            if (user == null)
+            //Tring to make change on other user
+            if (model.Id != null)
             {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
+                if (!this.HasPermissionsToUser(user))
+                {
+                    this.errors = this.GetErrors().UserNotFound;
+                    return this.Unauthorized(this.errors);
+                }
             }
 
-            bool valid = this.adminService.ValidEmail(model, user);
-            if (!valid)
-            {
-                this.errors = this.GetErrors().InvalidEmail;
-                return this.Unauthorized(this.errors);
-            }
+            this.response = this.adminService.Change(model, user);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
 
-            return await this.Update(new AdminRequestModel()
-            {
-                Email = model.New,
-            });
-        }
-
-        [HttpPost(nameof(ChangePassword))]
-        public async Task<ActionResult> ChangePassword(AdminChangeModel model)
-        {
-            if (!this.IsAuthorized)
-                return this.Unauthorized();
-
-            User user = this.GetUser(model.Id);
-            if (user == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
-
-            bool valid = this.adminService.ValidPassword(model, user);
-            if (!valid)
-            {
-                this.errors = this.GetErrors().InvalidEmail;
-                return this.Unauthorized(this.errors);
-            }
-
-            return await this.Update(new AdminRequestModel()
-            {
-                Password = model.New,
-            });
+            return await this.Update((UserRequestModel)this.response.RawData);
         }
 
         [HttpPost(nameof(DeleteUser))]

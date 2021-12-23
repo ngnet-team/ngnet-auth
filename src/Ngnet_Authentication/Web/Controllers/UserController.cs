@@ -27,7 +27,7 @@ namespace Web.Controllers
             this.userService = userService;
         }
 
-        protected override RoleTitle RoleRequired { get; } = RoleTitle.User;
+        protected override RoleType RoleRequired { get; } = RoleType.User;
 
         [HttpGet(nameof(Profile))]
         public virtual ActionResult<object> Profile()
@@ -74,6 +74,20 @@ namespace Web.Controllers
             return await this.UpdateBase<UserRequestModel>(model);
         }
 
+        [HttpPost(nameof(Change))]
+        public async Task<ActionResult> Change(UserChangeModel model)
+        {
+            if (!this.IsAuthorized)
+                return this.Unauthorized();
+
+            User user = this.GetUser();
+            this.response = this.userService.Change(model, user);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return await this.Update((UserRequestModel)this.response.RawData);
+        }
+
         [HttpGet(nameof(DeleteAccount))]
         public async Task<ActionResult> DeleteAccount()
         {
@@ -85,58 +99,6 @@ namespace Web.Controllers
                 return this.BadRequest(this.response.Errors);
 
             return this.Ok(this.response.Success);
-        }
-
-        [HttpPost(nameof(ChangeEmail))]
-        public async Task<ActionResult> ChangeEmail(UserChangeModel model)
-        {
-            if (!this.IsAuthorized)
-                return this.Unauthorized();
-
-            User user = this.GetUser();
-            if (user == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
-
-            bool valid = this.userService.ValidEmail(model, user);
-            if (!valid)
-            {
-                this.errors = this.GetErrors().InvalidEmail;
-                return this.Unauthorized(this.errors);
-            }
-
-            return await this.Update(new UserRequestModel()
-            {
-                Email = model.New,
-            });
-        }
-
-        [HttpPost(nameof(ChangePassword))]
-        public async Task<ActionResult> ChangePassword(UserChangeModel model)
-        {
-            if (!this.IsAuthorized)
-                return this.Unauthorized();
-
-            User user = this.GetUser();
-            if (user == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
-
-            bool valid = this.userService.ValidPassword(model, user);
-            if (!valid)
-            {
-                this.errors = this.GetErrors().InvalidEmail;
-                return this.Unauthorized(this.errors);
-            }
-
-            return await this.Update(new UserRequestModel()
-            {
-                Password = model.New,
-            });
         }
 
         [HttpPost(nameof(ResetPassword))]
@@ -179,9 +141,9 @@ namespace Web.Controllers
                 return false;
 
             Role userRole = this.userService.GetUserRole(user);
-            RoleTitle currUserRole = this.GetClaims().RoleTitle;
+            RoleType currUserRole = this.GetClaims().RoleType;
             //Higher than the wanted user
-            return currUserRole < userRole.Title;
+            return currUserRole < userRole.Type;
         }
     }
 }

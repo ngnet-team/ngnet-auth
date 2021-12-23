@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using Microsoft.IdentityModel.Tokens;
 
 using ApiModels.Auth;
@@ -26,7 +25,7 @@ namespace Services
         {
         }
 
-        public virtual RoleTitle RoleTitle { get; set; } = RoleTitle.Guest;
+        public virtual RoleType RoleType { get; set; } = RoleType.Guest;
 
         public async Task<ServiceResponseModel> Register(RegisterRequestModel model)
         {
@@ -41,7 +40,7 @@ namespace Services
             //TODO: Email validator
 
             //Get role User
-            Role role = this.GetRoleByEnum(RoleTitle.User);
+            Role role = this.GetRoleByEnum(RoleType.User);
             if (role == null)
                 return new ServiceResponseModel(GetErrors().InvalidRole, null);
 
@@ -112,8 +111,8 @@ namespace Services
 
         public async Task<ServiceResponseModel> Update<T>(T model)
         {
-            User mappedModel = MappingFactory.Mapper.Map<User>(model);
-
+            User mappedModel = MappingFactory.Mapper.Map<User>(model); // TODO: If it's password update this doesn't work because of auto mapped Password to Password Hash
+            
             User user = this.GetUserById(mappedModel.Id);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
@@ -148,17 +147,17 @@ namespace Services
 
         public Role GetRoleByString(string roleName)
         {
-            RoleTitle roleTitle;
-            bool valid = Enum.TryParse<RoleTitle>(this.Capitalize(roleName), out roleTitle);
+            RoleType roleType;
+            bool valid = Enum.TryParse<RoleType>(this.Capitalize(roleName), out roleType);
             if (!valid)
                 return null;
 
-            return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            return this.database.Roles.FirstOrDefault(x => x.Type == roleType);
         }
 
-        public Role GetRoleByEnum(RoleTitle roleTitle)
+        public Role GetRoleByEnum(RoleType roleType)
         {
-            return this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            return this.database.Roles.FirstOrDefault(x => x.Type == roleType);
         }
 
         // ------------------- Protected ------------------- 
@@ -167,6 +166,8 @@ namespace Services
         {
             user.Email = mappedModel.Email == null ? user.Email : mappedModel.Email;
             user.PasswordHash = mappedModel.PasswordHash == null ? user.PasswordHash : mappedModel.PasswordHash;
+            user.Username = mappedModel.Username == null ? user.Username : mappedModel.Username;
+
             user.FirstName = mappedModel.FirstName == null ? user.FirstName : mappedModel.FirstName;
             user.LastName = mappedModel.LastName == null ? user.LastName : mappedModel.LastName;
             user.Gender = mappedModel.Gender == null ? user.Gender : mappedModel.Gender;
@@ -179,39 +180,16 @@ namespace Services
             return user;
         }
 
-        protected bool ValidChange(ChangeModel model, string userId)
+        protected bool ValidChange(ChangeModel model, User user)
         {
-            //Should be equal
-            if (model.New != model.Old)
+            //Both new ones should be equal
+            if (model.New != model.RepeatNew)
                 return false;
             //User Not Exists
-            User user = this.GetUserById(userId);
             if (user == null || user.IsDeleted)
                 return false;
 
             return true;
-        }
-
-        protected bool EmailValidator(string emailAddress)
-        {
-            // ------- Local validation ------- 
-            string pattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; //needs to be upgraded, copied from: regexr.com/3e48o
-            var matching = Regex.IsMatch(emailAddress, pattern);
-            if (!matching)
-                return false;
-
-            return true; // need valid send grid api key before code below...
-
-            // ------- real email validation ------- 
-            //EmailSenderModel model = new EmailSenderModel(this.Admin.Email, emailAddress);
-            //Response response = await this.emailSenderService.EmailConfirmation(model);
-
-            //if (response == null || !response.IsSuccessStatusCode)
-            //{
-            //    return this.GetErrors().InvalidEmail;
-            //}
-
-            //return null;
         }
 
         protected User AddUserToRole(User user, string roleName)
@@ -251,10 +229,10 @@ namespace Services
             Role role = this.GetRoleByString(roleName);
             if (role == null)
                 return false;
-            if (this.RoleTitle == RoleTitle.Owner)
+            if (this.RoleType == RoleType.Owner)
                 return true;
 
-            return (int)this.RoleTitle < (int)role.Title;
+            return (int)this.RoleType < (int)role.Type;
         }
     }
 }

@@ -30,9 +30,9 @@ namespace Web.Controllers.Base
 
         protected bool IsAuthenticated => this.JwtToken() != null;
 
-        protected bool IsAuthorized => this.GetClaims().RoleTitle <= this.RoleRequired;
+        protected bool IsAuthorized => this.GetClaims().RoleType <= this.RoleRequired;
 
-        protected abstract RoleTitle RoleRequired { get; }
+        protected abstract RoleType RoleRequired { get; }
 
         protected ClaimModel GetClaims()
         {
@@ -42,10 +42,10 @@ namespace Web.Controllers.Base
 
             var claims = new JwtSecurityTokenHandler().ReadJwtToken(token).Claims;
 
-            RoleTitle roleTitle;
-            Enum.TryParse<RoleTitle>(claims.FirstOrDefault(x => x.Type == "role").Value, out roleTitle);
+            RoleType roleType;
+            Enum.TryParse<RoleType>(claims.FirstOrDefault(x => x.Type == "role").Value, out roleType);
 
-            return new ClaimModel(roleTitle)
+            return new ClaimModel(roleType)
             {
                 UserId = claims.FirstOrDefault(x => x.Type == "nameid").Value,
                 Username = claims.FirstOrDefault(x => x.Type == "unique_name").Value,

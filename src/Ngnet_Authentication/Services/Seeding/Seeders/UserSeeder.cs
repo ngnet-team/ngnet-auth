@@ -27,23 +27,23 @@ namespace Services.Seeding.Seeder
 
             foreach (var owner in this.owners)
             {
-                await this.SeedUser(owner, RoleTitle.Owner);
+                await this.SeedUser(owner, RoleType.Owner);
             }
 
             foreach (var admin in this.admins)
             {
-                await this.SeedUser(admin, RoleTitle.Admin);
+                await this.SeedUser(admin, RoleType.Admin);
             }
         }
 
-        private async Task SeedUser(UserSeederModel u, RoleTitle roleTitle)
+        private async Task SeedUser(UserSeederModel u, RoleType roleType)
         {
             User user = this.database.Users.FirstOrDefault(x => x.Username == u.Username);
 
             if (user != null)
                 return;
 
-            Role role = this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            Role role = this.database.Roles.FirstOrDefault(x => x.Type == roleType);
             //user = MappingFactory.Mapper.Map<User>(u);
             //user.CreatedOn = DateTime.UtcNow;
             //user.Role = role;

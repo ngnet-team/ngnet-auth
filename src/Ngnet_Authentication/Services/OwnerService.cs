@@ -18,16 +18,16 @@ namespace Services
         {
         }
 
-        public override RoleTitle RoleTitle { get; set; } = RoleTitle.Owner;
+        public override RoleType RoleType { get; set; } = RoleType.Owner;
 
         public async Task<ServiceResponseModel> SetRoleCounts(MaxRoles maxRoles)
         {
-            (RoleTitle? roleTitle, int? count) = maxRoles.Get();
+            (RoleType? roleType, int? count) = maxRoles.Get();
             //Nullable input
-            if (roleTitle == null || count == null)
+            if (roleType == null || count == null)
                 return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
 
-            Role role = this.database.Roles.FirstOrDefault(x => x.Title == roleTitle);
+            Role role = this.database.Roles.FirstOrDefault(x => x.Type == roleType);
             //New count should be different from current stored max count.
             if (role.MaxCount == count)
             {

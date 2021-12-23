@@ -24,7 +24,7 @@ namespace Web.Controllers
             this.ownerService = ownerService;
         }
 
-        protected override RoleTitle RoleRequired { get; } = RoleTitle.Owner;
+        protected override RoleType RoleRequired { get; } = RoleType.Owner;
 
         [HttpGet(nameof(Profile))]
         public override ActionResult<object> Profile()
@@ -34,7 +34,7 @@ namespace Web.Controllers
 
             OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.GetClaims().UserId);
             //Add current user's role
-            response.RoleName = this.GetClaims().RoleTitle.ToString();
+            response.RoleName = this.GetClaims().RoleType.ToString();
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;

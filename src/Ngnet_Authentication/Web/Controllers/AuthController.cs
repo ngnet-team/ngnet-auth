@@ -31,7 +31,7 @@ namespace Web.Controllers
             this.emailSenderService = emailSenderService;
         }
 
-        protected override RoleTitle RoleRequired { get; } = RoleTitle.Guest;
+        protected override RoleType RoleRequired { get; } = RoleType.Guest;
 
         [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)

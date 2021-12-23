@@ -14,8 +14,6 @@ namespace Services.Interfaces
 
         public Task<ServiceResponseModel> DeleteAccount(string userId);
 
-        public bool ValidEmail(UserChangeModel model, User user);
-
-        public bool ValidPassword(UserChangeModel model, User user);
+        public ServiceResponseModel Change(UserChangeModel model, User user);
     }
 }
