@@ -10,6 +10,7 @@ using Common.Json.Service;
 using Database.Models;
 using Services.Email;
 using Services.Interfaces;
+using ApiModels.Dtos;
 
 namespace Web.Controllers
 {
@@ -59,7 +60,7 @@ namespace Web.Controllers
         }
 
         [HttpPost(nameof(Update))]
-        public async Task<ActionResult> Update(UserRequestModel model)
+        public virtual async Task<ActionResult> Update(UserRequestModel model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
@@ -80,8 +81,8 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            User user = this.GetUser();
-            this.response = this.userService.Change(model, user);
+            UserDto userDto = this.GetUser();
+            this.response = this.userService.Change(model, userDto);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -107,40 +108,27 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            User user = this.GetUser();
-            if (user == null)
-            {
-                this.errors = GetErrors().UserNotFound;
-                return this.BadRequest(errors);
-            }
+            this.response = await userService.ResetPassword(this.GetClaims().UserId);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
 
-            string newPassword = Guid.NewGuid().ToString().Substring(0, Global.ResetPasswordLength);
-            var result = await this.Update(new UserRequestModel()
-            {
-                Password = newPassword,
-            });
-
-            return this.Ok(new
-            {
-                NewPassword = newPassword,
-                Msg = this.GetSuccessMsg().Updated
-            });
+            return this.Ok(this.response.Success);
         }
 
         // ---------------------- Abstract ---------------------- 
 
-        protected User GetUser(string userId = null)
+        protected UserDto GetUser(string userId = null)
         {
             return this.userService.GetUserById(userId) ??
                    this.userService.GetUserById(this.GetClaims().UserId);
         }
 
-        protected bool HasPermissionsToUser(User user)
+        protected bool HasPermissionsToUser(UserDto userDto)
         {
-            if (user == null)
+            if (userDto == null)
                 return false;
 
-            Role userRole = this.userService.GetUserRole(user);
+            Role userRole = this.userService.GetUserRole(userDto);
             RoleType currUserRole = this.GetClaims().RoleType;
             //Higher than the wanted user
             return currUserRole < userRole.Type;

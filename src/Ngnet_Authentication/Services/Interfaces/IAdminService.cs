@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 
 using ApiModels.Admins;
-using Database.Models;
 using Services.Base;
+using ApiModels.Dtos;
 
 namespace Services.Interfaces
 {
@@ -13,12 +13,10 @@ namespace Services.Interfaces
 
         public AdminResponseModel[] GetUsers(int? count = null);
 
-        public User GetDeletableUser(string userId);
+        public UserDto GetDeletableUser(string userId);
 
         public RoleResponseModel[] GetRoles(int? count = null);
 
         public ICollection<EntryModel> GetEntries(string userId);
-
-        public Task<ServiceResponseModel> DeleteUser(User user);
     }
 }

@@ -15,6 +15,7 @@ using Database.Models;
 using Mapper;
 using Services.Base;
 using Services.Interfaces;
+using ApiModels.Dtos;
 
 namespace Services
 {
@@ -33,7 +34,7 @@ namespace Services
             if (model.Password != model.RepeatPassword)
                 return new ServiceResponseModel(GetErrors().NotEqualPasswords, null);
             //Username exists
-            User user = this.GetUserByUsername(model.Username);
+            User user = this.GetUser(null, model.Username);
             if (user != null)
                 return new ServiceResponseModel(GetErrors().ExistingUserName, null);
 
@@ -58,7 +59,7 @@ namespace Services
         public async Task<ServiceResponseModel> Login(LoginRequestModel model)
         {
             //Username does Not exist
-            User user = this.GetUserByUsername(model.Username);
+            User user = this.GetUser(null, model.Username);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().InvalidUsername, null);
             //Invalid password
@@ -72,7 +73,8 @@ namespace Services
                 LoggedIn = DateTime.UtcNow
             });
 
-            return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedIn, user);
+            UserDto userDto = MappingFactory.Mapper.Map<UserDto>(user);
+            return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedIn, userDto);
         }
 
         public string CreateJwtToken(JwtTokenModel tokenModel)
@@ -99,7 +101,7 @@ namespace Services
 
         public async Task<ServiceResponseModel> AddEntry(Entry exp)
         {
-            User user = this.GetUserById(exp.UserId);
+            User user = this.GetUser(exp.UserId);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
@@ -112,8 +114,8 @@ namespace Services
         public async Task<ServiceResponseModel> Update<T>(T model)
         {
             User mappedModel = MappingFactory.Mapper.Map<User>(model); // TODO: If it's password update this doesn't work because of auto mapped Password to Password Hash
-            
-            User user = this.GetUserById(mappedModel.Id);
+
+            User user = this.GetUser(mappedModel.Id);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
@@ -124,25 +126,34 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
-        public User GetUserById(string id)
+        public UserDto GetUserById(string id)
         {
             return this.database.Users
                 .Where(x => x.Id == id)
                 .Where(x => !x.IsDeleted)
+                .To<UserDto>()
                 .FirstOrDefault();
         }
 
-        public User GetUserByUsername(string username)
+        public UserDto GetUserByUsername(string username)
         {
             return this.database.Users
                 .Where(x => x.Username == username)
                 .Where(x => !x.IsDeleted)
+                .To<UserDto>()
                 .FirstOrDefault();
         }
 
-        public Role GetUserRole(User user)
+        public Role GetUserRole(UserDto userDto)
         {
-            return this.database.Roles.FirstOrDefault(x => x.Id == user.RoleId);
+            User user = this.database.Users
+                .FirstOrDefault(x => x.Id == userDto.Id);
+
+            if (user == null)
+                return null;
+
+            return this.database.Roles
+                .FirstOrDefault(x => x.Id == user.RoleId);
         }
 
         public Role GetRoleByString(string roleName)
@@ -161,6 +172,19 @@ namespace Services
         }
 
         // ------------------- Protected ------------------- 
+
+        protected User GetUser(string id, string username = null)
+        {
+            var users = this.database.Users
+                .Where(x => !x.IsDeleted);
+
+            if (id != null)
+                users = users.Where(x => x.Id == id);
+            else
+                users = users.Where(x => x.Username == username);
+
+            return users.FirstOrDefault();
+        }
 
         protected User ModifyEntity(User mappedModel, User user)
         {

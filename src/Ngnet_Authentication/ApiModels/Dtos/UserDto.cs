@@ -4,7 +4,7 @@ using Mapper;
 
 namespace ApiModels.Dtos
 {
-    public class UserDto : IMapFrom<User>, IMapTo<User>
+    public class UserDto : IMapFrom<User>
     {
         public string Id { get; set; }
 

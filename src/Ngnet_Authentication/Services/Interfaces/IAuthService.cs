@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 using ApiModels.Auth;
+using ApiModels.Dtos;
 using Common.Enums;
 using Database.Models;
 using Services.Base;
@@ -19,11 +20,11 @@ namespace Services.Interfaces
 
         public Task<ServiceResponseModel> Update<T>(T model);
 
-        public User GetUserById(string id);
+        public UserDto GetUserById(string id);
 
-        public User GetUserByUsername(string username);
+        public UserDto GetUserByUsername(string username);
 
-        public Role GetUserRole(User user);
+        public Role GetUserRole(UserDto userDto);
 
         public Role GetRoleByString(string roleName);
 

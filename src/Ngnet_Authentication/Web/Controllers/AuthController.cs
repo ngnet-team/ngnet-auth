@@ -7,10 +7,10 @@ using ApiModels.Auth;
 using Common.Json.Models;
 using Common.Json.Service;
 using Common.Enums;
-using Database.Models;
 using Services.Email;
 using Services.Interfaces;
 using Web.Controllers.Base;
+using ApiModels.Dtos;
 
 namespace Web.Controllers
 {
@@ -57,12 +57,12 @@ namespace Web.Controllers
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
-            User user = (User)this.response.RawData;
+            UserDto userDto = (UserDto)this.response.RawData;
             JwtTokenModel tokenModel = new JwtTokenModel(this.configuration["ApplicationSettings:Secret"]) 
             {
-                UserId = user.Id,
-                Username = user.Username,
-                RoleName = this.authService.GetUserRole(user)?.ToString(),
+                UserId = userDto.Id,
+                Username = userDto.Username,
+                RoleName = this.authService.GetUserRole(userDto)?.ToString(),
             };
             string token = this.authService
                 .CreateJwtToken(tokenModel);

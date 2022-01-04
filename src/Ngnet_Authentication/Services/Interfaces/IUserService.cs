@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-
+using ApiModels.Dtos;
 using ApiModels.Users;
-using Database.Models;
 using Services.Base;
 
 namespace Services.Interfaces
@@ -12,8 +11,12 @@ namespace Services.Interfaces
 
         public Task<ServiceResponseModel> Logout(string userId);
 
+        public Task<ServiceResponseModel> Delete(string userId);
+
         public Task<ServiceResponseModel> DeleteAccount(string userId);
 
-        public ServiceResponseModel Change(UserChangeModel model, User user);
+        public Task<ServiceResponseModel> ResetPassword(string userId);
+
+        public ServiceResponseModel Change(UserChangeModel model, UserDto userDto);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-
+using ApiModels.Dtos;
 using ApiModels.Users;
 using Common;
 using Common.Enums;
@@ -43,7 +43,7 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedOut);
         }
 
-        public async Task<ServiceResponseModel> DeleteAccount(string userId)
+        public async Task<ServiceResponseModel> Delete(string userId) // Marked as deleted ONLY!
         {
             User user = this.database.Users.FirstOrDefault(x => x.Id == userId);
             if (user == null)
@@ -52,13 +52,39 @@ namespace Services
             user.IsDeleted = true;
             user.DeletedOn = DateTime.UtcNow;
             await this.database.SaveChangesAsync();
-            
+
             return new ServiceResponseModel(null, this.GetSuccessMsg().Deleted);
         }
 
-        public ServiceResponseModel Change(UserChangeModel model, User user)
+        public async Task<ServiceResponseModel> DeleteAccount(string userId) // PERMANENT deletion!
         {
+            User user = this.GetUser(userId);
+            if (user == null)
+                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
+
+            await this.RemoveAllUserRelated(user.Id);
+
+            this.database.Users.Remove(user);
+            await this.database.SaveChangesAsync();
+
+            return new ServiceResponseModel(null, this.GetSuccessMsg().Deleted);
+        }
+
+        public async Task<ServiceResponseModel> ResetPassword(string userId)
+        {
+            string newPassword = Guid.NewGuid().ToString().Substring(0, Global.ResetPasswordLength);
+            return await this.Update(new UserRequestModel() 
+            {
+                Id = userId,
+                Password = newPassword
+            });
+        }
+
+        public ServiceResponseModel Change(UserChangeModel model, UserDto userDto)
+        {
+            User user = this.GetUser(userDto.Id);
             ServiceResponseModel response = new ServiceResponseModel(null, null);
+
             //Changabe types
             if (ChangableType.Email.ToString().Equals(this.Capitalize(model.Key)))
             {
@@ -87,6 +113,17 @@ namespace Services
             }
 
             return response;
+        }
+
+        // ------------------ Protected ------------------
+
+        protected async Task RemoveAllUserRelated(string userId)
+        {
+            //Entries:
+            IQueryable<Entry> entries = this.database.Entries.Where(x => x.UserId == userId);
+            this.database.Entries.RemoveRange(entries);
+
+            await this.database.SaveChangesAsync();
         }
 
         // ----------------------- Private -----------------------
