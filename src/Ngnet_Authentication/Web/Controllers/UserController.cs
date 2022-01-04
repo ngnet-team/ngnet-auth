@@ -1,10 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 using ApiModels.Users;
-using Common;
 using Common.Enums;
 using Common.Json.Service;
 using Database.Models;
@@ -66,17 +64,16 @@ namespace Web.Controllers
                 return this.Unauthorized();
 
             model.Id = this.GetClaims().UserId;
-            if (model.Id == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
 
-            return await this.UpdateBase<UserRequestModel>(model);
+            this.response = await this.userService.Update(model);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response.Success);
         }
 
         [HttpPost(nameof(Change))]
-        public async Task<ActionResult> Change(UserChangeModel model)
+        public virtual async Task<ActionResult> Change(UserChangeModel model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
@@ -89,7 +86,20 @@ namespace Web.Controllers
             return await this.Update((UserRequestModel)this.response.RawData);
         }
 
-        [HttpGet(nameof(DeleteAccount))]
+        [HttpGet(nameof(Delete))] // Marked as deleted ONLY!
+        public async Task<ActionResult> Delete()
+        {
+            if (!this.IsAuthenticated || this.SeededOwner())
+                return this.Unauthorized();
+
+            this.response = await this.userService.Delete(this.GetClaims().UserId);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response.Success);
+        }
+
+        [HttpGet(nameof(DeleteAccount))] // PERMANENT deletion!
         public async Task<ActionResult> DeleteAccount()
         {
             if (!this.IsAuthenticated || this.SeededOwner())
@@ -115,7 +125,7 @@ namespace Web.Controllers
             return this.Ok(this.response.Success);
         }
 
-        // ---------------------- Abstract ---------------------- 
+        // ---------------------- Protected ---------------------- 
 
         protected UserDto GetUser(string userId = null)
         {
@@ -125,8 +135,12 @@ namespace Web.Controllers
 
         protected bool HasPermissionsToUser(UserDto userDto)
         {
+            // No existing user
             if (userDto == null)
                 return false;
+            // Personal permission is always possible
+            if (this.GetClaims().UserId == userDto.Id)
+                return true;
 
             Role userRole = this.userService.GetUserRole(userDto);
             RoleType currUserRole = this.GetClaims().RoleType;

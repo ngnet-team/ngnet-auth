@@ -33,13 +33,7 @@ namespace Web.Controllers
                 return this.Unauthorized();
 
             OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.GetClaims().UserId);
-            //Add current user's role
             response.RoleName = this.GetClaims().RoleType.ToString();
-            if (response == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
 
             return response;
         }

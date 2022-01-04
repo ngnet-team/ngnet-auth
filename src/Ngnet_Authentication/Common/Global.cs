@@ -31,7 +31,7 @@ namespace Common
 
         public const int HashBytes = 10;
 
-        public const int JwtTokenExpires = 7;
+        public const double JwtTokenExpires = 30; // Days
 
         public static bool EmailValidator(string emailAddress)
         {

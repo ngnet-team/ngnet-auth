@@ -16,6 +16,7 @@ using Mapper;
 using Services.Base;
 using Services.Interfaces;
 using ApiModels.Dtos;
+using System.Collections.Generic;
 
 namespace Services
 {
@@ -80,7 +81,7 @@ namespace Services
         public string CreateJwtToken(JwtTokenModel tokenModel)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(tokenModel.SecretKey);
+            byte[] key = Encoding.ASCII.GetBytes(tokenModel.SecretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -88,10 +89,10 @@ namespace Services
                 {
                     new Claim(ClaimTypes.NameIdentifier, tokenModel.UserId),
                     new Claim(ClaimTypes.Name, tokenModel.Username),
-                    new Claim(ClaimTypes.Role, tokenModel.RoleName)
+                    new Claim(ClaimTypes.Role, tokenModel.RoleName),
                 }),
                 Expires = DateTime.UtcNow.AddDays(Global.JwtTokenExpires),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var encryptedToken = tokenHandler.WriteToken(token);
@@ -188,17 +189,18 @@ namespace Services
 
         protected User ModifyEntity(User mappedModel, User user)
         {
+            //Changable
             user.Email = mappedModel.Email == null ? user.Email : mappedModel.Email;
             user.PasswordHash = mappedModel.PasswordHash == null ? user.PasswordHash : mappedModel.PasswordHash;
             user.Username = mappedModel.Username == null ? user.Username : mappedModel.Username;
-
+            //Updatable
             user.FirstName = mappedModel.FirstName == null ? user.FirstName : mappedModel.FirstName;
             user.LastName = mappedModel.LastName == null ? user.LastName : mappedModel.LastName;
             user.Gender = mappedModel.Gender == null ? user.Gender : mappedModel.Gender;
             user.Age = mappedModel.Age == null ? user.Age : mappedModel.Age;
-
-            user.ModifiedOn = DateTime.UtcNow;
             user.IsDeleted = mappedModel.IsDeleted == true ? mappedModel.IsDeleted : user.IsDeleted;
+            //Auto updated
+            user.ModifiedOn = DateTime.UtcNow;
             user.DeletedOn = mappedModel.IsDeleted == true ? DateTime.UtcNow : user.DeletedOn;
 
             return user;

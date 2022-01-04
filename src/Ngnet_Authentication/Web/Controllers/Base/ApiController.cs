@@ -40,10 +40,14 @@ namespace Web.Controllers.Base
             if (token == null)
                 return new ClaimModel();
 
-            var claims = new JwtSecurityTokenHandler().ReadJwtToken(token).Claims;
+            var tokenHandler = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var claims = tokenHandler.Claims;
+            bool expired = tokenHandler.ValidTo.Date < DateTime.UtcNow;
+            if (expired)
+                return new ClaimModel();
 
             RoleType roleType;
-            Enum.TryParse<RoleType>(claims.FirstOrDefault(x => x.Type == "role").Value, out roleType);
+            Enum.TryParse(claims.FirstOrDefault(x => x.Type == "role").Value, out roleType);
 
             return new ClaimModel(roleType)
             {
@@ -52,9 +56,9 @@ namespace Web.Controllers.Base
             };
         }
 
-        protected UserSeederModel[] Owners => configuration.GetSection("Owners").Get<UserSeederModel[]>();
+        protected UserSeederModel[] Owners => configuration.GetSection(RoleType.Owner.ToString()).Get<UserSeederModel[]>();
 
-        protected UserSeederModel[] Admins => configuration.GetSection("Admins").Get<UserSeederModel[]>();
+        protected UserSeederModel[] Admins => configuration.GetSection(RoleType.Admin.ToString()).Get<UserSeederModel[]>();
 
         protected ErrorMessagesModel GetErrors()
         {

@@ -1,4 +1,6 @@
-﻿namespace ApiModels.Auth
+﻿using System;
+
+namespace ApiModels.Auth
 {
     public class JwtTokenModel
     {
@@ -7,12 +9,14 @@
             this.SecretKey = secretKey;
         }
 
+        public string SecretKey { get; set; }
+
         public string UserId { get; set; }
 
         public string Username { get; set; }
 
         public string RoleName { get; set; }
 
-        public string SecretKey { get; set; }
+        public DateTime Expires { get; set; }
     }
 }

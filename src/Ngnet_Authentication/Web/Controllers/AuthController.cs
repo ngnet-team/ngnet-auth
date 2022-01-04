@@ -11,6 +11,8 @@ using Services.Email;
 using Services.Interfaces;
 using Web.Controllers.Base;
 using ApiModels.Dtos;
+using Common;
+using System;
 
 namespace Web.Controllers
 {
@@ -58,28 +60,18 @@ namespace Web.Controllers
                 return this.BadRequest(this.response.Errors);
 
             UserDto userDto = (UserDto)this.response.RawData;
-            JwtTokenModel tokenModel = new JwtTokenModel(this.configuration["ApplicationSettings:Secret"]) 
+            JwtTokenModel tokenModel = new JwtTokenModel(this.configuration["ApplicationSettings:Secret"])
             {
                 UserId = userDto.Id,
                 Username = userDto.Username,
-                RoleName = this.authService.GetUserRole(userDto)?.ToString(),
+                RoleName = this.authService.GetUserRole(userDto).Type.ToString(),
             };
-            string token = this.authService
-                .CreateJwtToken(tokenModel);
+            string token = this.authService.CreateJwtToken(tokenModel);
 
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };
         }
 
-        // ---------------------- Abstract ---------------------- 
-
-        protected async Task<ActionResult> UpdateBase<T>(T model)
-        {
-            this.response = await this.authService.Update<T>(model);
-            if (this.response.Errors != null)
-                return this.BadRequest(this.response.Errors);
-
-            return this.Ok(this.response.Success);
-        }
+        // ---------------------- Protected ---------------------- 
 
         protected bool SeededOwner()
         {
