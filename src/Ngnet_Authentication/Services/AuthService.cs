@@ -16,6 +16,7 @@ using Mapper;
 using Services.Base;
 using Services.Interfaces;
 using ApiModels.Dtos;
+using ApiModels.Users;
 
 namespace Services
 {
@@ -84,6 +85,7 @@ namespace Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Audience = tokenModel.SecretKey,
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, tokenModel.UserId),
@@ -113,7 +115,7 @@ namespace Services
 
         public async Task<ServiceResponseModel> Update<T>(T model)
         {
-            User mappedModel = MappingFactory.Mapper.Map<User>(model); // TODO: If it's password update this doesn't work because of auto mapped Password to Password Hash
+            User mappedModel = MappingFactory.Mapper.Map<User>(model);
 
             User user = this.GetUser(mappedModel.Id);
             if (user == null)

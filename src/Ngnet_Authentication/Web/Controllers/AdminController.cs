@@ -32,8 +32,8 @@ namespace Web.Controllers
         public override ActionResult<object> Profile()
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
-            
+                return this.AuthDenied();
+
             AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.Claims.UserId);
             response.RoleName = this.Claims.RoleType.ToString();
 
@@ -44,7 +44,7 @@ namespace Web.Controllers
         public ActionResult<AdminResponseModel[]> GetUsers()
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             AdminResponseModel[] users = this.adminService.GetUsers();
             if (users.Length == 0)
@@ -60,7 +60,7 @@ namespace Web.Controllers
         public ActionResult<RoleResponseModel[]> GetRoles()
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             RoleResponseModel[] roles = this.adminService.GetRoles();
             if (roles.Length == 0)
@@ -76,7 +76,7 @@ namespace Web.Controllers
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
             //Set current logged user id if the model id is null
             if (model.Id == null)
             {
@@ -97,7 +97,7 @@ namespace Web.Controllers
         public override async Task<ActionResult> Update(UserRequestModel model)
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             if (model.Id == null)
                 model.Id = this.Claims.UserId;
@@ -113,7 +113,7 @@ namespace Web.Controllers
         public override async Task<ActionResult> Change(UserChangeModel model)
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             UserDto userDto = this.GetUser(model.Id);
             // Tring to make changes on other user
@@ -134,7 +134,7 @@ namespace Web.Controllers
         public async Task<ActionResult> DeleteUser(AdminRequestModel model)
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             UserDto userDto = this.adminService.GetDeletableUser(model.Id);
             if (!this.HasPermissionsToUser(userDto))
@@ -151,7 +151,7 @@ namespace Web.Controllers
         public async Task<ActionResult> DeleteUserAccount(AdminRequestModel model)
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             UserDto userDto = this.adminService.GetDeletableUser(model.Id);
             if (!this.HasPermissionsToUser(userDto))

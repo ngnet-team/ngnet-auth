@@ -12,6 +12,7 @@ using Common.Enums;
 using Services.Seeding;
 using Services.Base;
 using Web.Infrastructure.Models;
+using Common.Json.Models;
 
 namespace Web.Controllers.Base
 {
@@ -20,6 +21,7 @@ namespace Web.Controllers.Base
     public abstract class ApiController : ControllerBase
     {
         private string token;
+        private LanguagesModel tokenError;
 
         protected readonly JsonService jsonService;
         protected readonly IConfiguration configuration;
@@ -57,28 +59,58 @@ namespace Web.Controllers.Base
             return this.jsonService.Deserialiaze<SuccessMessagesModel>(Paths.SuccessMessages);
         }
 
+        protected ActionResult AuthDenied(LanguagesModel error = null) {
+            if (error != null)
+                return this.Unauthorized(error);
+
+            
+            return this.Unauthorized(this.tokenError);
+        }
+
+        // ------------------- Private -------------------
+
         private ClaimModel GetClaims()
         {
+            //No token
             if (this.token == null)
                 return new ClaimModel();
 
             var tokenHandler = new JwtSecurityTokenHandler().ReadJwtToken(this.token);
             var claims = tokenHandler.Claims;
+            //Check secret key
+            string secretKey = claims.FirstOrDefault(x => x.Type == "aud")?.Value;
+            bool validKey = this.ReadSecretKey(secretKey);
+            if (!validKey)
+            {
+                this.tokenError = this.GetTokenErrors().InvalidSecretKey;
+                return new ClaimModel();
+            }
+            //Check if token is expired
             bool expired = tokenHandler.ValidTo.Date < DateTime.UtcNow;
             if (expired)
+            {
+                this.tokenError = this.GetTokenErrors().Expired;
                 return new ClaimModel();
-
+            }
+            //Get role from token
             RoleType roleType;
-            Enum.TryParse(claims.FirstOrDefault(x => x.Type == "role").Value, out roleType);
-
-            if (this.AppName != null)
-                Console.WriteLine("App call: " + this.AppName);
-
+            bool validRole = Enum.TryParse(claims.FirstOrDefault(x => x.Type == "role")?.Value, out roleType);
+            if (!validRole)
+            {
+                this.tokenError = this.GetTokenErrors().IvalidRole;
+                return new ClaimModel();
+            }
+            //Asign claims
             this.Claims = new ClaimModel(roleType)
             {
-                UserId = claims.FirstOrDefault(x => x.Type == "nameid").Value,
-                Username = claims.FirstOrDefault(x => x.Type == "unique_name").Value,
+                UserId = claims.FirstOrDefault(x => x.Type == "nameid")?.Value,
+                Username = claims.FirstOrDefault(x => x.Type == "unique_name")?.Value,
             };
+            if (this.Claims.UserId == null || this.Claims.Username == null)
+            {
+                this.tokenError = this.GetTokenErrors().InvalidUser;
+                return new ClaimModel();
+            }
 
             return this.Claims;
         }
@@ -101,20 +133,27 @@ namespace Web.Controllers.Base
 
             this.token = token;
 
-            string appKey = http.Request.Headers
-              .FirstOrDefault(x => x.Key == "AppKey").Value
-              .ToString();
-
-            ApplicationCall appCall = this.AppSettings.ApplicationCalls.FirstOrDefault(x => x.Key == appKey);
-            if (appCall != null)
-                this.AppName = appCall.Name;
-
             return this.token;
         }
 
         private bool ValidToken(string token)
         {
             return new JwtSecurityTokenHandler().CanReadToken(token);
+        }
+
+        private bool ReadSecretKey(string secretKey)
+        {
+            ApplicationCall appCall = this.AppSettings.ApplicationCalls.FirstOrDefault(x => x.Key == secretKey);
+            if (appCall == null)
+                return false;
+
+            this.AppName = appCall.Name;
+            return true;
+        }
+
+        private TokenErrorsModel GetTokenErrors()
+        {
+            return this.jsonService.Deserialiaze<TokenErrorsModel>(Paths.TokenErrors);
         }
     }
 }

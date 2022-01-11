@@ -1,0 +1,34 @@
+﻿{
+  "InvalidSecretKey": {
+    "EN": [
+      "The application key is invalid!"
+    ],
+    "BG": [
+      "Ключът на приложението е невалиден!"
+    ]
+  },
+  "Expired": {
+    "EN": [
+      "The authentication token is expired!"
+    ],
+    "BG": [
+      "Токена за удостоверяване е изтекъл!"
+    ]
+  },
+  "IvalidRole": {
+    "EN": [
+      "The role is invalid!"
+    ],
+    "BG": [
+      "Ролята е невалидна!"
+    ]
+  },
+  "InvalidUser": {
+    "EN": [
+      "The user is invalid!"
+    ],
+    "BG": [
+      "Потребителят е невалиден!"
+    ]
+  }
+}
