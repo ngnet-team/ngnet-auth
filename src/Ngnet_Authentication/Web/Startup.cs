@@ -26,8 +26,8 @@ namespace Web
             services
                 .AddDatabase(this.Configuration)
                 .AddDbContext<NgnetAuthDbContext>()
-                .AddAuthorization()
-                .AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
+                //.AddAuthorization()
+                //.AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
                 .AddServices(this.Configuration)
                 .AddControllers();
         }

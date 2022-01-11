@@ -10,10 +10,11 @@ using Database.Models;
 using Mapper;
 using Services.Base;
 using Services.Interfaces;
+using ApiModels.Dtos;
 
 namespace Services
 {
-    public class AdminService : UserService, IAdminService
+    public class AdminService : MemberService, IAdminService
     {
         public AdminService(NgnetAuthDbContext database, JsonService jsonService)
             : base(database, jsonService)
@@ -25,7 +26,7 @@ namespace Services
         public async Task<ServiceResponseModel> ChangeRole(AdminRequestModel model)
         {
             //Valid user check
-            User user = this.GetUserById(model.Id);
+            User user = this.GetUser(model.Id);
             if (user == null)
                 return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
             //Permissions check
@@ -56,9 +57,12 @@ namespace Services
             return users;
         }
 
-        public User GetDeletableUser(string userId)
+        public UserDto GetDeletableUser(string userId)
         {
-            return this.database.Users.FirstOrDefault(x => x.Id == userId);
+            return this.database.Users
+                .Where(x => x.Id == userId)
+                .To<UserDto>()
+                .FirstOrDefault(x => x.Id == userId);
         }
 
         public RoleResponseModel[] GetRoles(int? count = null)
@@ -97,30 +101,6 @@ namespace Services
                 .OrderByDescending(x => x.LoggedIn)
                 .ThenByDescending(x => x.LoggedOut)
                 .ToHashSet();
-        }
-
-        public async Task<ServiceResponseModel> DeleteUser(User user)
-        {
-            if (user == null)
-                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
-
-            await this.RemoveAllUserRelated(user.Id);
-
-            this.database.Users.Remove(user);
-            await this.database.SaveChangesAsync();
-
-            return new ServiceResponseModel(null, this.GetSuccessMsg().Deleted);
-        }
-
-        // ------------------ Private ------------------
-
-        private async Task RemoveAllUserRelated(string userId)
-        {
-            //Entries:
-            IQueryable<Entry> entries = this.database.Entries.Where(x => x.UserId == userId);
-            this.database.Entries.RemoveRange(entries);
-
-            await this.database.SaveChangesAsync();
         }
     }
 }

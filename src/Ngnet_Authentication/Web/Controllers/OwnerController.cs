@@ -32,14 +32,8 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.GetClaims().UserId);
-            //Add current user's role
-            response.RoleName = this.GetClaims().RoleType.ToString();
-            if (response == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
+            OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.Claims.UserId);
+            response.RoleName = this.Claims.RoleType.ToString();
 
             return response;
         }

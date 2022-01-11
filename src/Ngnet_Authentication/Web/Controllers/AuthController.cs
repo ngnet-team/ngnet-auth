@@ -7,10 +7,12 @@ using ApiModels.Auth;
 using Common.Json.Models;
 using Common.Json.Service;
 using Common.Enums;
-using Database.Models;
 using Services.Email;
 using Services.Interfaces;
 using Web.Controllers.Base;
+using ApiModels.Dtos;
+using Common;
+using System;
 
 namespace Web.Controllers
 {
@@ -57,33 +59,23 @@ namespace Web.Controllers
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
-            User user = (User)this.response.RawData;
-            JwtTokenModel tokenModel = new JwtTokenModel(this.configuration["ApplicationSettings:Secret"]) 
+            UserDto userDto = (UserDto)this.response.RawData;
+            JwtTokenModel tokenModel = new JwtTokenModel(this.configuration["ApplicationSettings:Secret"])
             {
-                UserId = user.Id,
-                Username = user.Username,
-                RoleName = this.authService.GetUserRole(user)?.ToString(),
+                UserId = userDto.Id,
+                Username = userDto.Username,
+                RoleName = this.authService.GetUserRole(userDto).Type.ToString(),
             };
-            string token = this.authService
-                .CreateJwtToken(tokenModel);
+            string token = this.authService.CreateJwtToken(tokenModel);
 
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };
         }
 
-        // ---------------------- Abstract ---------------------- 
-
-        protected async Task<ActionResult> UpdateBase<T>(T model)
-        {
-            this.response = await this.authService.Update<T>(model);
-            if (this.response.Errors != null)
-                return this.BadRequest(this.response.Errors);
-
-            return this.Ok(this.response.Success);
-        }
+        // ---------------------- Protected ---------------------- 
 
         protected bool SeededOwner()
         {
-            string username = this.GetClaims().Username;
+            string username = this.Claims.Username;
             if (this.Owners.Any(x => x.Username == username))
                 return true;
 

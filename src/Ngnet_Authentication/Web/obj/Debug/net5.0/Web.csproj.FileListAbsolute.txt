@@ -1,9 +1,3 @@
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.csproj.AssemblyReference.cache
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.GeneratedMSBuildEditorConfig.editorconfig
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.AssemblyInfoInputs.cache
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.AssemblyInfo.cs
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.csproj.CoreCompileInputs.cache
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.MvcApplicationPartsAssemblyInfo.cache
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\appsettings.Development.json
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\appsettings.json
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Web.StaticWebAssets.xml
@@ -99,6 +93,13 @@ C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Common
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Services.pdb
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Database.pdb
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\bin\Debug\net5.0\Mapper.pdb
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.csproj.AssemblyReference.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.AssemblyInfoInputs.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.AssemblyInfo.cs
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.csproj.CoreCompileInputs.cache
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.MvcApplicationPartsAssemblyInfo.cs
+C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\Web.MvcApplicationPartsAssemblyInfo.cache
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\staticwebassets\Web.StaticWebAssets.Manifest.cache
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\staticwebassets\Web.StaticWebAssets.xml
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Web\obj\Debug\net5.0\scopedcss\bundle\Web.styles.css

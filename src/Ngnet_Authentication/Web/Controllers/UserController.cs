@@ -1,15 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 using ApiModels.Users;
-using Common;
 using Common.Enums;
 using Common.Json.Service;
 using Database.Models;
 using Services.Email;
 using Services.Interfaces;
+using ApiModels.Dtos;
 
 namespace Web.Controllers
 {
@@ -35,7 +34,7 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            UserResponseModel response = this.userService.Profile<UserResponseModel>(this.GetClaims().UserId);
+            UserResponseModel response = this.userService.Profile<UserResponseModel>(this.Claims.UserId);
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -51,7 +50,7 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            this.response = await this.userService.Logout(this.GetClaims().UserId);
+            this.response = await this.userService.Logout(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -59,42 +58,54 @@ namespace Web.Controllers
         }
 
         [HttpPost(nameof(Update))]
-        public async Task<ActionResult> Update(UserRequestModel model)
+        public virtual async Task<ActionResult> Update(UserRequestModel model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            model.Id = this.GetClaims().UserId;
-            if (model.Id == null)
-            {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
-            }
+            model.Id = this.Claims.UserId;
 
-            return await this.UpdateBase<UserRequestModel>(model);
+            this.response = await this.userService.Update(model);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response.Success);
         }
 
         [HttpPost(nameof(Change))]
-        public async Task<ActionResult> Change(UserChangeModel model)
+        public virtual async Task<ActionResult> Change(UserChangeModel model)
         {
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            User user = this.GetUser();
-            this.response = this.userService.Change(model, user);
+            UserDto userDto = this.GetUser();
+            this.response = this.userService.Change(model, userDto);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
             return await this.Update((UserRequestModel)this.response.RawData);
         }
 
-        [HttpGet(nameof(DeleteAccount))]
+        [HttpGet(nameof(Delete))] // Marked as deleted ONLY!
+        public async Task<ActionResult> Delete()
+        {
+            if (!this.IsAuthenticated || this.SeededOwner())
+                return this.Unauthorized();
+
+            this.response = await this.userService.Delete(this.Claims.UserId);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response.Success);
+        }
+
+        [HttpGet(nameof(DeleteAccount))] // PERMANENT deletion!
         public async Task<ActionResult> DeleteAccount()
         {
             if (!this.IsAuthenticated || this.SeededOwner())
                 return this.Unauthorized();
 
-            this.response = await this.userService.DeleteAccount(this.GetClaims().UserId);
+            this.response = await this.userService.DeleteAccount(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -107,41 +118,32 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            User user = this.GetUser();
-            if (user == null)
-            {
-                this.errors = GetErrors().UserNotFound;
-                return this.BadRequest(errors);
-            }
+            this.response = await userService.ResetPassword(this.Claims.UserId);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
 
-            string newPassword = Guid.NewGuid().ToString().Substring(0, Global.ResetPasswordLength);
-            var result = await this.Update(new UserRequestModel()
-            {
-                Password = newPassword,
-            });
-
-            return this.Ok(new
-            {
-                NewPassword = newPassword,
-                Msg = this.GetSuccessMsg().Updated
-            });
+            return this.Ok(this.response.Success);
         }
 
-        // ---------------------- Abstract ---------------------- 
+        // ---------------------- Protected ---------------------- 
 
-        protected User GetUser(string userId = null)
+        protected UserDto GetUser(string userId = null)
         {
             return this.userService.GetUserById(userId) ??
-                   this.userService.GetUserById(this.GetClaims().UserId);
+                   this.userService.GetUserById(this.Claims.UserId);
         }
 
-        protected bool HasPermissionsToUser(User user)
+        protected bool HasPermissionsToUser(UserDto userDto)
         {
-            if (user == null)
+            // No existing user
+            if (userDto == null)
                 return false;
+            // Personal permission is always possible
+            if (this.Claims.UserId == userDto.Id)
+                return true;
 
-            Role userRole = this.userService.GetUserRole(user);
-            RoleType currUserRole = this.GetClaims().RoleType;
+            Role userRole = this.userService.GetUserRole(userDto);
+            RoleType currUserRole = this.Claims.RoleType;
             //Higher than the wanted user
             return currUserRole < userRole.Type;
         }

@@ -15,6 +15,7 @@ using Database.Models;
 using Mapper;
 using Services.Base;
 using Services.Interfaces;
+using ApiModels.Dtos;
 
 namespace Services
 {
@@ -31,18 +32,18 @@ namespace Services
         {
             //Equal passwords check
             if (model.Password != model.RepeatPassword)
-                return new ServiceResponseModel(GetErrors().NotEqualPasswords, null);
+                return new ServiceResponseModel(this.GetErrors().NotEqualPasswords, null);
             //Username exists
-            User user = this.GetUserByUsername(model.Username);
+            User user = this.GetUser(null, model.Username);
             if (user != null)
-                return new ServiceResponseModel(GetErrors().ExistingUserName, null);
+                return new ServiceResponseModel(this.GetErrors().ExistingUserName, null);
 
             //TODO: Email validator
 
             //Get role User
             Role role = this.GetRoleByEnum(RoleType.User);
             if (role == null)
-                return new ServiceResponseModel(GetErrors().InvalidRole, null);
+                return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
 
             user = MappingFactory.Mapper.Map<User>(model);
             //Should be auto mapped
@@ -58,7 +59,7 @@ namespace Services
         public async Task<ServiceResponseModel> Login(LoginRequestModel model)
         {
             //Username does Not exist
-            User user = this.GetUserByUsername(model.Username);
+            User user = this.GetUser(null, model.Username);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().InvalidUsername, null);
             //Invalid password
@@ -72,13 +73,14 @@ namespace Services
                 LoggedIn = DateTime.UtcNow
             });
 
-            return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedIn, user);
+            UserDto userDto = MappingFactory.Mapper.Map<UserDto>(user);
+            return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedIn, userDto);
         }
 
         public string CreateJwtToken(JwtTokenModel tokenModel)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(tokenModel.SecretKey);
+            byte[] key = Encoding.ASCII.GetBytes(tokenModel.SecretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -86,10 +88,10 @@ namespace Services
                 {
                     new Claim(ClaimTypes.NameIdentifier, tokenModel.UserId),
                     new Claim(ClaimTypes.Name, tokenModel.Username),
-                    new Claim(ClaimTypes.Role, tokenModel.RoleName)
+                    new Claim(ClaimTypes.Role, tokenModel.RoleName),
                 }),
                 Expires = DateTime.UtcNow.AddDays(Global.JwtTokenExpires),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var encryptedToken = tokenHandler.WriteToken(token);
@@ -99,7 +101,7 @@ namespace Services
 
         public async Task<ServiceResponseModel> AddEntry(Entry exp)
         {
-            User user = this.GetUserById(exp.UserId);
+            User user = this.GetUser(exp.UserId);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
@@ -112,10 +114,10 @@ namespace Services
         public async Task<ServiceResponseModel> Update<T>(T model)
         {
             User mappedModel = MappingFactory.Mapper.Map<User>(model); // TODO: If it's password update this doesn't work because of auto mapped Password to Password Hash
-            
-            User user = this.GetUserById(mappedModel.Id);
+
+            User user = this.GetUser(mappedModel.Id);
             if (user == null)
-                return new ServiceResponseModel(GetErrors().UserNotFound, null);
+                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
 
             user = this.ModifyEntity(mappedModel, user);
 
@@ -124,25 +126,34 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
-        public User GetUserById(string id)
+        public UserDto GetUserById(string id)
         {
             return this.database.Users
                 .Where(x => x.Id == id)
                 .Where(x => !x.IsDeleted)
+                .To<UserDto>()
                 .FirstOrDefault();
         }
 
-        public User GetUserByUsername(string username)
+        public UserDto GetUserByUsername(string username)
         {
             return this.database.Users
                 .Where(x => x.Username == username)
                 .Where(x => !x.IsDeleted)
+                .To<UserDto>()
                 .FirstOrDefault();
         }
 
-        public Role GetUserRole(User user)
+        public Role GetUserRole(UserDto userDto)
         {
-            return this.database.Roles.FirstOrDefault(x => x.Id == user.RoleId);
+            User user = this.database.Users
+                .FirstOrDefault(x => x.Id == userDto.Id);
+
+            if (user == null)
+                return null;
+
+            return this.database.Roles
+                .FirstOrDefault(x => x.Id == user.RoleId);
         }
 
         public Role GetRoleByString(string roleName)
@@ -162,19 +173,33 @@ namespace Services
 
         // ------------------- Protected ------------------- 
 
+        protected User GetUser(string id, string username = null)
+        {
+            var users = this.database.Users
+                .Where(x => !x.IsDeleted);
+
+            if (id != null)
+                users = users.Where(x => x.Id == id);
+            else
+                users = users.Where(x => x.Username == username);
+
+            return users.FirstOrDefault();
+        }
+
         protected User ModifyEntity(User mappedModel, User user)
         {
+            //Changable
             user.Email = mappedModel.Email == null ? user.Email : mappedModel.Email;
             user.PasswordHash = mappedModel.PasswordHash == null ? user.PasswordHash : mappedModel.PasswordHash;
             user.Username = mappedModel.Username == null ? user.Username : mappedModel.Username;
-
+            //Updatable
             user.FirstName = mappedModel.FirstName == null ? user.FirstName : mappedModel.FirstName;
             user.LastName = mappedModel.LastName == null ? user.LastName : mappedModel.LastName;
             user.Gender = mappedModel.Gender == null ? user.Gender : mappedModel.Gender;
             user.Age = mappedModel.Age == null ? user.Age : mappedModel.Age;
-
-            user.ModifiedOn = DateTime.UtcNow;
             user.IsDeleted = mappedModel.IsDeleted == true ? mappedModel.IsDeleted : user.IsDeleted;
+            //Auto updated
+            user.ModifiedOn = DateTime.UtcNow;
             user.DeletedOn = mappedModel.IsDeleted == true ? DateTime.UtcNow : user.DeletedOn;
 
             return user;

@@ -4,7 +4,8 @@
     {
         Owner = 1,
         Admin = 2,
-        User = 3,
-        Guest = 4,
+        Member = 3,
+        User = 4,
+        Guest = 5,
     }
 }

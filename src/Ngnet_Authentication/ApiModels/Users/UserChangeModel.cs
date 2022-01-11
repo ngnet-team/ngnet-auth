@@ -4,6 +4,8 @@ namespace ApiModels.Users
 {
     public class UserChangeModel : ChangeModel
     {
+        public string Id { get; set; }
+
         public string Key { get; set; }
     }
 }

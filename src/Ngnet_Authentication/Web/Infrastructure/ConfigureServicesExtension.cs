@@ -17,12 +17,12 @@ namespace Web.Infrastructure
 {
     public static class ConfigureServicesExtension
     {
-        public static ApplicationSettingsModel GetApplicationSettings(this IServiceCollection services, IConfiguration configuration)
-        {
-            var applicationSettings = configuration.GetSection("ApplicationSettings");
-            services.Configure<ApplicationSettingsModel>(applicationSettings);
-            return applicationSettings.Get<ApplicationSettingsModel>();
-        }
+        //public static ApplicationSettingsModel GetApplicationSettings(this IServiceCollection services, IConfiguration configuration)
+        //{
+        //    var applicationSettings = configuration.GetSection("ApplicationSettings");
+        //    services.Configure<ApplicationSettingsModel>(applicationSettings);
+        //    return applicationSettings.Get<ApplicationSettingsModel>();
+        //}
 
         public static IServiceCollection AddAutoMapper(this IServiceCollection services)
         {
@@ -70,7 +70,7 @@ namespace Web.Infrastructure
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
-                        ValidateAudience = false
+                        ValidateAudience = false,
                     };
                 });
 
@@ -85,6 +85,7 @@ namespace Web.Infrastructure
                 .AddSingleton<IEmailSenderService, EmailSenderService>(x => new EmailSenderService(configuration))
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IUserService, UserService>()
+                .AddTransient<IMemberService, MemberService>()
                 .AddTransient<IAdminService, AdminService>()
                 .AddTransient<IOwnerService, OwnerService>();
         }
