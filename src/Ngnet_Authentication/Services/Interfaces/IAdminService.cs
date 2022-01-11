@@ -7,7 +7,7 @@ using ApiModels.Dtos;
 
 namespace Services.Interfaces
 {
-    public interface IAdminService : IUserService
+    public interface IAdminService : IMemberService
     {
         public Task<ServiceResponseModel> ChangeRole(AdminRequestModel model);
 

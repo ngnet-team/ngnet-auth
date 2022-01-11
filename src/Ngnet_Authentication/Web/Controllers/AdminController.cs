@@ -12,7 +12,7 @@ using ApiModels.Dtos;
 
 namespace Web.Controllers
 {
-    public class AdminController : UserController
+    public class AdminController : MemberController
     {
         private readonly IAdminService adminService;
 
@@ -34,8 +34,8 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
             
-            AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.GetClaims().UserId);
-            response.RoleName = this.GetClaims().RoleType.ToString();
+            AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.Claims.UserId);
+            response.RoleName = this.Claims.RoleType.ToString();
 
             return response;
         }
@@ -83,7 +83,7 @@ namespace Web.Controllers
                 if (SeededOwner())
                     return this.BadRequest(this.GetErrors().NoPermissions);
 
-                model.Id = this.GetClaims().UserId;
+                model.Id = this.Claims.UserId;
             }
 
             this.response = await this.adminService.ChangeRole(model);
@@ -100,7 +100,7 @@ namespace Web.Controllers
                 return this.Unauthorized();
 
             if (model.Id == null)
-                model.Id = this.GetClaims().UserId;
+                model.Id = this.Claims.UserId;
 
             this.response = await this.adminService.Update(model);
             if (this.response.Errors != null)

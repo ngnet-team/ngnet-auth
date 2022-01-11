@@ -16,7 +16,6 @@ using Mapper;
 using Services.Base;
 using Services.Interfaces;
 using ApiModels.Dtos;
-using System.Collections.Generic;
 
 namespace Services
 {
@@ -33,18 +32,18 @@ namespace Services
         {
             //Equal passwords check
             if (model.Password != model.RepeatPassword)
-                return new ServiceResponseModel(GetErrors().NotEqualPasswords, null);
+                return new ServiceResponseModel(this.GetErrors().NotEqualPasswords, null);
             //Username exists
             User user = this.GetUser(null, model.Username);
             if (user != null)
-                return new ServiceResponseModel(GetErrors().ExistingUserName, null);
+                return new ServiceResponseModel(this.GetErrors().ExistingUserName, null);
 
             //TODO: Email validator
 
             //Get role User
             Role role = this.GetRoleByEnum(RoleType.User);
             if (role == null)
-                return new ServiceResponseModel(GetErrors().InvalidRole, null);
+                return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
 
             user = MappingFactory.Mapper.Map<User>(model);
             //Should be auto mapped
@@ -118,7 +117,7 @@ namespace Services
 
             User user = this.GetUser(mappedModel.Id);
             if (user == null)
-                return new ServiceResponseModel(GetErrors().UserNotFound, null);
+                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
 
             user = this.ModifyEntity(mappedModel, user);
 

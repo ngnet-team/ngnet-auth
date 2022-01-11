@@ -34,7 +34,7 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            UserResponseModel response = this.userService.Profile<UserResponseModel>(this.GetClaims().UserId);
+            UserResponseModel response = this.userService.Profile<UserResponseModel>(this.Claims.UserId);
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -50,7 +50,7 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            this.response = await this.userService.Logout(this.GetClaims().UserId);
+            this.response = await this.userService.Logout(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -63,7 +63,7 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            model.Id = this.GetClaims().UserId;
+            model.Id = this.Claims.UserId;
 
             this.response = await this.userService.Update(model);
             if (this.response.Errors != null)
@@ -92,7 +92,7 @@ namespace Web.Controllers
             if (!this.IsAuthenticated || this.SeededOwner())
                 return this.Unauthorized();
 
-            this.response = await this.userService.Delete(this.GetClaims().UserId);
+            this.response = await this.userService.Delete(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -105,7 +105,7 @@ namespace Web.Controllers
             if (!this.IsAuthenticated || this.SeededOwner())
                 return this.Unauthorized();
 
-            this.response = await this.userService.DeleteAccount(this.GetClaims().UserId);
+            this.response = await this.userService.DeleteAccount(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -118,7 +118,7 @@ namespace Web.Controllers
             if (!this.IsAuthorized)
                 return this.Unauthorized();
 
-            this.response = await userService.ResetPassword(this.GetClaims().UserId);
+            this.response = await userService.ResetPassword(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -130,7 +130,7 @@ namespace Web.Controllers
         protected UserDto GetUser(string userId = null)
         {
             return this.userService.GetUserById(userId) ??
-                   this.userService.GetUserById(this.GetClaims().UserId);
+                   this.userService.GetUserById(this.Claims.UserId);
         }
 
         protected bool HasPermissionsToUser(UserDto userDto)
@@ -139,11 +139,11 @@ namespace Web.Controllers
             if (userDto == null)
                 return false;
             // Personal permission is always possible
-            if (this.GetClaims().UserId == userDto.Id)
+            if (this.Claims.UserId == userDto.Id)
                 return true;
 
             Role userRole = this.userService.GetUserRole(userDto);
-            RoleType currUserRole = this.GetClaims().RoleType;
+            RoleType currUserRole = this.Claims.RoleType;
             //Higher than the wanted user
             return currUserRole < userRole.Type;
         }

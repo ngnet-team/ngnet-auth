@@ -14,7 +14,7 @@ using ApiModels.Dtos;
 
 namespace Services
 {
-    public class AdminService : UserService, IAdminService
+    public class AdminService : MemberService, IAdminService
     {
         public AdminService(NgnetAuthDbContext database, JsonService jsonService)
             : base(database, jsonService)

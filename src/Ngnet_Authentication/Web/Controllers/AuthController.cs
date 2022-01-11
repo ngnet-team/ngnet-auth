@@ -75,7 +75,7 @@ namespace Web.Controllers
 
         protected bool SeededOwner()
         {
-            string username = this.GetClaims().Username;
+            string username = this.Claims.Username;
             if (this.Owners.Any(x => x.Username == username))
                 return true;
 
