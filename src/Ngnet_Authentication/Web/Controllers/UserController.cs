@@ -28,9 +28,12 @@ namespace Web.Controllers
 
         protected override RoleType RoleRequired { get; } = RoleType.User;
 
-        [HttpGet]
+        [HttpGet(nameof(GetRole))]
         public override ActionResult<string> GetRole()
         {
+            if (!this.IsAuthorized)
+                return this.AuthDenied();
+
             return this.userService.GetUserRole(this.GetUser()).Type.ToString();
         }
 
