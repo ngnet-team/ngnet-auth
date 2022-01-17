@@ -362,3 +362,12 @@ appsettings.Production.json
 #migrations-folder
 src/Ngnet_Authentication/Database/Migrations/
 src/Ngnet_Authentication/Database/SqLite/
+
+#other folders
+src/Ngnet_Authentication/.vs
+
+#other files
+*.dll
+*.suo
+*.pdb
+*.cache

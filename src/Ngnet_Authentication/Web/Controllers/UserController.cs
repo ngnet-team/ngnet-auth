@@ -28,17 +28,23 @@ namespace Web.Controllers
 
         protected override RoleType RoleRequired { get; } = RoleType.User;
 
+        [HttpGet]
+        public override ActionResult<string> GetRole()
+        {
+            return this.userService.GetUserRole(this.GetUser()).Type.ToString();
+        }
+
         [HttpGet(nameof(Profile))]
         public virtual ActionResult<object> Profile()
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             UserResponseModel response = this.userService.Profile<UserResponseModel>(this.Claims.UserId);
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
+                return this.AuthDenied(this.errors);
             }
 
             return response;
@@ -48,7 +54,7 @@ namespace Web.Controllers
         public async Task<ActionResult> Logout()
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             this.response = await this.userService.Logout(this.Claims.UserId);
             if (this.response.Errors != null)
@@ -61,7 +67,7 @@ namespace Web.Controllers
         public virtual async Task<ActionResult> Update(UserRequestModel model)
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             model.Id = this.Claims.UserId;
 
@@ -76,7 +82,7 @@ namespace Web.Controllers
         public virtual async Task<ActionResult> Change(UserChangeModel model)
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             UserDto userDto = this.GetUser();
             this.response = this.userService.Change(model, userDto);
@@ -90,7 +96,7 @@ namespace Web.Controllers
         public async Task<ActionResult> Delete()
         {
             if (!this.IsAuthenticated || this.SeededOwner())
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             this.response = await this.userService.Delete(this.Claims.UserId);
             if (this.response.Errors != null)
@@ -103,7 +109,7 @@ namespace Web.Controllers
         public async Task<ActionResult> DeleteAccount()
         {
             if (!this.IsAuthenticated || this.SeededOwner())
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             this.response = await this.userService.DeleteAccount(this.Claims.UserId);
             if (this.response.Errors != null)
@@ -112,17 +118,17 @@ namespace Web.Controllers
             return this.Ok(this.response.Success);
         }
 
-        [HttpPost(nameof(ResetPassword))]
+        [HttpGet(nameof(ResetPassword))]
         public async Task<ActionResult> ResetPassword()
         {
             if (!this.IsAuthorized)
-                return this.Unauthorized();
+                return this.AuthDenied();
 
             this.response = await userService.ResetPassword(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
-            return this.Ok(this.response.Success);
+            return this.Ok(this.response); //TODO: Currently sending the new passowrd as a response but should be changed via Email only
         }
 
         // ---------------------- Protected ---------------------- 

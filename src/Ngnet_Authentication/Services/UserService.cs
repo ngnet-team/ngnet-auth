@@ -72,12 +72,19 @@ namespace Services
 
         public async Task<ServiceResponseModel> ResetPassword(string userId)
         {
-            string newPassword = Guid.NewGuid().ToString().Substring(0, Global.ResetPasswordLength);
-            return await this.Update(new UserRequestModel() 
+            string newPassword = Global.CreateRandom;
+
+            string newPasswordHash = Hash.CreatePassword(newPassword);
+            this.response = await this.Update(new UserRequestModel() 
             {
                 Id = userId,
-                Password = newPassword
+                PasswordHash = newPasswordHash
             });
+
+            if (this.response.Errors == null)
+                this.response.RawData = newPassword;
+
+            return this.response;
         }
 
         public ServiceResponseModel Change(UserChangeModel model, UserDto userDto)
@@ -105,7 +112,7 @@ namespace Services
                 if (!this.ValidPassword(model, user))
                     response.Errors = this.GetErrors().InvalidPassword;
                 else
-                    response.RawData = new UserRequestModel() { Password = model.New };
+                    response.RawData = new UserRequestModel() { PasswordHash = Hash.CreatePassword(model.New) };
             }
             else
             {

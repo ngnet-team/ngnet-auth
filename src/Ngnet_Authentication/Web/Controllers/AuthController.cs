@@ -11,8 +11,6 @@ using Services.Email;
 using Services.Interfaces;
 using Web.Controllers.Base;
 using ApiModels.Dtos;
-using Common;
-using System;
 
 namespace Web.Controllers
 {
@@ -34,6 +32,12 @@ namespace Web.Controllers
         }
 
         protected override RoleType RoleRequired { get; } = RoleType.Guest;
+
+        [HttpGet]
+        public virtual ActionResult<string> GetRole()
+        {
+            return RoleType.Guest.ToString();
+        }
 
         [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
@@ -60,7 +64,7 @@ namespace Web.Controllers
                 return this.BadRequest(this.response.Errors);
 
             UserDto userDto = (UserDto)this.response.RawData;
-            JwtTokenModel tokenModel = new JwtTokenModel(this.configuration["ApplicationSettings:Secret"])
+            JwtTokenModel tokenModel = new JwtTokenModel(this.AppSettings.ApplicationCalls.FirstOrDefault().Key)
             {
                 UserId = userDto.Id,
                 Username = userDto.Username,

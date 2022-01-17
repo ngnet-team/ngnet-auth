@@ -27,10 +27,8 @@ namespace ApiModels.Auth
         [MinLength(Global.PasswordMinLength), MaxLength(Global.PasswordMaxLength)]
         public string RepeatPassword { get; set; }
 
-        [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
         public string FirstName { get; set; }
 
-        [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
         public string LastName { get; set; }
 
         [Range(Global.AgeMin, Global.AgeMax)]

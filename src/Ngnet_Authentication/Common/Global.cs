@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Common
 {
     public static class Global
     {
         private const string EmailPattern = 
-            @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; //needs to be upgraded, copied from: regexr.com/3e48o
+            @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; //TODO: needs to be upgraded, copied from: regexr.com/3e48o
 
         public const int EmailMinLength = 8;
 
@@ -27,11 +28,11 @@ namespace Common
     
         public const int AgeMax = 120;
 
-        public const int ResetPasswordLength = 7;
-
         public const int HashBytes = 10;
 
         public const double JwtTokenExpires = 30; // Days
+
+        public static string CreateRandom => Guid.NewGuid().ToString().Substring(0, PasswordMinLength);
 
         public static bool EmailValidator(string emailAddress)
         {

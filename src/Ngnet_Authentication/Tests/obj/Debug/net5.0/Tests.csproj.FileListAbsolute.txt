@@ -287,4 +287,3 @@ C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Test
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\ref\Tests.dll
 C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\obj\Debug\net5.0\Tests.genruntimeconfig.cache
-C:\Dimitar\local\ngnet-auth\src\Ngnet_Authentication\Tests\bin\Debug\net5.0\Web.StaticWebAssets.xml
