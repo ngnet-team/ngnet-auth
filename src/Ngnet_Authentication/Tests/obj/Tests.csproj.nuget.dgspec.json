@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\Tests.csproj": {}
+    "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\Tests.csproj": {}
   },
   "projects": {
-    "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
+    "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj",
+        "projectUniqueName": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj",
         "projectName": "ApiModels",
-        "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj",
-        "packagesPath": "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\obj\\",
+        "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj",
+        "packagesPath": "C:\\Users\\ABZQNZZ\\.nuget\\packages\\",
+        "outputPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ABWJ4ZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ABZQNZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -32,8 +32,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj"
               }
             }
           }
@@ -66,20 +66,20 @@
         }
       }
     },
-    "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
+    "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj",
+        "projectUniqueName": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj",
         "projectName": "Common",
-        "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj",
-        "packagesPath": "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\obj\\",
+        "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj",
+        "packagesPath": "C:\\Users\\ABZQNZZ\\.nuget\\packages\\",
+        "outputPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ABWJ4ZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ABZQNZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -130,20 +130,20 @@
         }
       }
     },
-    "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
+    "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj",
+        "projectUniqueName": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj",
         "projectName": "Database",
-        "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj",
-        "packagesPath": "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\obj\\",
+        "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj",
+        "packagesPath": "C:\\Users\\ABZQNZZ\\.nuget\\packages\\",
+        "outputPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ABWJ4ZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ABZQNZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -158,8 +158,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj"
               }
             }
           }
@@ -220,20 +220,20 @@
         }
       }
     },
-    "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj": {
+    "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj",
+        "projectUniqueName": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj",
         "projectName": "Mapper",
-        "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj",
-        "packagesPath": "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\obj\\",
+        "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj",
+        "packagesPath": "C:\\Users\\ABZQNZZ\\.nuget\\packages\\",
+        "outputPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ABWJ4ZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ABZQNZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -248,8 +248,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj"
               }
             }
           }
@@ -292,20 +292,20 @@
         }
       }
     },
-    "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj": {
+    "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj",
+        "projectUniqueName": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj",
         "projectName": "Services",
-        "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj",
-        "packagesPath": "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\obj\\",
+        "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj",
+        "packagesPath": "C:\\Users\\ABZQNZZ\\.nuget\\packages\\",
+        "outputPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ABWJ4ZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ABZQNZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -320,14 +320,14 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj"
               }
             }
           }
@@ -366,20 +366,20 @@
         }
       }
     },
-    "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\Tests.csproj": {
+    "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\Tests.csproj",
+        "projectUniqueName": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\Tests.csproj",
         "projectName": "Tests",
-        "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\Tests.csproj",
-        "packagesPath": "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\obj\\",
+        "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\Tests.csproj",
+        "packagesPath": "C:\\Users\\ABZQNZZ\\.nuget\\packages\\",
+        "outputPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Tests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ABWJ4ZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ABZQNZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -394,23 +394,23 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Mapper\\Mapper.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj"
               }
             }
           }
@@ -473,20 +473,20 @@
         }
       }
     },
-    "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj": {
+    "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj",
+        "projectUniqueName": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj",
         "projectName": "Web",
-        "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj",
-        "packagesPath": "C:\\Users\\ABWJ4ZZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\obj\\",
+        "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\Web.csproj",
+        "packagesPath": "C:\\Users\\ABZQNZZ\\.nuget\\packages\\",
+        "outputPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ABWJ4ZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ABZQNZZ\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -501,14 +501,14 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj"
               },
-              "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj": {
-                "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj"
+              "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj": {
+                "projectPath": "C:\\Velev\\ngnet\\ngnet-auth\\src\\Ngnet_Authentication\\Services\\Services.csproj"
               }
             }
           }
