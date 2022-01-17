@@ -2655,6 +2655,7 @@
       "xunit.runner.visualstudio/2.4.3": {},
       "ApiModels/1.0.0": {
         "dependencies": {
+          "Common": "1.0.0",
           "Mapper": "1.0.0"
         },
         "runtime": {
@@ -2695,6 +2696,7 @@
       "Services/1.0.0": {
         "dependencies": {
           "ApiModels": "1.0.0",
+          "Common": "1.0.0",
           "Database": "1.0.0",
           "Mapper": "1.0.0",
           "SendGrid": "9.24.4"

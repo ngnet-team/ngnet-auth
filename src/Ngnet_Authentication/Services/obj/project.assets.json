@@ -6718,6 +6718,7 @@
   "projectFileDependencyGroups": {
     "net5.0": [
       "ApiModels >= 1.0.0",
+      "Common >= 1.0.0",
       "Database >= 1.0.0",
       "Mapper >= 1.0.0",
       "SendGrid >= 9.24.4"
@@ -6757,6 +6758,9 @@
           "projectReferences": {
             "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj": {
               "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\ApiModels\\ApiModels.csproj"
+            },
+            "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj": {
+              "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Common\\Common.csproj"
             },
             "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj": {
               "projectPath": "C:\\Dimitar\\local\\ngnet-auth\\src\\Ngnet_Authentication\\Database\\Database.csproj"

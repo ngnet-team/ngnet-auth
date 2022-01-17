@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v5.0": {
       "ApiModels/1.0.0": {
         "dependencies": {
+          "Common": "1.0.0",
           "Mapper": "1.0.0"
         },
         "runtime": {

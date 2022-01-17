@@ -364,7 +364,7 @@ src/Ngnet_Authentication/Database/Migrations/
 src/Ngnet_Authentication/Database/SqLite/
 
 #other folders
-src/Ngnet_Authentication/.vs
+.vs
 
 #other files
 *.dll
