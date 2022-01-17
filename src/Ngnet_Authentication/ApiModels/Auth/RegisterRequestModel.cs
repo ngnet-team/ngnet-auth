@@ -31,6 +31,8 @@ namespace ApiModels.Auth
 
         public string LastName { get; set; }
 
+        public string Gender { get; set; }
+
         [Range(Global.AgeMin, Global.AgeMax)]
         public int? Age { get; set; }
 

@@ -64,7 +64,7 @@ namespace Web.Controllers
         }
 
         [HttpPost(nameof(Update))]
-        public virtual async Task<ActionResult> Update(UserRequestModel model)
+        public virtual async Task<ActionResult> Update(UpdateRequestModel model)
         {
             if (!this.IsAuthorized)
                 return this.AuthDenied();
@@ -89,7 +89,7 @@ namespace Web.Controllers
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
-            return await this.Update((UserRequestModel)this.response.RawData);
+            return await this.Update((UpdateRequestModel)this.response.RawData);
         }
 
         [HttpGet(nameof(Delete))] // Marked as deleted ONLY!
