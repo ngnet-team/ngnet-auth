@@ -25,6 +25,11 @@ namespace Services.Seeding.Seeder
         {
             this.database = database;
 
+            if (this.owners == null)
+            {
+                return;
+            }
+
             foreach (var owner in this.owners)
             {
                 await this.SeedUser(owner, RoleType.Owner);
