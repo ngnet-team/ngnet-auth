@@ -33,6 +33,12 @@ namespace Web.Controllers
 
         protected override RoleType RoleRequired { get; } = RoleType.Guest;
 
+        [HttpGet]
+        public virtual ActionResult<string> GetRole()
+        {
+            return RoleType.Guest.ToString();
+        }
+
         [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {

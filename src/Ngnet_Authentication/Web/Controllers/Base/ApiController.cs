@@ -100,7 +100,7 @@ namespace Web.Controllers.Base
                 this.tokenError = this.GetTokenErrors().IvalidRole;
                 return new ClaimModel();
             }
-            //Asign claims
+            //Assign claims
             this.Claims = new ClaimModel(roleType)
             {
                 UserId = claims.FirstOrDefault(x => x.Type == "nameid")?.Value,

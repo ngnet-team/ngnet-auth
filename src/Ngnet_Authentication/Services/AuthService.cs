@@ -16,7 +16,6 @@ using Mapper;
 using Services.Base;
 using Services.Interfaces;
 using ApiModels.Dtos;
-using ApiModels.Users;
 
 namespace Services
 {
@@ -31,22 +30,24 @@ namespace Services
 
         public async Task<ServiceResponseModel> Register(RegisterRequestModel model)
         {
-            //Equal passwords check
-            if (model.Password != model.RepeatPassword)
+            if (!this.ValidPassword(model))
                 return new ServiceResponseModel(this.GetErrors().NotEqualPasswords, null);
-            //Username exists
-            User user = this.GetUser(null, model.Username);
-            if (user != null)
+
+            if (!this.ValidNames(model))
+                return new ServiceResponseModel(this.GetErrors().InvalidName, null);
+
+            if (!this.ValidUsername(model))
                 return new ServiceResponseModel(this.GetErrors().ExistingUserName, null);
 
-            //TODO: Email validator
+            if (!this.ValidEmail(model))
+                return new ServiceResponseModel(this.GetErrors().InvalidEmail, null);
 
             //Get role User
             Role role = this.GetRoleByEnum(RoleType.User);
             if (role == null)
                 return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
 
-            user = MappingFactory.Mapper.Map<User>(model);
+            User user = MappingFactory.Mapper.Map<User>(model);
             //Should be auto mapped
             user.RoleId = role.Id;
             user.PasswordHash = Hash.CreatePassword(model.Password);
@@ -260,6 +261,50 @@ namespace Services
                 return true;
 
             return (int)this.RoleType < (int)role.Type;
+        }
+
+        // ------ Request Validations ------
+
+        private bool ValidUsername(RegisterRequestModel model)
+        {
+            User user = this.GetUser(null, model.Username);
+            if (user != null)
+                return false;
+
+            return true;
+        }
+
+        private bool ValidPassword(RegisterRequestModel model)
+        {
+            if (model.Password != model.RepeatPassword)
+                return false;
+
+            return true;
+        }
+
+        private bool ValidEmail(RegisterRequestModel model)
+        {
+            //TODO: Email validator
+            return true;
+        }
+
+        private bool ValidNames(RegisterRequestModel model)
+        {
+            if (model?.FirstName != null && model?.FirstName != "")
+            {
+                if (model.FirstName.Length < Global.NameMinLength ||
+                    Global.NameMaxLength < model.FirstName.Length)
+                    return false;
+            }
+
+            if (model?.LastName != null && model?.LastName != "")
+            {
+                if (model.LastName.Length < Global.NameMinLength ||
+                    Global.NameMaxLength < model.LastName.Length)
+                    return false;
+            }
+
+            return true;
         }
     }
 }
