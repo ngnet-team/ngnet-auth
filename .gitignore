@@ -364,10 +364,14 @@ src/Ngnet_Authentication/Database/Migrations/
 src/Ngnet_Authentication/Database/SqLite/
 
 #other folders
-src/Ngnet_Authentication/.vs
+.vs/
+bin/ 
 
 #other files
-*.dll
+
+*.obj
 *.suo
-*.pdb
-*.cache
+*.user
+_ReSharper.*
+
+packages
