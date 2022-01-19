@@ -76,6 +76,7 @@ StyleCopReport.xml
 *.pdb
 *.ipdb
 *.pgc
+*.dll
 *.pgd
 *.rsp
 *.sbr
@@ -365,6 +366,7 @@ src/Ngnet_Authentication/Database/SqLite/
 
 #other folders
 .vs/
+src/Ngnet_Authentication/.vs/
 bin/ 
 
 #other files
