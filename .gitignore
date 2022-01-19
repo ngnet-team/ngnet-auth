@@ -366,12 +366,13 @@ src/Ngnet_Authentication/Database/SqLite/
 
 #other folders
 .vs/
-src/Ngnet_Authentication/Web/bin/*
+bin/ 
+
 #other files
 
+*.obj
 *.suo
 *.user
 _ReSharper.*
-bin
-obj
+
 packages
