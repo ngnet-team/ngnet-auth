@@ -66,6 +66,9 @@ namespace Web.Controllers
         [HttpPost(nameof(Update))]
         public virtual async Task<ActionResult> Update(UserRequestModel model)
         {
+            if (this.NullsOnly(model))
+                return this.AuthDenied();
+
             if (!this.IsAuthorized)
                 return this.AuthDenied();
 

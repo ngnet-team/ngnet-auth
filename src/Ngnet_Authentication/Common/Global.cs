@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Common
@@ -53,6 +54,20 @@ namespace Common
             //}
 
             //return null;
+        }
+
+        public static bool NullableObject(object instance)
+        {
+            foreach (PropertyInfo pi in instance.GetType().GetProperties())
+            {
+                var value = pi.GetValue(instance);
+                if (value != null)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
