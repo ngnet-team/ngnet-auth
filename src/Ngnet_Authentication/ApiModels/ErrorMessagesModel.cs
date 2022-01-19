@@ -27,5 +27,7 @@ namespace ApiModels
         public LanguagesModel AlreadyLoggedIn { get; set; }
 
         public LanguagesModel InvalidName { get; set; }
+
+        public LanguagesModel MissingBody { get; set; }
     }
 }
