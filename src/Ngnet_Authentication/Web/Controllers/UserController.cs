@@ -28,9 +28,12 @@ namespace Web.Controllers
 
         protected override RoleType RoleRequired { get; } = RoleType.User;
 
-        [HttpGet]
+        [HttpGet(nameof(GetRole))]
         public override ActionResult<string> GetRole()
         {
+            if (!this.IsAuthorized)
+                return this.AuthDenied();
+
             return this.userService.GetUserRole(this.GetUser()).Type.ToString();
         }
 
@@ -64,7 +67,7 @@ namespace Web.Controllers
         }
 
         [HttpPost(nameof(Update))]
-        public virtual async Task<ActionResult> Update(UserRequestModel model)
+        public virtual async Task<ActionResult> Update(UpdateRequestModel model)
         {
             if (this.NullsOnly(model))
                 return this.AuthDenied(this.GetErrors().MissingBody);
@@ -92,7 +95,7 @@ namespace Web.Controllers
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
-            return await this.Update((UserRequestModel)this.response.RawData);
+            return await this.Update((UpdateRequestModel)this.response.RawData);
         }
 
         [HttpGet(nameof(Delete))] // Marked as deleted ONLY!

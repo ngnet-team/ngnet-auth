@@ -290,14 +290,14 @@ namespace Services
 
         private bool ValidNames(RegisterRequestModel model)
         {
-            if (model?.FirstName != null && model?.FirstName != "")
+            if (string.IsNullOrWhiteSpace(model.FirstName))
             {
                 if (model.FirstName.Length < Global.NameMinLength ||
                     Global.NameMaxLength < model.FirstName.Length)
                     return false;
             }
 
-            if (model?.LastName != null && model?.LastName != "")
+            if (string.IsNullOrWhiteSpace(model.LastName))
             {
                 if (model.LastName.Length < Global.NameMinLength ||
                     Global.NameMaxLength < model.LastName.Length)
