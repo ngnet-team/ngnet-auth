@@ -67,11 +67,6 @@ namespace Web.Controllers.Base
             return this.Unauthorized(this.tokenError);
         }
 
-        protected bool NullsOnly(object instance)
-        {
-            return Global.NullableObject(instance);
-        }
-
         // ------------------- Private -------------------
 
         private ClaimModel GetClaims()
