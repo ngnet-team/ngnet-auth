@@ -67,7 +67,7 @@ namespace Web.Controllers
         public virtual async Task<ActionResult> Update(UserRequestModel model)
         {
             if (this.NullsOnly(model))
-                return this.AuthDenied();
+                return this.AuthDenied(this.GetErrors().MissingBody);
 
             if (!this.IsAuthorized)
                 return this.AuthDenied();
