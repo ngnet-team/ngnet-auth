@@ -12,6 +12,7 @@ using Mapper;
 using Services;
 using Services.Email;
 using Services.Interfaces;
+using Web.Infrastructure.Filters;
 
 namespace Web.Infrastructure
 {
@@ -88,6 +89,11 @@ namespace Web.Infrastructure
                 .AddTransient<IMemberService, MemberService>()
                 .AddTransient<IAdminService, AdminService>()
                 .AddTransient<IOwnerService, OwnerService>();
+        }
+
+        public static IServiceCollection RegisterFilters(this IServiceCollection services, IConfiguration configuration)
+        {
+            return services.AddMvc(opt => opt.Filters.Add(new RequestFilter(configuration))).Services;
         }
     }
 }

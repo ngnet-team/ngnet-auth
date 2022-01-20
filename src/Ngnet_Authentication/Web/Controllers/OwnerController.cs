@@ -29,9 +29,6 @@ namespace Web.Controllers
         [HttpGet(nameof(Profile))]
         public override ActionResult<object> Profile()
         {
-            if (!this.IsAuthorized)
-                return this.AuthDenied();
-
             OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.Claims.UserId);
             response.RoleName = this.Claims.RoleType.ToString();
 
@@ -42,9 +39,6 @@ namespace Web.Controllers
         [HttpPost(nameof(SetRoleCounts))]
         public async Task<ActionResult> SetRoleCounts(MaxRoles model)
         {
-            if (!this.IsAuthorized)
-                return this.AuthDenied();
-
             this.response = await this.ownerService.SetRoleCounts(model);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);

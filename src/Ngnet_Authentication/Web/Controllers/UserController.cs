@@ -31,23 +31,17 @@ namespace Web.Controllers
         [HttpGet(nameof(GetRole))]
         public override ActionResult<string> GetRole()
         {
-            if (!this.IsAuthorized)
-                return this.AuthDenied();
-
             return this.userService.GetUserRole(this.GetUser()).Type.ToString();
         }
 
         [HttpGet(nameof(Profile))]
         public virtual ActionResult<object> Profile()
         {
-            if (!this.IsAuthorized)
-                return this.AuthDenied();
-
             UserResponseModel response = this.userService.Profile<UserResponseModel>(this.Claims.UserId);
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
-                return this.AuthDenied(this.errors);
+                return this.Unauthorized(errors);
             }
 
             return response;
@@ -56,9 +50,6 @@ namespace Web.Controllers
         [HttpGet(nameof(Logout))]
         public async Task<ActionResult> Logout()
         {
-            if (!this.IsAuthorized)
-                return this.AuthDenied();
-
             this.response = await this.userService.Logout(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
@@ -69,12 +60,6 @@ namespace Web.Controllers
         [HttpPost(nameof(Update))]
         public virtual async Task<ActionResult> Update(UpdateRequestModel model)
         {
-            if (this.NullsOnly(model))
-                return this.AuthDenied(this.GetErrors().MissingBody);
-
-            if (!this.IsAuthorized)
-                return this.AuthDenied();
-
             model.Id = this.Claims.UserId;
 
             this.response = await this.userService.Update(model);
@@ -87,9 +72,6 @@ namespace Web.Controllers
         [HttpPost(nameof(Change))]
         public virtual async Task<ActionResult> Change(UserChangeModel model)
         {
-            if (!this.IsAuthorized)
-                return this.AuthDenied();
-
             UserDto userDto = this.GetUser();
             this.response = this.userService.Change(model, userDto);
             if (this.response.Errors != null)
@@ -101,9 +83,6 @@ namespace Web.Controllers
         [HttpGet(nameof(Delete))] // Marked as deleted ONLY!
         public async Task<ActionResult> Delete()
         {
-            if (!this.IsAuthenticated || this.SeededOwner())
-                return this.AuthDenied();
-
             this.response = await this.userService.Delete(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
@@ -114,9 +93,6 @@ namespace Web.Controllers
         [HttpGet(nameof(DeleteAccount))] // PERMANENT deletion!
         public async Task<ActionResult> DeleteAccount()
         {
-            if (!this.IsAuthenticated || this.SeededOwner())
-                return this.AuthDenied();
-
             this.response = await this.userService.DeleteAccount(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
@@ -127,9 +103,6 @@ namespace Web.Controllers
         [HttpGet(nameof(ResetPassword))]
         public async Task<ActionResult> ResetPassword()
         {
-            if (!this.IsAuthorized)
-                return this.AuthDenied();
-
             this.response = await userService.ResetPassword(this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);

@@ -69,5 +69,19 @@ namespace Common
 
             return true;
         }
+
+        public static bool AnyNullObject(object instance)
+        {
+            foreach (PropertyInfo pi in instance.GetType().GetProperties())
+            {
+                var value = pi.GetValue(instance);
+                if (value == null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
