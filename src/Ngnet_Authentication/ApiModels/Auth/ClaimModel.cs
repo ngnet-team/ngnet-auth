@@ -4,7 +4,7 @@ namespace ApiModels.Auth
 {
     public class ClaimModel
     {
-        public ClaimModel(RoleType roleType = RoleType.Guest)
+        public ClaimModel(RoleType roleType = RoleType.Auth)
         {
             this.RoleType = roleType;
         }

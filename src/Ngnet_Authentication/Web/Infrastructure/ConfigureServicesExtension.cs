@@ -91,9 +91,9 @@ namespace Web.Infrastructure
                 .AddTransient<IOwnerService, OwnerService>();
         }
 
-        public static IServiceCollection RegisterFilters(this IServiceCollection services)
+        public static IServiceCollection RegisterFilters(this IServiceCollection services, IConfiguration configuration)
         {
-            return services.AddMvc(opt => opt.Filters.Add(new RequestFilter())).Services;
+            return services.AddMvc(opt => opt.Filters.Add(new RequestFilter(configuration))).Services;
         }
     }
 }

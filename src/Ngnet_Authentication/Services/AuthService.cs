@@ -26,7 +26,7 @@ namespace Services
         {
         }
 
-        public virtual RoleType RoleType { get; set; } = RoleType.Guest;
+        public virtual RoleType RoleType { get; set; } = RoleType.Auth;
 
         public async Task<ServiceResponseModel> Register(RegisterRequestModel model)
         {
@@ -290,14 +290,14 @@ namespace Services
 
         private bool ValidNames(RegisterRequestModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.FirstName))
+            if (!string.IsNullOrWhiteSpace(model.FirstName))
             {
                 if (model.FirstName.Length < Global.NameMinLength ||
                     Global.NameMaxLength < model.FirstName.Length)
                     return false;
             }
 
-            if (string.IsNullOrWhiteSpace(model.LastName))
+            if (!string.IsNullOrWhiteSpace(model.LastName))
             {
                 if (model.LastName.Length < Global.NameMinLength ||
                     Global.NameMaxLength < model.LastName.Length)

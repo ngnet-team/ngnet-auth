@@ -16,7 +16,5 @@ namespace ApiModels.Auth
         public string Username { get; set; }
 
         public string RoleName { get; set; }
-
-        public DateTime Expires { get; set; }
     }
 }

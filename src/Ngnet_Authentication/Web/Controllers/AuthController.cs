@@ -31,20 +31,17 @@ namespace Web.Controllers
             this.emailSenderService = emailSenderService;
         }
 
-        protected override RoleType RoleRequired { get; } = RoleType.Guest;
+        protected override RoleType RoleRequired { get; } = RoleType.Auth;
 
         [HttpGet]
         public virtual ActionResult<string> GetRole()
         {
-            return RoleType.Guest.ToString();
+            return RoleType.Auth.ToString();
         }
 
         [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
-            if (this.IsAuthenticated)
-                return this.BadRequest(this.GetErrors().AlreadyLoggedIn);
-
             this.response = await this.authService.Register(model);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
@@ -55,9 +52,6 @@ namespace Web.Controllers
         [HttpPost(nameof(Login))]
         public async Task<ActionResult<LoginResponseModel>> Login(LoginRequestModel model)
         {
-            if (this.IsAuthenticated)
-                return this.BadRequest(this.GetErrors().AlreadyLoggedIn);
-
             this.response = await this.authService.Login(model);
 
             if (this.response.Errors != null)
@@ -80,7 +74,7 @@ namespace Web.Controllers
         protected bool SeededOwner()
         {
             string username = this.Claims.Username;
-            if (this.Owners.Any(x => x.Username == username))
+            if (this.AppSettings.Owners.Any(x => x.Username == username))
                 return true;
 
             return false;

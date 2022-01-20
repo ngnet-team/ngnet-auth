@@ -27,7 +27,7 @@ namespace Web
                 .AddDatabase(this.Configuration)
                 .AddDbContext<NgnetAuthDbContext>()
                 .AddServices(this.Configuration)
-                .RegisterFilters()
+                .RegisterFilters(this.Configuration)
                 .AddControllers();
         }
 

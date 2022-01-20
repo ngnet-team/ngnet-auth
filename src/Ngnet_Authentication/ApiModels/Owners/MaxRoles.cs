@@ -17,7 +17,7 @@ namespace ApiModels.Owners
             return this.Owners != null ? (RoleType.Owner, this.Owners) :
                   this.Admins != null ? (RoleType.Admin, this.Admins) :
                   this.Users != null ? (RoleType.User, this.Users) :
-                  this.Guests != null ? (RoleType.Guest, this.Guests) :
+                  this.Guests != null ? (RoleType.Auth, this.Guests) :
                   (null, null);
         }
     }
