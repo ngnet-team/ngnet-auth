@@ -87,6 +87,16 @@ namespace Web.Controllers
         {
             if (model.Id == null)
                 model.Id = this.Claims.UserId;
+            // Tring to make changes on other user
+            else
+            {
+                UserDto userDto = this.GetUser(model.Id);
+                if (!this.HasPermissionsToUser(userDto))
+                {
+                    this.errors = this.GetErrors().UserNotFound;
+                    return this.Unauthorized(this.errors);
+                }
+            }
 
             this.response = await this.adminService.Update(model);
             if (this.response.Errors != null)
@@ -96,21 +106,26 @@ namespace Web.Controllers
         }
 
         [HttpPost(nameof(Change))]
-        public override async Task<ActionResult> Change(UserChangeModel model)
+        public override async Task<ActionResult> Change(ChangeRequestModel model)
         {
-            UserDto userDto = this.GetUser(model.Id);
+            if (model.Id == null)
+                model.Id = this.Claims.UserId;
             // Tring to make changes on other user
-            if (!this.HasPermissionsToUser(userDto))
+            else
             {
-                this.errors = this.GetErrors().UserNotFound;
-                return this.Unauthorized(this.errors);
+                UserDto userDto = this.GetUser(model.Id);
+                if (!this.HasPermissionsToUser(userDto))
+                {
+                    this.errors = this.GetErrors().UserNotFound;
+                    return this.Unauthorized(this.errors);
+                }
             }
 
-            this.response = this.adminService.Change(model, userDto);
+            this.response = await this.adminService.Change(model);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
-            return await this.Update((UpdateRequestModel)this.response.RawData);
+            return this.Ok(this.response.Success);
         }
 
         [HttpPost(nameof(DeleteUser))]

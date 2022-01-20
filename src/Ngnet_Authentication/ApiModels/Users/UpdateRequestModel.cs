@@ -1,7 +1,8 @@
-﻿using Common;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Common;
 using Database.Models;
 using Mapper;
-using System.ComponentModel.DataAnnotations;
 
 namespace ApiModels.Users
 {
@@ -17,5 +18,7 @@ namespace ApiModels.Users
 
         [Range(Global.AgeMin, Global.AgeMax)]
         public int? Age { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

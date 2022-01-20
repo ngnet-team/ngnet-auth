@@ -2,6 +2,7 @@
 
 using ApiModels.Auth;
 using ApiModels.Dtos;
+using ApiModels.Users;
 using Common.Enums;
 using Database.Models;
 using Services.Base;
@@ -17,8 +18,6 @@ namespace Services.Interfaces
         public string CreateJwtToken(JwtTokenModel tokenModel);
 
         public Task<ServiceResponseModel> AddEntry(Entry exp);
-
-        public Task<ServiceResponseModel> Update<T>(T model);
 
         public UserDto GetUserById(string id);
 

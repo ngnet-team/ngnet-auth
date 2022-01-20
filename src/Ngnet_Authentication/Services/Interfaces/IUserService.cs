@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+
 using ApiModels.Dtos;
 using ApiModels.Users;
 using Services.Base;
@@ -17,6 +18,8 @@ namespace Services.Interfaces
 
         public Task<ServiceResponseModel> ResetPassword(string userId);
 
-        public ServiceResponseModel Change(UserChangeModel model, UserDto userDto);
+        public Task<ServiceResponseModel> Update(UpdateRequestModel model);
+
+        public Task<ServiceResponseModel> Change(ChangeRequestModel model);
     }
 }

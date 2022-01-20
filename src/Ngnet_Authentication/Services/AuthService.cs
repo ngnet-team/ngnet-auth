@@ -16,6 +16,7 @@ using Mapper;
 using Services.Base;
 using Services.Interfaces;
 using ApiModels.Dtos;
+using ApiModels.Users;
 
 namespace Services
 {
@@ -114,21 +115,6 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
-        public async Task<ServiceResponseModel> Update<T>(T model)
-        {
-            User mappedModel = MappingFactory.Mapper.Map<User>(model);
-
-            User user = this.GetUser(mappedModel.Id);
-            if (user == null)
-                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
-
-            user = this.ModifyEntity(mappedModel, user);
-
-            await this.database.SaveChangesAsync();
-
-            return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
-        }
-
         public UserDto GetUserById(string id)
         {
             return this.database.Users
@@ -189,26 +175,53 @@ namespace Services
             return users.FirstOrDefault();
         }
 
-        protected User ModifyEntity(User mappedModel, User user)
+        protected User ModifyEntity(User user, UpdateRequestModel updateModel, ChangeRequestModel changeModel)
         {
-            //Changable
-            user.Email = mappedModel.Email == null ? user.Email : mappedModel.Email;
-            user.PasswordHash = mappedModel.PasswordHash == null ? user.PasswordHash : mappedModel.PasswordHash;
-            user.Username = mappedModel.Username == null ? user.Username : mappedModel.Username;
-            //Updatable
-            user.FirstName = mappedModel.FirstName == null ? user.FirstName : mappedModel.FirstName;
-            user.LastName = mappedModel.LastName == null ? user.LastName : mappedModel.LastName;
-            user.Gender = mappedModel.Gender == null ? user.Gender : mappedModel.Gender;
-            user.Age = mappedModel.Age == null ? user.Age : mappedModel.Age;
-            user.IsDeleted = mappedModel.IsDeleted == true ? mappedModel.IsDeleted : user.IsDeleted;
-            //Auto updated
+            //Updatable entities
+            if (!Global.NullableObject(updateModel))
+            {
+                user.FirstName = updateModel.FirstName == null ? user.FirstName : updateModel.FirstName;
+
+                user.LastName = updateModel.LastName == null ? user.LastName : updateModel.LastName;
+
+                GenderType gender;
+                bool validGender = Enum.TryParse<GenderType>(this.Capitalize(updateModel.Gender), out gender);
+                if (validGender)
+                    user.Gender = updateModel.Gender == null ? user.Gender : gender;
+
+                user.Age = updateModel.Age == null ? user.Age : updateModel.Age;
+
+                user.IsDeleted = updateModel.IsDeleted; 
+                if (updateModel.IsDeleted)
+                    user.DeletedOn = DateTime.UtcNow;
+            }
+            //Changable entities
+            else if (!Global.NullableObject(changeModel))
+            {
+                string key = this.Capitalize(changeModel.Key);
+
+                if (ChangableType.Email.ToString().Equals(key))
+                    user.Email = changeModel.New;
+
+                else if (ChangableType.Username.ToString().Equals(key))
+                    user.Username = changeModel.New;
+
+                else if (ChangableType.Password.ToString().Equals(key))
+                    user.PasswordHash = Hash.CreatePassword(changeModel.New);
+
+                else
+                    return null;
+            }
+            else
+                return null;
+
             user.ModifiedOn = DateTime.UtcNow;
-            user.DeletedOn = mappedModel.IsDeleted == true ? DateTime.UtcNow : user.DeletedOn;
+            
 
             return user;
         }
 
-        protected bool ValidChange(ChangeModel model, User user)
+        protected bool ValidChange(ChangeRequestModel model, User user)
         {
             //Both new ones should be equal
             if (model.New != model.RepeatNew)
