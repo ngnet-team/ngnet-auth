@@ -70,14 +70,15 @@ namespace Web.Controllers
         }
 
         [HttpPost(nameof(Change))]
-        public virtual async Task<ActionResult> Change(UserChangeModel model)
+        public virtual async Task<ActionResult> Change(ChangeRequestModel model)
         {
-            UserDto userDto = this.GetUser();
-            this.response = this.userService.Change(model, userDto);
+            model.Id = this.Claims.UserId;
+
+            this.response = await this.userService.Change(model);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
-            return await this.Update((UpdateRequestModel)this.response.RawData);
+            return this.Ok(this.response.Success);
         }
 
         [HttpGet(nameof(Delete))] // Marked as deleted ONLY!

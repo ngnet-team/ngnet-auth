@@ -31,6 +31,9 @@ namespace Services.Base
 
         protected string Capitalize(string input)
         {
+            if (string.IsNullOrEmpty(input))
+                return null;
+
             StringBuilder output = new StringBuilder();
 
             for (int i = 0; i < input.Length; i++)

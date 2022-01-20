@@ -1,9 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApiModels.Auth
+namespace ApiModels.Users
 {
-    public abstract class ChangeModel
+    public class ChangeRequestModel
     {
+        public string Id { get; set; }
+
+        [Required]
+        public string Key { get; set; }
+
         [Required]
         public string Old { get; set; }
 

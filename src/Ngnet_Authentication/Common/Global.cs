@@ -58,6 +58,9 @@ namespace Common
 
         public static bool NullableObject(object instance)
         {
+            if (instance == null)
+                return true;
+
             foreach (PropertyInfo pi in instance.GetType().GetProperties())
             {
                 var value = pi.GetValue(instance);
