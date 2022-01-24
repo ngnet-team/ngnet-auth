@@ -38,7 +38,7 @@ namespace Web.Infrastructure.Filters
             //Get JWT token
             this.token = context.HttpContext.Request.Headers
                 .FirstOrDefault(x => x.Key == "Authorization").Value
-                .ToString().Replace("Bearer ", "").Replace("null", "");
+                .ToString().Replace("Bearer", "").Trim();
             //Get invoked controller name/role name
             var controllerInvoked = context.Controller.GetType().Name.Replace("Controller", "");
             RoleType roleInvoked;
