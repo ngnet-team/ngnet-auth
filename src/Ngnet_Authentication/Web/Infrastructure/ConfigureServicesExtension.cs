@@ -18,13 +18,6 @@ namespace Web.Infrastructure
 {
     public static class ConfigureServicesExtension
     {
-        //public static ApplicationSettingsModel GetApplicationSettings(this IServiceCollection services, IConfiguration configuration)
-        //{
-        //    var applicationSettings = configuration.GetSection("ApplicationSettings");
-        //    services.Configure<ApplicationSettingsModel>(applicationSettings);
-        //    return applicationSettings.Get<ApplicationSettingsModel>();
-        //}
-
         public static IServiceCollection AddAutoMapper(this IServiceCollection services)
         {
             var config = new MapperConfiguration(c =>
@@ -40,16 +33,7 @@ namespace Web.Infrastructure
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddDbContext<NgnetAuthDbContext>(options => 
-            {
-                if (configuration.GetValue<bool>("Database:SqlServer:Use"))
-                {
-                     options.UseSqlServer(configuration.GetValue<string>("Database:SqlServer:ConnectionString"));
-                }
-                else if (configuration.GetValue<bool>("Database:SqLite:Use"))
-                {
-                    options.UseSqlite(configuration.GetValue<string>("Database:SqLite:ConnectionString"));
-                }
-            });
+                options.UseSqlServer(configuration.GetValue<string>("Database:SqlServer:ConnectionString")));
         }
 
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, ApplicationSettingsModel appSettings)
