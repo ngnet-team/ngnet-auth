@@ -48,10 +48,14 @@ namespace Services
 
             if (count != null)
                 users.Take((int)count);
-
+            //Add entries and role names
             foreach (var user in users)
             {
-                user.Experiances = this.GetEntries(user.Id);
+                user.Entries = this.GetEntries(user.Id);
+                user.RoleName = this.GetUserRole(new UserDto() 
+                { 
+                    Id = user.Id 
+                }).Type.ToString();
             }
 
             return users;
@@ -65,11 +69,11 @@ namespace Services
                 .FirstOrDefault(x => x.Id == userId);
         }
 
-        public RoleResponseModel[] GetRoles(int? count = null)
+        public RoleModel[] GetRoles()
         {
             var roles = this.database.Roles
                 //Can't apply custom mapping, should be fixed!
-                .Select(x => new RoleResponseModel() 
+                .Select(x => new RoleModel() 
                 { 
                     Id = x.Id,
                     Name = x.Type.ToString(),
@@ -84,9 +88,6 @@ namespace Services
             //var roles = this.database.Roles
             //    .To<RoleResponseModel>()
             //    .ToArray();
-
-            if (count != null)
-                roles.Take((int)count);
 
             return roles;
         }

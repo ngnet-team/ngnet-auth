@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using ApiModels.Owners;
@@ -20,29 +21,36 @@ namespace Services
 
         public override RoleType RoleType { get; set; } = RoleType.Owner;
 
-        public async Task<ServiceResponseModel> SetRoleCounts(MaxRoles maxRoles)
+        public async Task<ServiceResponseModel> SetMaxRoles(RoleModel[] models)
         {
-            (RoleType? roleType, int? count) = maxRoles.Get();
-            //Nullable input
-            if (roleType == null || count == null)
-                return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
-
-            Role role = this.database.Roles.FirstOrDefault(x => x.Type == roleType);
-            //New count should be different from current stored max count.
-            if (role.MaxCount == count)
+            foreach (var model in models)
             {
-                return new ServiceResponseModel(null, this.GetSuccessMsg().AlreadyStored);
-            }
-            //New count should be greater or equal to current users in that role.
-            int usersInThisRole = this.database.Users.Where(x => !x.IsDeleted).Where(x => x.RoleId == role.Id).Count();
-            if (count < usersInThisRole)
-            {
-                return new ServiceResponseModel(this.GetErrors().NoPermissions, null);
+                RoleType roleType;
+                bool validRole = Enum.TryParse<RoleType>(model.RoleName, out roleType);
+
+                if (!validRole)
+                    return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
+
+                Role role = this.database.Roles.FirstOrDefault(x => x.Type == roleType);
+                if (role.MaxCount == model.MaxCount)
+                {
+                    continue;
+                }
+
+                int usersInThisRole = this.database.Users
+                    .Where(x => !x.IsDeleted)
+                    .Where(x => x.RoleId == role.Id)
+                    .Count();
+
+                if (model.MaxCount < usersInThisRole)
+                {
+                    return new ServiceResponseModel(this.GetErrors().NoPermissions, null);
+                }
+
+                role.MaxCount = model.MaxCount;
             }
 
-            role.MaxCount = count;
             await this.database.SaveChangesAsync();
-
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
     }

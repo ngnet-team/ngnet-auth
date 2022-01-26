@@ -15,7 +15,7 @@ namespace Services.Interfaces
 
         public UserDto GetDeletableUser(string userId);
 
-        public RoleResponseModel[] GetRoles(int? count = null);
+        public RoleModel[] GetRoles();
 
         public ICollection<EntryModel> GetEntries(string userId);
     }

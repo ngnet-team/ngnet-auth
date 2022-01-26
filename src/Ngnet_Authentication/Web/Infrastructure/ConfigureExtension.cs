@@ -17,7 +17,7 @@ namespace Web.Infrastructure
             var dbContext = servicesScope.ServiceProvider.GetService<NgnetAuthDbContext>();
 
             dbContext.Database.Migrate();
-
+            
             var owners = configuration.GetSection("Owners").Get<UserSeederModel[]>();
             var admins = configuration.GetSection("Admins").Get<UserSeederModel[]>();
             new DatabaseSeeder(owners, admins).SeedAsync(dbContext).GetAwaiter().GetResult();

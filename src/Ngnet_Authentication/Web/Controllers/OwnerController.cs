@@ -36,10 +36,10 @@ namespace Web.Controllers
         }
 
         
-        [HttpPost(nameof(SetRoleCounts))]
-        public async Task<ActionResult> SetRoleCounts(MaxRoles model)
+        [HttpPost(nameof(SetMaxRoles))]
+        public async Task<ActionResult> SetMaxRoles(RoleModel[] models)
         {
-            this.response = await this.ownerService.SetRoleCounts(model);
+            this.response = await this.ownerService.SetMaxRoles(models);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
