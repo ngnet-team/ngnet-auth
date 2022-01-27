@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 
-using ApiModels.Dtos;
 using ApiModels.Users;
 using Services.Base;
 
@@ -10,7 +9,7 @@ namespace Services.Interfaces
     {
         public T Profile<T>(string userId);
 
-        public Task<ServiceResponseModel> Logout(string userId);
+        public Task<ServiceResponseModel> Logout(string userId, string username);
 
         public Task<ServiceResponseModel> Delete(string userId);
 

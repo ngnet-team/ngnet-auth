@@ -52,9 +52,9 @@ namespace Services
             foreach (var user in users)
             {
                 user.Entries = this.GetEntries(user.Id);
-                user.RoleName = this.GetUserRole(new UserDto() 
-                { 
-                    Id = user.Id 
+                user.RoleName = this.GetUserRole(new UserDto()
+                {
+                    Id = user.Id
                 }).Type.ToString();
             }
 
@@ -73,8 +73,8 @@ namespace Services
         {
             var roles = this.database.Roles
                 //Can't apply custom mapping, should be fixed!
-                .Select(x => new RoleModel() 
-                { 
+                .Select(x => new RoleModel()
+                {
                     Id = x.Id,
                     Name = x.Type.ToString(),
                     MaxCount = x.MaxCount,
@@ -92,16 +92,23 @@ namespace Services
             return roles;
         }
 
-        public ICollection<EntryModel> GetEntries(string UserId)
+        public EntryModel[] GetEntries(string userId = null)
         {
-            return this.database.Entries.Where(x => x.UserId == UserId)
-                .OrderByDescending(x => x.Id)
-                .To<EntryModel>()
-                //To avoid too many records in client
-                .Take(20)
-                .OrderByDescending(x => x.LoggedIn)
-                .ThenByDescending(x => x.LoggedOut)
-                .ToHashSet();
+            var entries = this.database.Entries;
+
+            if (userId != null)
+                entries.Where(x => x.UserId == userId).Take(20);//To avoid too many records for single user
+
+            return entries
+                   .OrderByDescending(x => x.Id)
+                   .Select(x => new EntryModel() 
+                   {
+                       UserId = x.UserId,
+                       Username = x.Username,
+                       Login = x.Login,
+                       CreatedOn = x.CreatedOn.ToShortDateString() + " " + x.CreatedOn.ToLongTimeString(),
+                   })
+                   .ToArray();
         }
     }
 }

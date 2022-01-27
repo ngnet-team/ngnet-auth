@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using ApiModels.Admins;
 using Services.Base;
@@ -17,6 +16,6 @@ namespace Services.Interfaces
 
         public RoleModel[] GetRoles();
 
-        public ICollection<EntryModel> GetEntries(string userId);
+        public EntryModel[] GetEntries(string userId = null);
     }
 }

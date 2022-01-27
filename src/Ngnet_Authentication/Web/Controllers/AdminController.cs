@@ -38,16 +38,13 @@ namespace Web.Controllers
         }
 
         [HttpGet(nameof(GetUsers))]
-        public ActionResult<AdminResponseModel[]> GetUsers()
-        {
-            return this.adminService.GetUsers();
-        }
+        public ActionResult<AdminResponseModel[]> GetUsers() =>  this.adminService.GetUsers();
 
         [HttpGet(nameof(GetRoles))]
-        public ActionResult<RoleModel[]> GetRoles()
-        {
-            return this.adminService.GetRoles();
-        }
+        public RoleModel[] GetRoles() =>  this.adminService.GetRoles();
+
+        [HttpGet(nameof(GetEntries))]
+        public EntryModel[] GetEntries() => this.adminService.GetEntries();
 
         [HttpPost(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)

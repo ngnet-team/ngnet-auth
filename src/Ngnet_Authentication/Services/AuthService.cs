@@ -73,7 +73,9 @@ namespace Services
             await this.AddEntry(new Entry()
             {
                 UserId = user.Id,
-                LoggedIn = DateTime.UtcNow
+                Username = user.Username,
+                Login = true,
+                CreatedOn = DateTime.UtcNow
             });
 
             UserDto userDto = MappingFactory.Mapper.Map<UserDto>(user);
