@@ -17,10 +17,10 @@ namespace Services.Seeding
 
         public string LastName { get; set; }
 
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<UserSeederModel, User>()
-                .ForMember(x => x.PasswordHash, opt => opt.MapFrom(x => Hash.CreatePassword(x.Password)));
-        }
+        //public void CreateMappings(IProfileExpression configuration)
+        //{
+        //    configuration.CreateMap<UserSeederModel, User>()
+        //        .ForMember(x => x.PasswordHash, opt => opt.MapFrom(x => Hash.CreatePassword(x.Password)));
+        //}
     }
 }

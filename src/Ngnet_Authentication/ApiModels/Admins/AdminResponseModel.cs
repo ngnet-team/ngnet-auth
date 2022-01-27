@@ -10,7 +10,7 @@ namespace ApiModels.Admins
     {
         public AdminResponseModel()
         {
-            this.Experiances = new HashSet<EntryModel>();
+            this.Entries = new HashSet<EntryModel>();
         }
 
         public string Id { get; set; }
@@ -19,7 +19,7 @@ namespace ApiModels.Admins
 
         public string CreatedOn { get; set; }
 
-        public ICollection<EntryModel> Experiances { get; set; }
+        public ICollection<EntryModel> Entries { get; set; }
 
         public string ModifiedOn { get; set; }
 

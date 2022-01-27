@@ -2,20 +2,24 @@
 
 using Database.Models;
 using Mapper;
+using System;
 
 namespace ApiModels.Admins
 {
     public class EntryModel : IMapFrom<Entry>
     {
-        public string LoggedIn { get; set; }
+        public string UserId { get; set; }
 
-        public string LoggedOut { get; set; }
+        public string Username { get; set; }
 
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<Entry, EntryModel>()
-                .ForMember(x => x.LoggedIn, opt => opt.MapFrom(x => x.LoggedIn.GetValueOrDefault().ToShortDateString()))
-                .ForMember(x => x.LoggedOut, opt => opt.MapFrom(x => x.LoggedOut.GetValueOrDefault().ToShortDateString()));
-        }
+        public bool Login { get; set; }
+
+        public string CreatedOn { get; set; }
+
+        //public void CreateMappings(IProfileExpression configuration)
+        //{
+        //    configuration.CreateMap<Entry, EntryModel>()
+        //        .ForMember(x => x.CreatedOn, opt => opt.MapFrom(x => x.CreatedOn.ToLongDateString()));
+        //}
     }
 }

@@ -6,7 +6,7 @@ using Mapper;
 
 namespace ApiModels.Admins
 {
-    public class RoleResponseModel : IMapFrom<Role>
+    public class RoleModel : IMapFrom<Role>
     {
         public string Id { get; set; }
 
@@ -24,7 +24,7 @@ namespace ApiModels.Admins
 
         public void CreateMappings(IProfileExpression configuration)
         {
-            configuration.CreateMap<Role, RoleResponseModel>()
+            configuration.CreateMap<Role, RoleModel>()
                 .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Type.ToString())); // Do not work??
         }
     }

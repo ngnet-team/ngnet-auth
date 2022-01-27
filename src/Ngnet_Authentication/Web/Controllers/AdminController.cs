@@ -38,30 +38,13 @@ namespace Web.Controllers
         }
 
         [HttpGet(nameof(GetUsers))]
-        public ActionResult<AdminResponseModel[]> GetUsers()
-        {
-            AdminResponseModel[] users = this.adminService.GetUsers();
-            if (users.Length == 0)
-            {
-                this.errors = this.GetErrors().UsersNotFound;
-                return this.BadRequest(this.errors);
-            }
-
-            return users;
-        }
+        public ActionResult<AdminResponseModel[]> GetUsers() =>  this.adminService.GetUsers();
 
         [HttpGet(nameof(GetRoles))]
-        public ActionResult<RoleResponseModel[]> GetRoles()
-        {
-            RoleResponseModel[] roles = this.adminService.GetRoles();
-            if (roles.Length == 0)
-            {
-                this.errors = this.GetErrors().InvalidRole;
-                return this.BadRequest(this.errors);
-            }
+        public RoleModel[] GetRoles() =>  this.adminService.GetRoles();
 
-            return roles;
-        }
+        [HttpGet(nameof(GetEntries))]
+        public EntryModel[] GetEntries() => this.adminService.GetEntries();
 
         [HttpPost(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)

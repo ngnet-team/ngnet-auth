@@ -31,12 +31,14 @@ namespace Services
                 .FirstOrDefault();
         }
 
-        public async Task<ServiceResponseModel> Logout(string userId)
+        public async Task<ServiceResponseModel> Logout(string userId, string username)
         {
             await this.AddEntry(new Entry()
             {
                 UserId = userId,
-                LoggedOut = DateTime.UtcNow
+                Username = username,
+                Login = false,
+                CreatedOn = DateTime.UtcNow
             });
 
             return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedOut);

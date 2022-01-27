@@ -50,7 +50,7 @@ namespace Web.Controllers
         [HttpGet(nameof(Logout))]
         public async Task<ActionResult> Logout()
         {
-            this.response = await this.userService.Logout(this.Claims.UserId);
+            this.response = await this.userService.Logout(this.Claims.UserId, this.Claims.Username);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 

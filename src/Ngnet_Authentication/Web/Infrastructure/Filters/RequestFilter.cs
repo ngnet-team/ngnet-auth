@@ -40,9 +40,14 @@ namespace Web.Infrastructure.Filters
                 .FirstOrDefault(x => x.Key == "Authorization").Value
                 .ToString().Replace("Bearer", "").Trim();
             //Get invoked controller name/role name
-            var controllerInvoked = context.Controller.GetType().Name.Replace("Controller", "");
+            ActionPath action = this.GetPath(context.ActionDescriptor.DisplayName);
+            if (action == null)
+            {
+                context.Result = new BadRequestObjectResult("No action path");
+                return;
+            }
             RoleType roleInvoked;
-            bool validRole = Enum.TryParse<RoleType>(controllerInvoked, true, out roleInvoked);
+            bool validRole = Enum.TryParse<RoleType>(action.Controller, true, out roleInvoked);
             if (!validRole)
             {
                 context.Result = new UnauthorizedObjectResult("Invalid role in url");
@@ -61,6 +66,12 @@ namespace Web.Infrastructure.Filters
             //Logged user in role
             else
             {
+                if (action.Method == "Login" || action.Method == "Register")
+                {
+                    context.Result = new BadRequestObjectResult("Logout first");
+                    return;
+                }
+
                 ClaimModel claims = this.GetClaims(context);
                 if (claims == null)
                     return;
@@ -143,6 +154,23 @@ namespace Web.Infrastructure.Filters
                 return null;
 
             return appCall?.Name;
+        }
+
+        private ActionPath GetPath(string actionFullName)
+        {
+            if (actionFullName == null)
+                return null;
+
+            string[] actionSpliter = actionFullName.Split('.');
+
+            if (actionSpliter.Length != 4)
+                return null;
+
+            return new ActionPath()
+            {
+                Controller = actionSpliter[2].Replace("Controller", ""),
+                Method = actionSpliter[3].Split(' ')[0],
+            };
         }
     }
 }

@@ -48,10 +48,14 @@ namespace Services
 
             if (count != null)
                 users.Take((int)count);
-
+            //Add entries and role names
             foreach (var user in users)
             {
-                user.Experiances = this.GetEntries(user.Id);
+                user.Entries = this.GetEntries(user.Id);
+                user.RoleName = this.GetUserRole(new UserDto()
+                {
+                    Id = user.Id
+                }).Type.ToString();
             }
 
             return users;
@@ -65,12 +69,12 @@ namespace Services
                 .FirstOrDefault(x => x.Id == userId);
         }
 
-        public RoleResponseModel[] GetRoles(int? count = null)
+        public RoleModel[] GetRoles()
         {
             var roles = this.database.Roles
                 //Can't apply custom mapping, should be fixed!
-                .Select(x => new RoleResponseModel() 
-                { 
+                .Select(x => new RoleModel()
+                {
                     Id = x.Id,
                     Name = x.Type.ToString(),
                     MaxCount = x.MaxCount,
@@ -85,22 +89,26 @@ namespace Services
             //    .To<RoleResponseModel>()
             //    .ToArray();
 
-            if (count != null)
-                roles.Take((int)count);
-
             return roles;
         }
 
-        public ICollection<EntryModel> GetEntries(string UserId)
+        public EntryModel[] GetEntries(string userId = null)
         {
-            return this.database.Entries.Where(x => x.UserId == UserId)
-                .OrderByDescending(x => x.Id)
-                .To<EntryModel>()
-                //To avoid too many records in client
-                .Take(20)
-                .OrderByDescending(x => x.LoggedIn)
-                .ThenByDescending(x => x.LoggedOut)
-                .ToHashSet();
+            var entries = this.database.Entries;
+
+            if (userId != null)
+                entries.Where(x => x.UserId == userId).Take(20);//To avoid too many records for single user
+
+            return entries
+                   .OrderByDescending(x => x.Id)
+                   .Select(x => new EntryModel() 
+                   {
+                       UserId = x.UserId,
+                       Username = x.Username,
+                       Login = x.Login,
+                       CreatedOn = x.CreatedOn.ToShortDateString() + " " + x.CreatedOn.ToLongTimeString(),
+                   })
+                   .ToArray();
         }
     }
 }

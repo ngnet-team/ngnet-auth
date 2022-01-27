@@ -8,10 +8,10 @@ namespace Database.Models
 
         public string UserId { get; set; }
 
-        public User User { get; set; }
+        public string Username { get; set; }
 
-        public DateTime? LoggedIn { get; set; }
+        public bool Login { get; set; } // Login = true/Logout = false
 
-        public DateTime? LoggedOut { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Common.Enums;
 using Database;
 using Database.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,11 +11,11 @@ namespace Services.Seeding.Seeder
 {
     public class RoleSeeder : ISeeder
     {
-        private readonly MaxRoles maxRoles;
+        private readonly ICollection<RoleModel> roleModels;
 
-        public RoleSeeder(MaxRoles maxRoles)
+        public RoleSeeder(ICollection<RoleModel> roleModels)
         {
-            this.maxRoles = maxRoles;
+            this.roleModels = roleModels;
         }
 
         public async Task SeedAsync(NgnetAuthDbContext database)
@@ -38,16 +39,18 @@ namespace Services.Seeding.Seeder
         {
             if (RoleType.Owner.Equals(roleType))
             {
-                return new Role(roleType) 
-                { 
-                    MaxCount = this.maxRoles.Owners
+                int? maxCount = this.roleModels.FirstOrDefault(x => x.RoleName == "Owner")?.MaxCount;
+                return new Role(roleType)
+                {
+                    MaxCount = maxCount
                 };
             }
             else if (RoleType.Admin.Equals(roleType))
             {
+            int? maxCount = this.roleModels.FirstOrDefault(x => x.RoleName == "Admin")?.MaxCount;
                 return new Role(roleType)
                 {
-                    MaxCount = this.maxRoles.Admins
+                    MaxCount = maxCount
                 };
             }
             else
