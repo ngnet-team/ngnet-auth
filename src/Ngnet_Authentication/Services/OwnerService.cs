@@ -26,7 +26,7 @@ namespace Services
             foreach (var model in models)
             {
                 RoleType roleType;
-                bool validRole = Enum.TryParse<RoleType>(model.RoleName, out roleType);
+                bool validRole = Enum.TryParse<RoleType>(model.Name, out roleType);
 
                 if (!validRole)
                     return new ServiceResponseModel(this.GetErrors().InvalidRole, null);

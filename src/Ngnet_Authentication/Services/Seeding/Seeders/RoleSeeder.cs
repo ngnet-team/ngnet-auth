@@ -39,7 +39,7 @@ namespace Services.Seeding.Seeder
         {
             if (RoleType.Owner.Equals(roleType))
             {
-                int? maxCount = this.roleModels.FirstOrDefault(x => x.RoleName == "Owner")?.MaxCount;
+                int? maxCount = this.roleModels.FirstOrDefault(x => x.Name == "Owner")?.MaxCount;
                 return new Role(roleType)
                 {
                     MaxCount = maxCount
@@ -47,7 +47,7 @@ namespace Services.Seeding.Seeder
             }
             else if (RoleType.Admin.Equals(roleType))
             {
-            int? maxCount = this.roleModels.FirstOrDefault(x => x.RoleName == "Admin")?.MaxCount;
+            int? maxCount = this.roleModels.FirstOrDefault(x => x.Name == "Admin")?.MaxCount;
                 return new Role(roleType)
                 {
                     MaxCount = maxCount
