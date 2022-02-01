@@ -32,6 +32,12 @@ namespace Web.Controllers
         public override ActionResult<object> Profile()
         {
             AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.Claims.UserId);
+            if (response == null)
+            {
+                this.errors = this.GetErrors().UserNotFound;
+                return this.Unauthorized(errors);
+            }
+
             response.RoleName = this.Claims.RoleType.ToString();
 
             return response;
