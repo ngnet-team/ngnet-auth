@@ -10,7 +10,7 @@ using ApiModels.Auth;
 using Database;
 using Web;
 using Services.Base;
-using ApiModels;
+using ApiModels.Common;
 using Common.Json.Service;
 using Common;
 

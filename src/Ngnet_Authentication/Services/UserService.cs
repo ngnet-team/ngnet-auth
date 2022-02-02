@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ApiModels.Users;
 using Common;
@@ -74,7 +75,7 @@ namespace Services
         public async Task<ServiceResponseModel> ResetPassword(string userId)
         {
             string newPassword = Global.CreateRandom;
-            this.response = await this.Change(new ChangeRequestModel() 
+            this.response = await this.Change(new ChangeRequestModel()
             {
                 Id = userId,
                 Key = ChangableType.Password.ToString(),
@@ -138,7 +139,7 @@ namespace Services
         {
             ServiceResponseModel response = new ServiceResponseModel(null, null);
 
-            
+
 
             return response;
         }
