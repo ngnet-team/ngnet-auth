@@ -1,14 +1,13 @@
-﻿using AutoMapper;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 using Common;
 using Database.Models;
 using Mapper;
+using ApiModels.Users;
 
 namespace ApiModels.Auth
 {
-    public class RegisterRequestModel : IMapTo<User>
+    public class RegisterRequestModel : UserOptionalModel, IMapTo<User>
     {
         [Required]
         [EmailAddress]
@@ -26,21 +25,5 @@ namespace ApiModels.Auth
         [Required]
         [MinLength(Global.PasswordMinLength), MaxLength(Global.PasswordMaxLength)]
         public string RepeatPassword { get; set; }
-
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Gender { get; set; }
-
-        [Range(Global.AgeMin, Global.AgeMax)]
-        public int? Age { get; set; }
-
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<RegisterRequestModel, User>()
-                .ForMember(x => x.PasswordHash, opt => opt.MapFrom(x => Hash.CreatePassword(x.Password)))// Don't work?
-                .ForMember(x => x.CreatedOn, opt => opt.MapFrom(x => DateTime.UtcNow));
-        }
     }
 }

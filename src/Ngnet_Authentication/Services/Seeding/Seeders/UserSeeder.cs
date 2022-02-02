@@ -1,11 +1,10 @@
-﻿using Common;
+﻿using System.Linq;
+using System.Threading.Tasks;
+
+using Common;
 using Common.Enums;
 using Database;
 using Database.Models;
-using Mapper;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Services.Seeding.Seeder
 {
@@ -24,11 +23,6 @@ namespace Services.Seeding.Seeder
         public async Task SeedAsync(NgnetAuthDbContext database)
         {
             this.database = database;
-
-            if (this.owners == null)
-            {
-                return;
-            }
 
             foreach (var owner in this.owners)
             {
@@ -49,20 +43,28 @@ namespace Services.Seeding.Seeder
                 return;
 
             Role role = this.database.Roles.FirstOrDefault(x => x.Type == roleType);
-            //user = MappingFactory.Mapper.Map<User>(u);
-            //user.CreatedOn = DateTime.UtcNow;
-            //user.Role = role;
+
+            Address address = new Address();
+            await this.database.Addresses.AddAsync(address);
+
+            Contact contact = new Contact();
+            await this.database.Contacts.AddAsync(contact);
+
             user = new User()
             {
+                RoleId = role.Id,
                 Email = u.Email,
                 Username = u.Username,
-                FirstName = u.FirstName,
-                PasswordHash = Hash.CreatePassword(u.Password),
-                LastName = u.LastName,
-                CreatedOn = DateTime.UtcNow,
-                RoleId = role.Id,
+                PasswordHash = Hash.CreatePassword(u?.Password),
+                //Optional
+                FirstName = u?.FirstName,
+                MiddleName = u?.MiddleName,
+                LastName = u?.LastName,
+                Gender = Global.GetGender(u?.Gender),
+                Age = u?.Age,
+                AddressId = address.Id,
+                ContactId = contact.Id,
             };
-
             await this.database.Users.AddAsync(user);
         }
     }

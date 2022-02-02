@@ -3,7 +3,7 @@ using Mapper;
 
 namespace ApiModels.Users
 {
-    public class UserResponseModel : IMapFrom<User>
+    public class UserResponseModel :  IMapFrom<User>
     {
         public string Email { get; set; }
 

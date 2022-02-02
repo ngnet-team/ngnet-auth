@@ -48,12 +48,34 @@ namespace Services
             if (role == null)
                 return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
 
-            User user = MappingFactory.Mapper.Map<User>(model);
-            //Should be auto mapped
-            user.RoleId = role.Id;
-            user.PasswordHash = Hash.CreatePassword(model.Password);
+            Address address = new Address()
+            {
+                Country = model?.Address?.Country,
+                City = model?.Address?.City,
+                Str = model?.Address?.Str,
+            };
+            await this.database.Addresses.AddAsync(address);
 
+            Contact contact = new Contact();
+            await this.database.Contacts.AddAsync(contact);
+
+            User user = new User()
+            {
+                RoleId = role.Id,
+                Email = model.Email,
+                Username = model.Username,
+                PasswordHash = Hash.CreatePassword(model?.Password),
+                //Optional
+                FirstName = model.FirstName,
+                MiddleName = model.MiddleName,
+                LastName = model.LastName,
+                Gender = Global.GetGender(model?.Gender),
+                Age = model?.Age,
+                AddressId = address.Id,
+                ContactId = contact.Id,
+            };
             await this.database.Users.AddAsync(user);
+
             await this.database.SaveChangesAsync();
 
             return new ServiceResponseModel(null, this.GetSuccessMsg().Registered);
@@ -111,7 +133,7 @@ namespace Services
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
-            user.Experiences.Add(exp);
+            user.Entries.Add(exp);
             await this.database.SaveChangesAsync();
 
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);

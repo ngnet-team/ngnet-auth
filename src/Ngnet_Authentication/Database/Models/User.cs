@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using Common;
@@ -8,26 +7,17 @@ using Database.Models.Base;
 
 namespace Database.Models
 {
-    public class User : BaseModel<string>
+    public class User : Account
     {
         public User()
         {
-            this.Id = Guid.NewGuid().ToString();
-            this.Experiences = new HashSet<Entry>();
         }
-
-        public string RoleId { get; set; }
-
-        [MinLength(Global.EmailMinLength), MaxLength(Global.EmailMaxLength)]
-        public string Email { get; set; }
-
-        [MinLength(Global.UsernameMinLength), MaxLength(Global.UsernameMaxLength)]
-        public string Username { get; set; }
-
-        public string PasswordHash { get; set; }
 
         [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
         public string FirstName { get; set; }
+
+        [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
+        public string MiddleName { get; set; }
 
         [MinLength(Global.NameMinLength), MaxLength(Global.NameMaxLength)]
         public string LastName { get; set; }
@@ -35,8 +25,10 @@ namespace Database.Models
         public GenderType? Gender { get; set; }
 
         [Range(Global.AgeMin, Global.AgeMax)]
-         public int? Age { get; set; }
+        public int? Age { get; set; }
 
-        public ICollection<Entry> Experiences { get; set; }
+        public string AddressId { get; set; }
+
+        public string ContactId { get; set; }
     }
 }
