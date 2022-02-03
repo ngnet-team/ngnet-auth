@@ -28,12 +28,6 @@ namespace Web.Controllers
 
         protected override RoleType RoleRequired { get; } = RoleType.User;
 
-        [HttpGet(nameof(GetRole))]
-        public override ActionResult<string> GetRole()
-        {
-            return this.userService.GetUserRole(this.GetUser()).Type.ToString();
-        }
-
         [HttpGet(nameof(Profile))]
         public virtual ActionResult<object> Profile()
         {
