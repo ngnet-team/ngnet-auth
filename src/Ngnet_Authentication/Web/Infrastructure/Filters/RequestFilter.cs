@@ -10,6 +10,7 @@ using Common;
 using Common.Enums;
 using Web.Infrastructure.Models;
 using ApiModels.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace Web.Infrastructure.Filters
 {
@@ -90,7 +91,13 @@ namespace Web.Infrastructure.Filters
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
-        {   
+        {
+            if (String.IsNullOrEmpty(this.token))
+                return;
+
+            string cookieKey = "NgNet.Auth";
+            context.HttpContext.Response.Cookies.Append(cookieKey, this.token,
+                new CookieOptions { Expires = DateTime.Now.AddDays(30) });
         }
 
         private bool NullsOnly(object instance)
