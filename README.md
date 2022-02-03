@@ -23,15 +23,9 @@ Role types:
 
 Account properties:
 
-`	`Required: Email, Username, Password
-
-`	`Optional: FirstName, LastName, MiddleName, Gender, Age,
-
-Address: {Country, City, Str},
-
-Contact: {Mobile, Email, Website, Facebook, Instagram, TikTok, Youtube,    Twitter},
-
-`	`Base: CreatedOn, ModifiedOn, DeletedOn, IsDeleted
+- **Required**: Email, Username, Password
+- **Optional**: FirstName, LastName, MiddleName, Gender, Age, Address: {Country, City, Str}, Contact: {Mobile, Email, Website, Facebook, Instagram, TikTok, Youtube, Twitter}
+- **Base**: CreatedOn, ModifiedOn, DeletedOn, IsDeleted
 
 
 
@@ -61,7 +55,7 @@ Contact: {Mobile, Email, Website, Facebook, Instagram, TikTok, Youtube,    Twitt
 |Register|POST|**No**|Email, Username, Password, RepeatPassword + Optional proparties|Successful message|
 |Login|POST|**No**|Username, Password|Successful message|
 ||||||
-|User Endpoints|Method|JWT|Body| |
+|User Endpoints|Method|JWT|Body|Response|
 |Profile|GET|**Yes**|` `- |Email, Username, CreatedOn, All Optional Properties|
 |Logout|GET|**Yes**|` `- |Successful message|
 |Update|POST|**Yes**|An account optional property|Successful message|
@@ -70,10 +64,10 @@ Contact: {Mobile, Email, Website, Facebook, Instagram, TikTok, Youtube,    Twitt
 |Delete|GET|**Yes**|` `- |Successful message|
 |DeleteAccount|GET|**Yes**|` `- |Successful message|
 ||||||
-|Member Extends User Endpoints|Method|JWT|Body| |
+|Member Extends User Endpoints|Method|JWT|Body|Response|
 |No more actions|` `-|` `-|` `-|` `-|
 ||||||
-|Admin Extends Member Endpoints|Method|JWT|Body| |
+|Admin Extends Member Endpoints|Method|JWT|Body|Response|
 |Profile|GET|**Yes**|` `- |Id, RoleName, Entries, BaseModels|
 |Update|POST|**Yes**|Id - update other account (optional)|Successful message|
 |Change (Email/Password/Username)|POST|**Yes**|Id - update other account (optional)|Successful message|
@@ -84,7 +78,7 @@ Contact: {Mobile, Email, Website, Facebook, Instagram, TikTok, Youtube,    Twitt
 |GetRoles|GET|**Yes**|` `- |An array of [ Id, Name, MaxCount, BaseModels ]|
 |GetEntries|GET|**Yes**|` `- |An array of entries [ UserId, Username, Login, CreatedOn ]|
 ||||||
-|Owner Extends Admin Endpoints|Method|JWT|Body| |
+|Owner Extends Admin Endpoints|Method|JWT|Body|Response|
 |SetRoleCounts|POST|**Yes**|Name, MaxCount|Successful message|
 
 Constraints:
