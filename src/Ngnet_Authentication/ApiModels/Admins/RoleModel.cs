@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
 
 using Database.Models;
 using Mapper;
@@ -21,11 +20,5 @@ namespace ApiModels.Admins
         public DateTime? DeletedOn { get; set; }
 
         public bool IsDeleted { get; set; }
-
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<Role, RoleModel>()
-                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Type.ToString())); // Do not work??
-        }
     }
 }

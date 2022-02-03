@@ -214,10 +214,6 @@ namespace Services
                     user.Gender = updateModel.Gender == null ? user.Gender : gender;
 
                 user.Age = updateModel.Age == null ? user.Age : updateModel.Age;
-
-                user.IsDeleted = updateModel.IsDeleted; 
-                if (updateModel.IsDeleted)
-                    user.DeletedOn = DateTime.UtcNow;
             }
             //Changable entities
             else if (!Global.NullableObject(changeModel))
