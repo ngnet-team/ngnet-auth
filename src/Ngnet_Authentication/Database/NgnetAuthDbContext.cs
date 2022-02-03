@@ -16,6 +16,10 @@ namespace Database
 
         public DbSet<Entry> Entries { get; set; }
 
+        public DbSet<Address> Addresses { get; set; }
+
+        public DbSet<Contact> Contacts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             

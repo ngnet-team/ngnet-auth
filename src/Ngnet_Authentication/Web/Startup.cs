@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
 
-using ApiModels;
+using ApiModels.Common;
 using Database;
 using Mapper;
 using Web.Infrastructure;

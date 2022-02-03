@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Enums;
+using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -85,6 +86,20 @@ namespace Common
             }
 
             return false;
+        }
+
+        public static GenderType GetGender(string gender)
+        {
+            if (gender == null)
+                return GenderType.Undefined;
+
+            GenderType genderType;
+            bool valid = Enum.TryParse<GenderType>(gender, out genderType);
+
+            if (!valid)
+                return GenderType.Undefined;
+
+            return genderType;
         }
     }
 }

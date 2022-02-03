@@ -30,6 +30,12 @@ namespace Web.Controllers
         public override ActionResult<object> Profile()
         {
             OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.Claims.UserId);
+            if (response == null)
+            {
+                this.errors = this.GetErrors().UserNotFound;
+                return this.Unauthorized(errors);
+            }
+
             response.RoleName = this.Claims.RoleType.ToString();
 
             return response;

@@ -9,6 +9,8 @@ using ApiModels.Auth;
 using Common;
 using Common.Enums;
 using Web.Infrastructure.Models;
+using ApiModels.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace Web.Infrastructure.Filters
 {
@@ -31,7 +33,7 @@ namespace Web.Infrastructure.Filters
                 var body = context.ActionArguments.FirstOrDefault().Value;
                 if (this.NullsOnly(body))
                 {
-                    context.Result = new BadRequestObjectResult("No body");
+                    context.Result = new BadRequestObjectResult(new ServerErrorModel("No body"));
                     return;
                 }
             }
@@ -43,14 +45,14 @@ namespace Web.Infrastructure.Filters
             ActionPath action = this.GetPath(context.ActionDescriptor.DisplayName);
             if (action == null)
             {
-                context.Result = new BadRequestObjectResult("No action path");
+                context.Result = new BadRequestObjectResult(new ServerErrorModel("No action path"));
                 return;
             }
             RoleType roleInvoked;
             bool validRole = Enum.TryParse<RoleType>(action.Controller, true, out roleInvoked);
             if (!validRole)
             {
-                context.Result = new UnauthorizedObjectResult("Invalid role in url");
+                context.Result = new UnauthorizedObjectResult(new ServerErrorModel("Invalid role in url"));
                 return;
             }
             //Guest
@@ -59,7 +61,7 @@ namespace Web.Infrastructure.Filters
                 //Token exists
                 if (!string.IsNullOrEmpty(this.token))
                 {
-                    context.Result = new BadRequestObjectResult("Logout first");
+                    context.Result = new BadRequestObjectResult(new ServerErrorModel("Logout first"));
                     return;
                 }
             }
@@ -68,7 +70,7 @@ namespace Web.Infrastructure.Filters
             {
                 if (action.Method == "Login" || action.Method == "Register")
                 {
-                    context.Result = new BadRequestObjectResult("Logout first");
+                    context.Result = new BadRequestObjectResult(new ServerErrorModel("Logout first"));
                     return;
                 }
 
@@ -78,7 +80,7 @@ namespace Web.Infrastructure.Filters
                 //token role has no permissions to invoked controller
                 if (roleInvoked < claims.RoleType)
                 {
-                    context.Result = new UnauthorizedObjectResult("Invalid role in url");
+                    context.Result = new UnauthorizedObjectResult(new ServerErrorModel("Invalid role in url"));
                     return;
                 }
 
@@ -89,7 +91,13 @@ namespace Web.Infrastructure.Filters
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
-        {   
+        {
+            if (String.IsNullOrEmpty(this.token))
+                return;
+
+            string cookieKey = "NgNet.Auth";
+            context.HttpContext.Response.Cookies.Append(cookieKey, this.token,
+                new CookieOptions { Expires = DateTime.Now.AddDays(30) });
         }
 
         private bool NullsOnly(object instance)
@@ -102,7 +110,7 @@ namespace Web.Infrastructure.Filters
             //No token
             if (string.IsNullOrEmpty(this.token))
             {
-                context.Result = new UnauthorizedObjectResult("No jwt token");
+                context.Result = new UnauthorizedObjectResult(new ServerErrorModel("No jwt token"));
                 return null;
             }
 

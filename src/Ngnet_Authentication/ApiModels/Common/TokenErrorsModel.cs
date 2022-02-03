@@ -1,6 +1,6 @@
 ﻿using Common.Json.Models;
 
-namespace ApiModels
+namespace ApiModels.Common
 {
     public class TokenErrorsModel
     {

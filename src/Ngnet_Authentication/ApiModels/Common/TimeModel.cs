@@ -1,4 +1,4 @@
-﻿namespace ApiModels
+﻿namespace ApiModels.Common
 {
     public class TimeModel
     {

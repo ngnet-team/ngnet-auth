@@ -4,7 +4,7 @@ namespace ApiModels.Owners
 {
     public class RoleModel
     {
-        public string RoleName { get; set; }
+        public string Name { get; set; }
 
         public int? MaxCount { get; set; }
 

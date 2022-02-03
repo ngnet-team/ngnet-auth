@@ -37,25 +37,23 @@ namespace Services.Seeding.Seeder
 
         private Role CreateRole(RoleType roleType)
         {
+            Role role = new Role(roleType);
+
             if (RoleType.Owner.Equals(roleType))
             {
-                int? maxCount = this.roleModels.FirstOrDefault(x => x.RoleName == "Owner")?.MaxCount;
-                return new Role(roleType)
-                {
-                    MaxCount = maxCount
-                };
+                int? maxCount = this.roleModels.FirstOrDefault(x => x.Name == "Owner")?.MaxCount;
+                role.MaxCount = maxCount;
+                return role;
             }
             else if (RoleType.Admin.Equals(roleType))
             {
-            int? maxCount = this.roleModels.FirstOrDefault(x => x.RoleName == "Admin")?.MaxCount;
-                return new Role(roleType)
-                {
-                    MaxCount = maxCount
-                };
+                int? maxCount = this.roleModels.FirstOrDefault(x => x.Name == "Admin")?.MaxCount;
+                role.MaxCount = maxCount;
+                return role;
             }
             else
             {
-                return new Role(roleType);
+                return role;
             }
         }
     }

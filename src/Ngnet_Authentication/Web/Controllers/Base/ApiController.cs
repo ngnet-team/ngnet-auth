@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-using ApiModels;
+using ApiModels.Common;
 using ApiModels.Auth;
 using Common;
 using Common.Json.Service;

@@ -8,6 +8,9 @@ namespace Common
     {
         public static string CreatePassword(string password)
         {
+            if (password == null)
+                return null;
+
             byte[] data = Encoding.UTF8.GetBytes(password);
 
             using (SHA512 shaM = new SHA512Managed())
