@@ -32,14 +32,14 @@ namespace Web.Controllers.Base
 
         protected abstract RoleType RoleRequired { get; }
 
-        protected ErrorMessagesModel GetErrors()
+        protected ClientErrorModel GetErrors()
         {
-            return this.jsonService.Deserialiaze<ErrorMessagesModel>(Paths.ErrorMessages);
+            return this.jsonService.Deserialiaze<ClientErrorModel>(Paths.ClientErrors);
         }
 
-        protected SuccessMessagesModel GetSuccessMsg()
+        protected ClientSuccessModel GetSuccessMsg()
         {
-            return this.jsonService.Deserialiaze<SuccessMessagesModel>(Paths.SuccessMessages);
+            return this.jsonService.Deserialiaze<ClientSuccessModel>(Paths.ClientSuccess);
         }
 
         // ------------------- Private -------------------

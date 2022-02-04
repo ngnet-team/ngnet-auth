@@ -1,0 +1,8 @@
+﻿{
+  "CookieKey": "NgNet.authorization.token",
+  "TokenExpires": 30, // Days
+  "AuthHeaderKey": "Authorization",
+  "AuthHeaderPreValue": "Bearer",
+  "HashBytes": 10,
+  "EmailPattern": "^[w-.]+@([w-]+.)+[w-]{2,4}$" //TODO: needs to be upgraded, copied from: regexr.com/3e48o
+}

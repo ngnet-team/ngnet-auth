@@ -118,7 +118,7 @@ namespace Services
                     new Claim(ClaimTypes.Name, tokenModel.Username),
                     new Claim(ClaimTypes.Role, tokenModel.RoleName),
                 }),
-                Expires = DateTime.UtcNow.AddDays(Global.JwtTokenExpires),
+                Expires = DateTime.UtcNow.AddDays(Global.Constants.TokenExpires),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

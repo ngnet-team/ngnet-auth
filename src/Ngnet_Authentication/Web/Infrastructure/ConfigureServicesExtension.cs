@@ -77,7 +77,7 @@ namespace Web.Infrastructure
 
         public static IServiceCollection RegisterFilters(this IServiceCollection services, IConfiguration configuration)
         {
-            return services.AddMvc(opt => opt.Filters.Add(new RequestFilter(configuration))).Services;
+            return services.AddMvc(opt => opt.Filters.Add(new HttpFilter(configuration))).Services;
         }
     }
 }

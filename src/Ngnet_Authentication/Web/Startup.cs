@@ -33,7 +33,7 @@ namespace Web
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            MappingFactory.GenerateMapper(typeof(ErrorMessagesModel).GetTypeInfo().Assembly);
+            MappingFactory.GenerateMapper(typeof(ClientErrorModel).GetTypeInfo().Assembly);
 
             if (env.IsDevelopment())
             {

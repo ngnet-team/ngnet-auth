@@ -4,12 +4,12 @@ namespace ApiModels.Common
 {
     public class TokenErrorsModel
     {
-        public LanguagesModel InvalidSecretKey { get; set; }
+        public ResponseMessage InvalidSecretKey { get; set; }
 
-        public LanguagesModel Expired { get; set; }
+        public ResponseMessage Expired { get; set; }
 
-        public LanguagesModel IvalidRole { get; set; }
+        public ResponseMessage IvalidRole { get; set; }
 
-        public LanguagesModel InvalidUser { get; set; }
+        public ResponseMessage InvalidUser { get; set; }
     }
 }

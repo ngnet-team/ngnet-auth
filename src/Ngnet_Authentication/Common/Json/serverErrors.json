@@ -1,0 +1,29 @@
+﻿{
+  "MissingBody": {
+    "EN": "The body is missing!"
+  },
+  "MissingToken": {
+    "EN": "There's no token'!"
+  },
+  "InvalidSecretKey": {
+    "EN": "The application key is invalid!"
+  },
+  "InvalidToken": {
+    "EN": "The JWT is invalid!"
+  },
+  "TokenExpired": {
+    "EN": "The authentication token is expired!"
+  },
+  "IvalidRole": {
+    "EN": "The role is invalid!"
+  },
+  "InvalidUser": {
+    "EN": "The user is invalid!"
+  },
+  "NotParsedAction": {
+    "EN": "The action can't be parsed!"
+  },
+  "LoggoutFirst": {
+    "EN": "You are already logged in, please log out first!"
+  }
+}

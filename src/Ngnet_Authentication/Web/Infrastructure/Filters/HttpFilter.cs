@@ -9,17 +9,19 @@ using ApiModels.Auth;
 using Common;
 using Common.Enums;
 using Web.Infrastructure.Models;
-using ApiModels.Common;
 using Microsoft.AspNetCore.Http;
+using Common.Json.Models;
 
 namespace Web.Infrastructure.Filters
 {
-    public class RequestFilter : IActionFilter
+    public class HttpFilter : IActionFilter
     {
+        private static ConstantsModel constants = Global.Constants;
+        private static ServerErrorsModel serverErrors = Global.ServerErrors;
         private string token;
         private readonly AppSettings appSettings;
 
-        public RequestFilter(IConfiguration configuration)
+        public HttpFilter(IConfiguration configuration)
         {
             this.appSettings = configuration.Get<AppSettings>();
         }
@@ -33,26 +35,26 @@ namespace Web.Infrastructure.Filters
                 var body = context.ActionArguments.FirstOrDefault().Value;
                 if (this.NullsOnly(body))
                 {
-                    context.Result = new BadRequestObjectResult(new ServerErrorModel("No body"));
+                    context.Result = new BadRequestObjectResult(serverErrors.MissingBody);
                     return;
                 }
             }
             //Get JWT token
             this.token = context.HttpContext.Request.Headers
-                .FirstOrDefault(x => x.Key == "Authorization").Value
-                .ToString().Replace("Bearer", "").Trim();
+                .FirstOrDefault(x => x.Key == constants.AuthHeaderKey).Value
+                .ToString().Replace(constants.AuthHeaderPreValue, "").Trim();
             //Get invoked controller name/role name
             ActionPath action = this.GetPath(context.ActionDescriptor.DisplayName);
             if (action == null)
             {
-                context.Result = new BadRequestObjectResult(new ServerErrorModel("No action path"));
+                context.Result = new BadRequestObjectResult(serverErrors.NotParsedAction);
                 return;
             }
             RoleType roleInvoked;
             bool validRole = Enum.TryParse<RoleType>(action.Controller, true, out roleInvoked);
             if (!validRole)
             {
-                context.Result = new UnauthorizedObjectResult(new ServerErrorModel("Invalid role in url"));
+                context.Result = new UnauthorizedObjectResult(serverErrors.IvalidRole);
                 return;
             }
             //Guest
@@ -61,7 +63,7 @@ namespace Web.Infrastructure.Filters
                 //Token exists
                 if (!string.IsNullOrEmpty(this.token))
                 {
-                    context.Result = new BadRequestObjectResult(new ServerErrorModel("Logout first"));
+                    context.Result = new BadRequestObjectResult(serverErrors.LoggoutFirst);
                     return;
                 }
             }
@@ -70,7 +72,7 @@ namespace Web.Infrastructure.Filters
             {
                 if (action.Method == "Login" || action.Method == "Register")
                 {
-                    context.Result = new BadRequestObjectResult(new ServerErrorModel("Logout first"));
+                    context.Result = new BadRequestObjectResult(serverErrors.LoggoutFirst);
                     return;
                 }
 
@@ -80,7 +82,7 @@ namespace Web.Infrastructure.Filters
                 //token role has no permissions to invoked controller
                 if (roleInvoked < claims.RoleType)
                 {
-                    context.Result = new UnauthorizedObjectResult(new ServerErrorModel("Invalid role in url"));
+                    context.Result = new UnauthorizedObjectResult(serverErrors.IvalidRole);
                     return;
                 }
 
@@ -95,9 +97,8 @@ namespace Web.Infrastructure.Filters
             if (String.IsNullOrEmpty(this.token))
                 return;
 
-            string cookieKey = "NgNet.Auth";
-            context.HttpContext.Response.Cookies.Append(cookieKey, this.token,
-                new CookieOptions { Expires = DateTime.Now.AddDays(30) });
+            context.HttpContext.Response.Cookies.Append(constants.CookieKey, this.token,
+                new CookieOptions { Expires = DateTime.Now.AddDays(constants.TokenExpires) });
         }
 
         private bool NullsOnly(object instance)
@@ -110,7 +111,7 @@ namespace Web.Infrastructure.Filters
             //No token
             if (string.IsNullOrEmpty(this.token))
             {
-                context.Result = new UnauthorizedObjectResult(new ServerErrorModel("No jwt token"));
+                context.Result = new UnauthorizedObjectResult(serverErrors.MissingToken);
                 return null;
             }
 
@@ -121,14 +122,14 @@ namespace Web.Infrastructure.Filters
             string appName = this.ReadSecretKey(secretKey);
             if (string.IsNullOrEmpty(appName))
             {
-                context.Result = new UnauthorizedObjectResult("No secret key");
+                context.Result = new UnauthorizedObjectResult(serverErrors.InvalidSecretKey);
                 return null;
             }
             //Check if token is expired
             bool expired = tokenHandler.ValidTo.Date < DateTime.UtcNow;
             if (expired)
             {
-                context.Result = new UnauthorizedObjectResult("Token has been expired");
+                context.Result = new UnauthorizedObjectResult(serverErrors.TokenExpired);
                 return null;
             }
             //Get role from token
@@ -136,7 +137,7 @@ namespace Web.Infrastructure.Filters
             bool validRole = Enum.TryParse(claims.FirstOrDefault(x => x.Type == "role")?.Value, out roleType);
             if (!validRole)
             {
-                context.Result = new UnauthorizedObjectResult("Invalid role");
+                context.Result = new UnauthorizedObjectResult(serverErrors.IvalidRole);
                 return null;
             }
             //Assign claims
@@ -148,7 +149,7 @@ namespace Web.Infrastructure.Filters
             //Check all claims are assigned
             if (Global.AnyNullObject(claimModel))
             {
-                context.Result = new UnauthorizedObjectResult("Missing token parts");
+                context.Result = new UnauthorizedObjectResult(serverErrors.InvalidToken);
                 return null;
             }
 
