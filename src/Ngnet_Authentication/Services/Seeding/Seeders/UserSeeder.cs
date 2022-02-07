@@ -24,14 +24,20 @@ namespace Services.Seeding.Seeder
         {
             this.database = database;
 
-            foreach (var owner in this.owners)
+            if (this.owners != null)
             {
-                await this.SeedUser(owner, RoleType.Owner);
+                foreach (var owner in this.owners)
+                {
+                    await this.SeedUser(owner, RoleType.Owner);
+                }
             }
 
-            foreach (var admin in this.admins)
+            if (this.admins != null)
             {
-                await this.SeedUser(admin, RoleType.Admin);
+                foreach (var admin in this.admins)
+                {
+                    await this.SeedUser(admin, RoleType.Admin);
+                }
             }
         }
 
