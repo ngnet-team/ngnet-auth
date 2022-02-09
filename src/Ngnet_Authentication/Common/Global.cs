@@ -34,23 +34,21 @@ namespace Common
 
         public static bool EmailValidator(string emailAddress)
         {
-            // ------- Local validation ------- 
-            var matching = Regex.IsMatch(emailAddress, Constants.EmailPattern);
+            bool matching;
+            try
+            {
+                matching = Regex.IsMatch(emailAddress, Constants.EmailPattern);
+                if (!matching)
+                    return false;
+            }
+            catch (Exception) { return false; }
+                
             if (!matching)
                 return false;
 
-            return true; // need valid send grid api key before code below...
+            return true;
 
-            // ------- real email validation ------- 
-            //EmailSenderModel model = new EmailSenderModel(this.Admin.Email, emailAddress);
-            //Response response = await this.emailSenderService.EmailConfirmation(model);
-
-            //if (response == null || !response.IsSuccessStatusCode)
-            //{
-            //    return this.GetErrors().InvalidEmail;
-            //}
-
-            //return null;
+            //TODO: Add real email sender
         }
 
         public static bool NullableObject(object instance)

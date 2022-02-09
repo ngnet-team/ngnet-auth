@@ -206,6 +206,8 @@ namespace Services
             {
                 user.FirstName = updateModel.FirstName == null ? user.FirstName : updateModel.FirstName;
 
+                user.MiddleName = updateModel.MiddleName == null ? user.MiddleName : updateModel.MiddleName;
+
                 user.LastName = updateModel.LastName == null ? user.LastName : updateModel.LastName;
 
                 GenderType gender;
@@ -237,7 +239,6 @@ namespace Services
 
             user.ModifiedOn = DateTime.UtcNow;
             
-
             return user;
         }
 
