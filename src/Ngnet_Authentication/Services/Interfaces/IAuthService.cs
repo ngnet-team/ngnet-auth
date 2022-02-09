@@ -2,7 +2,6 @@
 
 using ApiModels.Auth;
 using ApiModels.Dtos;
-using ApiModels.Users;
 using Common.Enums;
 using Database.Models;
 using Services.Base;
@@ -19,9 +18,9 @@ namespace Services.Interfaces
 
         public Task<ServiceResponseModel> AddEntry(Entry exp);
 
-        public UserDto GetUserById(string id);
+        public UserDto GetUserDtoById(string id, bool allowDeleted = false);
 
-        public UserDto GetUserByUsername(string username);
+        public UserDto GetUserDtoByUsername(string username, bool allowDeleted = false);
 
         public Role GetUserRole(UserDto userDto);
 

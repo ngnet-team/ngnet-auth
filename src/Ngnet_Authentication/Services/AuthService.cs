@@ -84,7 +84,7 @@ namespace Services
         public async Task<ServiceResponseModel> Login(LoginRequestModel model)
         {
             //Username does Not exist
-            User user = this.GetUser(null, model.Username);
+            User user = this.GetUserByUsername(model.Username);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().InvalidUsername, null);
             //Invalid password
@@ -129,7 +129,7 @@ namespace Services
 
         public async Task<ServiceResponseModel> AddEntry(Entry exp)
         {
-            User user = this.GetUser(exp.UserId);
+            User user = this.GetUserById(exp.UserId);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
@@ -139,20 +139,28 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
-        public UserDto GetUserById(string id)
+        public UserDto GetUserDtoById(string id, bool allowDeleted = false)
         {
-            return this.database.Users
-                .Where(x => x.Id == id)
-                .Where(x => !x.IsDeleted)
+            IQueryable<User> user = this.database.Users
+                .Where(x => x.Id == id);
+
+            if (!allowDeleted)
+                user.Where(x => !x.IsDeleted);
+
+            return user
                 .To<UserDto>()
                 .FirstOrDefault();
         }
 
-        public UserDto GetUserByUsername(string username)
+        public UserDto GetUserDtoByUsername(string username, bool allowDeleted = false)
         {
-            return this.database.Users
-                .Where(x => x.Username == username)
-                .Where(x => !x.IsDeleted)
+            IQueryable<User> user = this.database.Users
+                .Where(x => x.Username == username);
+
+            if (!allowDeleted)
+                user.Where(x => !x.IsDeleted);
+
+            return user
                 .To<UserDto>()
                 .FirstOrDefault();
         }
@@ -186,17 +194,26 @@ namespace Services
 
         // ------------------- Protected ------------------- 
 
-        protected User GetUser(string id, string username = null)
+        protected User GetUserById(string id, bool allowDeleted = false)
         {
-            var users = this.database.Users
-                .Where(x => !x.IsDeleted);
+            IQueryable<User> user = this.database.Users
+                .Where(x => x.Id == id);
 
-            if (id != null)
-                users = users.Where(x => x.Id == id);
-            else
-                users = users.Where(x => x.Username == username);
+            if (!allowDeleted)
+                user.Where(x => !x.IsDeleted);
 
-            return users.FirstOrDefault();
+            return user.FirstOrDefault();
+        }
+
+        protected User GetUserByUsername(string username, bool allowDeleted = false)
+        {
+            IQueryable<User> user = this.database.Users
+                .Where(x => x.Username == username);
+
+            if (!allowDeleted)
+                user.Where(x => !x.IsDeleted);
+
+            return user.FirstOrDefault();
         }
 
         protected User ModifyEntity(User user, UpdateRequestModel updateModel, ChangeRequestModel changeModel)
@@ -298,7 +315,7 @@ namespace Services
 
         private bool ValidUsername(RegisterRequestModel model)
         {
-            User user = this.GetUser(null, model.Username);
+            User user = this.GetUserByUsername(model.Username);
             if (user != null)
                 return false;
 

@@ -7,6 +7,6 @@ namespace Services.Interfaces
 {
     public interface IOwnerService : IAdminService
     {
-        public Task<ServiceResponseModel> SetMaxRoles(RoleModel[] models);
+        public Task<ServiceResponseModel> SetMaxRoles(RoleModel model);
     }
 }

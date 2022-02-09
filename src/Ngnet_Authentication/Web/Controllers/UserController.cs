@@ -109,8 +109,8 @@ namespace Web.Controllers
 
         protected UserDto GetUser(string userId = null)
         {
-            return this.userService.GetUserById(userId) ??
-                   this.userService.GetUserById(this.Claims.UserId);
+            return this.userService.GetUserDtoById(userId) ??
+                   this.userService.GetUserDtoById(this.Claims.UserId);
         }
 
         protected bool HasPermissionsToUser(UserDto userDto)

@@ -47,7 +47,7 @@ namespace Services
 
         public async Task<ServiceResponseModel> Delete(string userId) // Marked as deleted ONLY!
         {
-            User user = this.database.Users.FirstOrDefault(x => x.Id == userId);
+            User user = this.GetUserById(userId);
             if (user == null)
                 return new ServiceResponseModel(GetErrors().UserNotFound, null);
 
@@ -60,7 +60,7 @@ namespace Services
 
         public async Task<ServiceResponseModel> DeleteAccount(string userId) // PERMANENT deletion!
         {
-            User user = this.GetUser(userId);
+            User user = this.GetUserById(userId, true);
             if (user == null)
                 return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
 
@@ -90,7 +90,7 @@ namespace Services
 
         public async Task<ServiceResponseModel> Update(UpdateRequestModel model)
         {
-            User user = this.GetUser(model.Id);
+            User user = this.GetUserById(model.Id);
             this.response = this.ValidUpdateModel(model, user);
             if (this.response.Errors != null)
                 return this.response;
@@ -107,7 +107,7 @@ namespace Services
 
         public async Task<ServiceResponseModel> Change(ChangeRequestModel model)
         {
-            User user = this.GetUser(model.Id);
+            User user = this.GetUserById(model.Id);
             this.response = this.ValidChangeModel(model, user);
             if (this.response.Errors != null)
                 return this.response;
@@ -126,9 +126,17 @@ namespace Services
 
         protected async Task RemoveAllUserRelated(string userId)
         {
-            //Entries:
+            //Entries
             IQueryable<Entry> entries = this.database.Entries.Where(x => x.UserId == userId);
             this.database.Entries.RemoveRange(entries);
+            //Addresses
+            string addressId = this.GetUserById(userId)?.AddressId;
+            IQueryable<Address> addresses = this.database.Addresses.Where(x => x.Id == addressId);
+            this.database.Addresses.RemoveRange(addresses);
+            //Contacts
+            string contactId = this.GetUserById(userId)?.ContactId;
+            IQueryable<Contact> contacts = this.database.Contacts.Where(x => x.Id == contactId);
+            this.database.Contacts.RemoveRange(contacts);
 
             await this.database.SaveChangesAsync();
         }
