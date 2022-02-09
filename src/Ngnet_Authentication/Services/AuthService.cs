@@ -243,9 +243,6 @@ namespace Services
 
         protected bool ValidChange(ChangeRequestModel model, User user)
         {
-            //Both new ones should be equal
-            if (model.New != model.RepeatNew)
-                return false;
             //User Not Exists
             if (user == null || user.IsDeleted)
                 return false;
@@ -309,9 +306,7 @@ namespace Services
 
         private bool ValidPassword(RegisterRequestModel model)
         {
-            if (model.Password != model.RepeatPassword)
-                return false;
-
+            //Add password validation
             return true;
         }
 

@@ -15,10 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "Database\Databa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{EFF2A396-D76B-4CED-9E71-89D92A75665A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{65E60403-635B-4760-BF1E-4A8CB7176096}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Integration", "Tests.Integration\Tests.Integration.csproj", "{79D6B91C-D863-433D-8D1F-4D2D76E973BA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,14 +45,6 @@ Global
 		{EFF2A396-D76B-4CED-9E71-89D92A75665A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFF2A396-D76B-4CED-9E71-89D92A75665A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFF2A396-D76B-4CED-9E71-89D92A75665A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{65E60403-635B-4760-BF1E-4A8CB7176096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{65E60403-635B-4760-BF1E-4A8CB7176096}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{65E60403-635B-4760-BF1E-4A8CB7176096}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{65E60403-635B-4760-BF1E-4A8CB7176096}.Release|Any CPU.Build.0 = Release|Any CPU
-		{79D6B91C-D863-433D-8D1F-4D2D76E973BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{79D6B91C-D863-433D-8D1F-4D2D76E973BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{79D6B91C-D863-433D-8D1F-4D2D76E973BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{79D6B91C-D863-433D-8D1F-4D2D76E973BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

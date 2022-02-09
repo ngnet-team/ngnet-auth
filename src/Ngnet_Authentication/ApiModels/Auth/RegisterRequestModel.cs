@@ -21,9 +21,5 @@ namespace ApiModels.Auth
         [Required]
         [MinLength(Global.PasswordMinLength), MaxLength(Global.PasswordMaxLength)]
         public string Password { get; set; }
-
-        [Required]
-        [MinLength(Global.PasswordMinLength), MaxLength(Global.PasswordMaxLength)]
-        public string RepeatPassword { get; set; }
     }
 }
