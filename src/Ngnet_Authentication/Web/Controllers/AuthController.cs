@@ -18,7 +18,7 @@ namespace Web.Controllers
     {
         protected IAuthService authService;
         protected IEmailSenderService emailSenderService;
-        protected LanguagesModel errors;
+        protected ResponseMessage errors;
 
         public AuthController
             (IAuthService authService,

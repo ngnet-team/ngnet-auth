@@ -6,6 +6,6 @@ namespace ApiModels.Auth
     {
         public string Token { get; set; }
 
-        public LanguagesModel ResponseMessage { get; set; }
+        public ResponseMessage ResponseMessage { get; set; }
     }
 }

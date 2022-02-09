@@ -118,7 +118,7 @@ namespace Services
                     new Claim(ClaimTypes.Name, tokenModel.Username),
                     new Claim(ClaimTypes.Role, tokenModel.RoleName),
                 }),
-                Expires = DateTime.UtcNow.AddDays(Global.JwtTokenExpires),
+                Expires = DateTime.UtcNow.AddDays(Global.Constants.TokenExpires),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -206,6 +206,8 @@ namespace Services
             {
                 user.FirstName = updateModel.FirstName == null ? user.FirstName : updateModel.FirstName;
 
+                user.MiddleName = updateModel.MiddleName == null ? user.MiddleName : updateModel.MiddleName;
+
                 user.LastName = updateModel.LastName == null ? user.LastName : updateModel.LastName;
 
                 GenderType gender;
@@ -237,15 +239,11 @@ namespace Services
 
             user.ModifiedOn = DateTime.UtcNow;
             
-
             return user;
         }
 
         protected bool ValidChange(ChangeRequestModel model, User user)
         {
-            //Both new ones should be equal
-            if (model.New != model.RepeatNew)
-                return false;
             //User Not Exists
             if (user == null || user.IsDeleted)
                 return false;
@@ -309,9 +307,7 @@ namespace Services
 
         private bool ValidPassword(RegisterRequestModel model)
         {
-            if (model.Password != model.RepeatPassword)
-                return false;
-
+            //Add password validation
             return true;
         }
 

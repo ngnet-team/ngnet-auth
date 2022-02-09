@@ -14,8 +14,5 @@ namespace ApiModels.Users
 
         [Required]
         public string New { get; set; }
-
-        [Required]
-        public string RepeatNew { get; set; }
     }
 }

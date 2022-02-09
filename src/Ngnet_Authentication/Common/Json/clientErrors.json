@@ -1,0 +1,46 @@
+﻿{
+  "NotEqualPasswords": {
+    "EN": "Both passwords should be equal!",
+    "BG": "Паролите трябва да бъдат еднакви!"
+  },
+  "InvalidEmail": {
+    "EN": "The email is invalid!",
+    "BG": "Невалиден имейл!"
+  },
+  "InvalidUsername": {
+    "EN": "The username is invalid!",
+    "BG": "Грешно потребителско име!"
+  },
+  "InvalidPassword": {
+    "EN": "The password is invalid!",
+    "BG": "Грешнa парола!"
+  },
+  "UserNotFound": {
+    "EN": "No user found!",
+    "BG": "Няма такъв потребител!"
+  },
+  "UsersNotFound": {
+    "EN": "No users found!",
+    "BG": "Не са намерени потребители!"
+  },
+  "ExistingUserName": {
+    "EN": "The Username is already taken!",
+    "BG": "Потребителското име е вече заето!"
+  },
+  "NoPermissions": {
+    "EN": "You do NOT have permissions!",
+    "BG": "Отказан достъп!"
+  },
+  "NotEqualFields": {
+    "EN": "Both fields should be equal!",
+    "BG": "Полетата трябва да бъдат еднакви!"
+  },
+  "AlreadyLoggedIn": {
+    "EN": "Please loggout first!",
+    "BG": "Моля, излезте от акаунта си преди това!"
+  },
+  "InvalidName": {
+    "EN": "The first or last name is invalid!",
+    "BG": "Първото или фамилното име са грешни!"
+  }
+}

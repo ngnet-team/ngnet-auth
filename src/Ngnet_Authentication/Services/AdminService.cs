@@ -51,7 +51,6 @@ namespace Services
             //Add entries and role names
             foreach (var user in users)
             {
-                user.Entries = this.GetEntries(user.Id);
                 user.RoleName = this.GetUserRole(new UserDto()
                 {
                     Id = user.Id

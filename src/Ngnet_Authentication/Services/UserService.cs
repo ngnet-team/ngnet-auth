@@ -78,7 +78,7 @@ namespace Services
             this.response = await this.Change(new ChangeRequestModel()
             {
                 Id = userId,
-                Key = ChangableType.Password.ToString(),
+                Key = ChangableType.Resetpassword.ToString(),
                 New = newPassword,
             });
 
@@ -162,6 +162,10 @@ namespace Services
             {
                 if (!this.ValidPassword(model, user))
                     response.Errors = this.GetErrors().InvalidPassword;
+            }
+            else if (ChangableType.Resetpassword.ToString().Equals(this.Capitalize(model.Key)))
+            {
+                //No need to validate this
             }
             else
             {

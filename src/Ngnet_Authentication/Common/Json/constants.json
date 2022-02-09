@@ -1,0 +1,8 @@
+﻿{
+  "CookieKey": "NgNet.authorization.token",
+  "TokenExpires": 30, // Days
+  "AuthHeaderKey": "Authorization",
+  "AuthHeaderPreValue": "Bearer",
+  "HashBytes": 10,
+  "EmailPattern": "^[a-z]{1,}[a-z0-9]{2,}@[a-z]{1,}[a-z0-9]{2,}.[a-z]{2,}[a-z0-9]{0,}$" //TODO: needs to be upgraded, custom
+}

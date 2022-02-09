@@ -1,15 +1,15 @@
 ﻿using Common.Enums;
+using Common.Json.Models;
 using System;
+using System.IO;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Common
 {
     public static class Global
     {
-        private const string EmailPattern = 
-            @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; //TODO: needs to be upgraded, copied from: regexr.com/3e48o
-
         public const int EmailMinLength = 8;
 
         public const int EmailMaxLength = 50;
@@ -30,31 +30,25 @@ namespace Common
     
         public const int AgeMax = 120;
 
-        public const int HashBytes = 10;
-
-        public const double JwtTokenExpires = 30; // Days
-
         public static string CreateRandom => Guid.NewGuid().ToString().Substring(0, PasswordMinLength);
 
         public static bool EmailValidator(string emailAddress)
         {
-            // ------- Local validation ------- 
-            var matching = Regex.IsMatch(emailAddress, EmailPattern);
+            bool matching;
+            try
+            {
+                matching = Regex.IsMatch(emailAddress, Constants.EmailPattern);
+                if (!matching)
+                    return false;
+            }
+            catch (Exception) { return false; }
+                
             if (!matching)
                 return false;
 
-            return true; // need valid send grid api key before code below...
+            return true;
 
-            // ------- real email validation ------- 
-            //EmailSenderModel model = new EmailSenderModel(this.Admin.Email, emailAddress);
-            //Response response = await this.emailSenderService.EmailConfirmation(model);
-
-            //if (response == null || !response.IsSuccessStatusCode)
-            //{
-            //    return this.GetErrors().InvalidEmail;
-            //}
-
-            //return null;
+            //TODO: Add real email sender
         }
 
         public static bool NullableObject(object instance)
@@ -100,6 +94,27 @@ namespace Common
                 return GenderType.Undefined;
 
             return genderType;
+        }
+
+        public static ConstantsModel Constants => Deserialiaze<ConstantsModel>(Paths.Constants);
+
+        public static ServerErrorsModel ServerErrors => Deserialiaze<ServerErrorsModel>(Paths.ServerErrors);
+
+        private static T Deserialiaze<T>(string fileName)
+        {
+            try
+            {
+                var jsonFile = File.ReadAllText(Paths.JsonDirectory + fileName);
+                return JsonSerializer.Deserialize<T>(jsonFile, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    ReadCommentHandling = JsonCommentHandling.Skip
+                });
+            }
+            catch (Exception)
+            {
+                return default(T);
+            }
         }
     }
 }
