@@ -120,7 +120,7 @@ namespace Web.Controllers
         [HttpPost(nameof(DeleteUser))]
         public async Task<ActionResult> DeleteUser(AdminRequestModel model)
         {
-            UserDto userDto = this.adminService.GetDeletableUser(model.Id);
+            UserDto userDto = this.adminService.GetUserDtoById(model.Id, true);
             if (!this.HasPermissionsToUser(userDto))
                 return this.Unauthorized(this.GetErrors().NoPermissions);
 
@@ -134,7 +134,7 @@ namespace Web.Controllers
         [HttpPost(nameof(DeleteUserAccount))]
         public async Task<ActionResult> DeleteUserAccount(AdminRequestModel model)
         {
-            UserDto userDto = this.adminService.GetDeletableUser(model.Id);
+            UserDto userDto = this.adminService.GetUserDtoById(model.Id, true);
             if (!this.HasPermissionsToUser(userDto))
                 return this.Unauthorized(this.GetErrors().NoPermissions);
 

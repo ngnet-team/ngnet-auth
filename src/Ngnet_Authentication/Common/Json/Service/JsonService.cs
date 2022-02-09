@@ -16,10 +16,7 @@ namespace Common.Json.Service
                     PropertyNameCaseInsensitive = true
                 });
             }
-            catch (Exception)
-            {
-                return default(T);
-            }
+            catch (Exception){ return default(T); }
         }
 
         public object Serialiaze<T>(string fileName, T model)

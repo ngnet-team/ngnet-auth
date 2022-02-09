@@ -14,7 +14,7 @@
   "TokenExpired": {
     "EN": "The authentication token is expired!"
   },
-  "IvalidRole": {
+  "InvalidRole": {
     "EN": "The role is invalid!"
   },
   "InvalidUser": {

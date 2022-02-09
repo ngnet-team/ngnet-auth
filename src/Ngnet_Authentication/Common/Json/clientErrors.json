@@ -42,5 +42,9 @@
   "InvalidName": {
     "EN": "The first or last name is invalid!",
     "BG": "Първото или фамилното име са грешни!"
+  },
+  "InvalidRole": {
+    "EN": "The role is invalid!",
+    "BG": "Ролята не е валидна!"
   }
 }

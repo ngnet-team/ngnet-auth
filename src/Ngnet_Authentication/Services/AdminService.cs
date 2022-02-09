@@ -26,7 +26,7 @@ namespace Services
         public async Task<ServiceResponseModel> ChangeRole(AdminRequestModel model)
         {
             //Valid user check
-            User user = this.GetUser(model.Id);
+            User user = this.GetUserById(model.Id, true);
             if (user == null)
                 return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
             //Permissions check
@@ -58,14 +58,6 @@ namespace Services
             }
 
             return users;
-        }
-
-        public UserDto GetDeletableUser(string userId)
-        {
-            return this.database.Users
-                .Where(x => x.Id == userId)
-                .To<UserDto>()
-                .FirstOrDefault(x => x.Id == userId);
         }
 
         public RoleModel[] GetRoles()
