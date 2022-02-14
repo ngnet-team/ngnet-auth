@@ -2,7 +2,7 @@
 using Database.Models;
 using Mapper;
 
-namespace Services.Seeding
+namespace Services.Seeding.Models
 {
     public class UserSeederModel : UserOptionalModel, IMapTo<User>
     {

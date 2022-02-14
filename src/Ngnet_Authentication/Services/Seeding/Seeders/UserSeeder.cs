@@ -5,38 +5,53 @@ using Common;
 using Common.Enums;
 using Database;
 using Database.Models;
+using Services.Seeding.Models;
 
 namespace Services.Seeding.Seeder
 {
     public class UserSeeder : ISeeder
     {
-        private readonly UserSeederModel[] owners;
-        private readonly UserSeederModel[] admins;
+        private readonly SeedingModel seeding;
         private NgnetAuthDbContext database;
 
-        public UserSeeder(UserSeederModel[] owners, UserSeederModel[] admins)
+        public UserSeeder(SeedingModel seeding)
         {
-            this.owners = owners;
-            this.admins = admins;
+            this.seeding = seeding;
         }
 
         public async Task SeedAsync(NgnetAuthDbContext database)
         {
             this.database = database;
 
-            if (this.owners != null)
+            if (this.seeding.Owners != null)
             {
-                foreach (var owner in this.owners)
+                foreach (var owner in this.seeding.Owners)
                 {
                     await this.SeedUser(owner, RoleType.Owner);
                 }
             }
 
-            if (this.admins != null)
+            if (this.seeding.Admins != null)
             {
-                foreach (var admin in this.admins)
+                foreach (var admin in this.seeding.Admins)
                 {
                     await this.SeedUser(admin, RoleType.Admin);
+                }
+            }
+
+            if (this.seeding.Members != null)
+            {
+                foreach (var owner in this.seeding.Members)
+                {
+                    await this.SeedUser(owner, RoleType.Member);
+                }
+            }
+
+            if (this.seeding.Users != null)
+            {
+                foreach (var admin in this.seeding.Users)
+                {
+                    await this.SeedUser(admin, RoleType.User);
                 }
             }
         }

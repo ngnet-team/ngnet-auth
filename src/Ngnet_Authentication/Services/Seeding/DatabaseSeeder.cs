@@ -1,6 +1,7 @@
 ﻿using ApiModels.Owners;
 using Common.Enums;
 using Database;
+using Services.Seeding.Models;
 using Services.Seeding.Seeder;
 using System;
 using System.Collections.Generic;
@@ -10,15 +11,13 @@ namespace Services.Seeding
 {
     public class DatabaseSeeder : ISeeder
     {
-        private readonly UserSeederModel[] owners;
-        private readonly UserSeederModel[] admins;
         private readonly ICollection<RoleModel> roleModels;
+        private readonly SeedingModel seeding;
 
-        public DatabaseSeeder(UserSeederModel[] owners, UserSeederModel[] admins)
+        public DatabaseSeeder(SeedingModel seeding)
         {
-            this.owners = owners;
-            this.admins = admins;
             this.roleModels = new HashSet<RoleModel>();
+            this.seeding = seeding;
         }
 
         public async Task SeedAsync(NgnetAuthDbContext dbContext)
@@ -33,7 +32,7 @@ namespace Services.Seeding
             var seeders = new List<ISeeder>
             {
                 new RoleSeeder(this.roleModels),
-                new UserSeeder(this.owners, this.admins),
+                new UserSeeder(this.seeding),
             };
 
             foreach (var seeder in seeders)
@@ -48,12 +47,12 @@ namespace Services.Seeding
             this.roleModels.Add(new RoleModel()
             {
                 Name = RoleType.Owner.ToString(),
-                MaxCount = this.owners?.Length,
+                MaxCount = this.seeding.Owners?.Length,
             });
             this.roleModels.Add(new RoleModel()
             {
                 Name = RoleType.Admin.ToString(),
-                MaxCount = this.admins?.Length,
+                MaxCount = this.seeding.Admins?.Length,
             });
         }
     }

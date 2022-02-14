@@ -64,7 +64,7 @@ namespace Services
             if (user == null)
                 return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
 
-            await this.RemoveAllUserRelated(user.Id);
+            await this.RemoveAllUserRelated(user);
 
             this.database.Users.Remove(user);
             await this.database.SaveChangesAsync();
@@ -124,19 +124,23 @@ namespace Services
 
         // ------------------ Protected ------------------
 
-        protected async Task RemoveAllUserRelated(string userId)
+        protected async Task RemoveAllUserRelated(User user)
         {
             //Entries
-            IQueryable<Entry> entries = this.database.Entries.Where(x => x.UserId == userId);
+            IQueryable<Entry> entries = this.database.Entries.Where(x => x.UserId == user.Id);
             this.database.Entries.RemoveRange(entries);
             //Addresses
-            string addressId = this.GetUserById(userId)?.AddressId;
+            string addressId = user?.AddressId;
             IQueryable<Address> addresses = this.database.Addresses.Where(x => x.Id == addressId);
             this.database.Addresses.RemoveRange(addresses);
             //Contacts
-            string contactId = this.GetUserById(userId)?.ContactId;
+            string contactId = user?.ContactId;
             IQueryable<Contact> contacts = this.database.Contacts.Where(x => x.Id == contactId);
             this.database.Contacts.RemoveRange(contacts);
+            //Rights
+            IQueryable<RightsChange> rights = this.database.RightsChanges
+                .Where(x => x.From == user.Id || x.To == user.Id);
+            this.database.RightsChanges.RemoveRange(rights);
 
             await this.database.SaveChangesAsync();
         }

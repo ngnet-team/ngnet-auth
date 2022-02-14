@@ -2,13 +2,12 @@
 
 using ApiModels.Admins;
 using Services.Base;
-using ApiModels.Dtos;
 
 namespace Services.Interfaces
 {
     public interface IAdminService : IMemberService
     {
-        public Task<ServiceResponseModel> ChangeRole(AdminRequestModel model);
+        public Task<ServiceResponseModel> ChangeRole(AdminRequestModel model, string currUser);
 
         public AdminResponseModel[] GetUsers(int? count = null);
 

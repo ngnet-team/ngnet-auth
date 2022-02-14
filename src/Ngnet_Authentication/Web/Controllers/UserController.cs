@@ -9,6 +9,7 @@ using Database.Models;
 using Services.Email;
 using Services.Interfaces;
 using ApiModels.Dtos;
+using System.Linq;
 
 namespace Web.Controllers
 {
@@ -113,19 +114,31 @@ namespace Web.Controllers
                    this.userService.GetUserDtoById(this.Claims.UserId);
         }
 
-        protected bool HasPermissionsToUser(UserDto userDto)
+        protected bool PermissionsToUser(string userId)
         {
             // No existing user
-            if (userDto == null)
+            if (userId == null)
                 return false;
             // Personal permission is always possible
-            if (this.Claims.UserId == userDto.Id)
+            if (this.Claims.UserId == userId)
                 return true;
 
-            Role userRole = this.userService.GetUserRole(userDto);
+            Role userRole = this.userService.GetUserRole(userId);
             RoleType currUserRole = this.Claims.RoleType;
             //Higher than the wanted user
             return currUserRole < userRole.Type;
+        }
+
+        protected bool SeededOwner(string userId = null)
+        {
+            string username = userId == null
+                ? this.Claims.Username // Gets from claims
+                : this.GetUser(userId).Username; // Gets from db
+
+            if (this.AppSettings.Owners.Any(x => x.Username == username))
+                return true;
+
+            return false;
         }
     }
 }

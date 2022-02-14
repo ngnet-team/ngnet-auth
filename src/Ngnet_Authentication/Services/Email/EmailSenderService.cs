@@ -53,15 +53,15 @@ namespace Services
 
         public async Task<Response> EmailConfirmation(EmailSenderModel model)
         {
-            var admin = this.configuration.GetSection("Admin").Get<UserSeederModel>();
-            EmailSenderModel mailModel = new EmailSenderModel(admin.Email, model.ToAddress)
-            {
-                FromName = admin.FirstName + " " + admin.LastName,
-                Subject = "Email confirmation message",
-                Content = "Please confirm your email by clicking the link below."
-            };
+            //var admin = this.configuration.GetSection("Admin").Get<UserSeederModel>();
+            //    EmailSenderModel mailModel = new EmailSenderModel(admin.Email, model.ToAddress)
+            //    {
+            //        FromName = admin.FirstName + " " + admin.LastName,
+            //        Subject = "Email confirmation message",
+            //        Content = "Please confirm your email by clicking the link below."
+            //    };
 
-            return await this.SendEmailAsync(mailModel);
+            return await this.SendEmailAsync(null);
         }
 
         public string GetTemplate(string fileName)

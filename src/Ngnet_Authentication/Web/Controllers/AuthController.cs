@@ -62,22 +62,11 @@ namespace Web.Controllers
             {
                 UserId = userDto.Id,
                 Username = userDto.Username,
-                RoleName = this.authService.GetUserRole(userDto).Type.ToString(),
+                RoleName = this.authService.GetUserRole(userDto.Id).Type.ToString(),
             };
             string token = this.authService.CreateJwtToken(tokenModel);
 
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };
-        }
-
-        // ---------------------- Protected ---------------------- 
-
-        protected bool SeededOwner()
-        {
-            string username = this.Claims.Username;
-            if (this.AppSettings.Owners.Any(x => x.Username == username))
-                return true;
-
-            return false;
         }
     }
 }

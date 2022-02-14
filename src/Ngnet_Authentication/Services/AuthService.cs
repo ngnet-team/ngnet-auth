@@ -165,10 +165,10 @@ namespace Services
                 .FirstOrDefault();
         }
 
-        public Role GetUserRole(UserDto userDto)
+        public Role GetUserRole(string userId)
         {
             User user = this.database.Users
-                .FirstOrDefault(x => x.Id == userDto.Id);
+                .FirstOrDefault(x => x.Id == userId);
 
             if (user == null)
                 return null;
@@ -270,15 +270,13 @@ namespace Services
 
         protected User AddUserToRole(User user, string roleName)
         {
-            //There's room for more roles or have permissions to do it.
-            if (this.CanAddRole(roleName) && this.HasPermissions(roleName))
-            {
-                Role role = this.GetRoleByString(roleName);
-                user.RoleId = role.Id;
-                return user;
-            }
+            //There's no room for more roles.
+            if (!this.CanAddRole(roleName))
+                return null;
 
-            return null;
+            Role role = this.GetRoleByString(roleName);
+            user.RoleId = role.Id;
+            return user;
         }
 
         // ------------------- Private ------------------- 
@@ -286,6 +284,9 @@ namespace Services
         private bool CanAddRole(string roleName)
         {
             Role role = this.GetRoleByString(roleName);
+            if (role == null)
+                return false;
+
             if (role?.MaxCount == null)
                 return true;
 
@@ -298,17 +299,6 @@ namespace Services
                 return false;
 
             return true;
-        }
-
-        private bool HasPermissions(string roleName)
-        {
-            Role role = this.GetRoleByString(roleName);
-            if (role == null)
-                return false;
-            if (this.RoleType == RoleType.Owner)
-                return true;
-
-            return (int)this.RoleType < (int)role.Type;
         }
 
         // ------ Request Validations ------

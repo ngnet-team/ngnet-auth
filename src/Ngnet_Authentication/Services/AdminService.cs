@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using ApiModels.Admins;
 using Common.Enums;
@@ -10,7 +9,7 @@ using Database.Models;
 using Mapper;
 using Services.Base;
 using Services.Interfaces;
-using ApiModels.Dtos;
+using System;
 
 namespace Services
 {
@@ -23,7 +22,7 @@ namespace Services
 
         public override RoleType RoleType { get; set; } = RoleType.Admin;
 
-        public async Task<ServiceResponseModel> ChangeRole(AdminRequestModel model)
+        public async Task<ServiceResponseModel> ChangeRole(AdminRequestModel model, string currUser)
         {
             //Valid user check
             User user = this.GetUserById(model.Id, true);
@@ -35,6 +34,18 @@ namespace Services
                 return new ServiceResponseModel(this.GetErrors().NoPermissions, null);
 
             user = changedUser;
+
+            //add to rights changes
+            RoleType roleType = Enum.Parse<RoleType>(this.Capitalize(model.RoleName));
+            RightsChange rights = new RightsChange()
+            {
+                From = currUser,
+                To = model.Id,
+                Role = roleType,
+                Date = DateTime.UtcNow,
+            };
+            await this.database.RightsChanges.AddAsync(rights);
+
             await this.database.SaveChangesAsync();
 
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
@@ -51,10 +62,7 @@ namespace Services
             //Add entries and role names
             foreach (var user in users)
             {
-                user.RoleName = this.GetUserRole(new UserDto()
-                {
-                    Id = user.Id
-                }).Type.ToString();
+                user.RoleName = this.GetUserRole(user.Id).Type.ToString();
             }
 
             return users;

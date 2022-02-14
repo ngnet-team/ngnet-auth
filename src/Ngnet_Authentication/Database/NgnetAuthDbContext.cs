@@ -20,6 +20,8 @@ namespace Database
 
         public DbSet<Contact> Contacts { get; set; }
 
+        public DbSet<RightsChange> RightsChanges { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             

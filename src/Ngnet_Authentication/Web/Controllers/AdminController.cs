@@ -8,7 +8,6 @@ using Common.Json.Service;
 using Services.Email;
 using Services.Interfaces;
 using ApiModels.Users;
-using ApiModels.Dtos;
 
 namespace Web.Controllers
 {
@@ -44,10 +43,10 @@ namespace Web.Controllers
         }
 
         [HttpGet(nameof(GetUsers))]
-        public ActionResult<AdminResponseModel[]> GetUsers() =>  this.adminService.GetUsers();
+        public ActionResult<AdminResponseModel[]> GetUsers() => this.adminService.GetUsers();
 
         [HttpGet(nameof(GetRoles))]
-        public RoleModel[] GetRoles() =>  this.adminService.GetRoles();
+        public RoleModel[] GetRoles() => this.adminService.GetRoles();
 
         [HttpGet(nameof(GetEntries))]
         public EntryModel[] GetEntries() => this.adminService.GetEntries();
@@ -55,22 +54,16 @@ namespace Web.Controllers
         [HttpPost(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
         {
-            //Set current logged user id if the model id is null
-            if (model.Id == null)
-            {
-                if (SeededOwner())
-                    return this.BadRequest(this.GetErrors().NoPermissions);
+            if (!this.PermissionsToUser(model.Id))
+                return this.BadRequest(this.GetErrors().NoPermissions);
 
-                model.Id = this.Claims.UserId;
-            }
-
-            this.response = await this.adminService.ChangeRole(model);
+            this.response = await this.adminService.ChangeRole(model, this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
             return this.Ok(this.response.Success);
         }
-        
+
         [HttpPost(nameof(Update))]
         public override async Task<ActionResult> Update(UpdateRequestModel model)
         {
@@ -79,8 +72,7 @@ namespace Web.Controllers
             // Tring to make changes on other user
             else
             {
-                UserDto userDto = this.GetUser(model.Id);
-                if (!this.HasPermissionsToUser(userDto))
+                if (!this.PermissionsToUser(model.Id))
                 {
                     this.errors = this.GetErrors().UserNotFound;
                     return this.Unauthorized(this.errors);
@@ -102,8 +94,7 @@ namespace Web.Controllers
             // Tring to make changes on other user
             else
             {
-                UserDto userDto = this.GetUser(model.Id);
-                if (!this.HasPermissionsToUser(userDto))
+                if (!this.PermissionsToUser(model.Id))
                 {
                     this.errors = this.GetErrors().UserNotFound;
                     return this.Unauthorized(this.errors);
@@ -120,11 +111,10 @@ namespace Web.Controllers
         [HttpPost(nameof(DeleteUser))]
         public async Task<ActionResult> DeleteUser(AdminRequestModel model)
         {
-            UserDto userDto = this.adminService.GetUserDtoById(model.Id, true);
-            if (!this.HasPermissionsToUser(userDto))
+            if (!this.PermissionsToUser(model.Id))
                 return this.Unauthorized(this.GetErrors().NoPermissions);
 
-            this.response = await this.adminService.Delete(userDto.Id);
+            this.response = await this.adminService.Delete(model.Id);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -134,11 +124,10 @@ namespace Web.Controllers
         [HttpPost(nameof(DeleteUserAccount))]
         public async Task<ActionResult> DeleteUserAccount(AdminRequestModel model)
         {
-            UserDto userDto = this.adminService.GetUserDtoById(model.Id, true);
-            if (!this.HasPermissionsToUser(userDto))
+            if (!this.PermissionsToUser(model.Id))
                 return this.Unauthorized(this.GetErrors().NoPermissions);
 
-            this.response = await this.adminService.DeleteAccount(userDto.Id);
+            this.response = await this.adminService.DeleteAccount(model.Id);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 

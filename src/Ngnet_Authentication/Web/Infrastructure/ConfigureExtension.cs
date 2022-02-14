@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Database;
+using Services.Seeding.Models;
 using Services.Seeding;
 
 namespace Web.Infrastructure
@@ -17,10 +18,9 @@ namespace Web.Infrastructure
             var dbContext = servicesScope.ServiceProvider.GetService<NgnetAuthDbContext>();
 
             dbContext.Database.Migrate();
-            
-            var owners = configuration.GetSection("Owners").Get<UserSeederModel[]>();
-            var admins = configuration.GetSection("Admins").Get<UserSeederModel[]>();
-            new DatabaseSeeder(owners, admins).SeedAsync(dbContext).GetAwaiter().GetResult();
+
+            SeedingModel seeding = configuration.GetSection("Seeding").Get<SeedingModel>();
+            new DatabaseSeeder(seeding).SeedAsync(dbContext).GetAwaiter().GetResult();
         }
     }
 }
