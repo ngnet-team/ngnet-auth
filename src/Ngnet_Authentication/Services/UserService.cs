@@ -23,6 +23,8 @@ namespace Services
 
         public override RoleType RoleType { get; set; } = RoleType.User;
 
+        public int UsersCount => this.database.Users.Where(x => !x.IsDeleted).Count();
+
         public T Profile<T>(string userId)
         {
             return this.database.Users

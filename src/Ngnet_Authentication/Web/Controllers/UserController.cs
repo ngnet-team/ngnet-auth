@@ -106,6 +106,9 @@ namespace Web.Controllers
             return this.Ok(this.response); //TODO: Currently sending the new passowrd as a response but should be changed via Email only
         }
 
+        [HttpGet(nameof(UsersCount))]
+        public int UsersCount() => this.userService.UsersCount;
+
         // ---------------------- Protected ---------------------- 
 
         protected UserDto GetUser(string userId = null)
