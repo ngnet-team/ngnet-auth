@@ -63,35 +63,35 @@ Account properties:
 
 |Auth Endpoints|Method|JWT|Body|Response|
 | :- | :-: | :-: | :-: | :-: |
-|Register|POST|**No**|Email, Username, Password, RepeatPassword + Optional proparties|Successful message|
-|Login|POST|**No**|Username, Password|Successful message|
+|Register|POST|**No**|{ Email: string, Username: string, Password: string + Optional proparties }|Successful message|
+|Login|POST|**No**|{ Username: string, Password: string }|Successful message|
 ||||||
 |User Endpoints|Method|JWT|Body|Response|
-|Profile|GET|**Yes**|` `- |Email, Username, CreatedOn, All Optional Properties|
-|Logout|GET|**Yes**|` `- |Successful message|
+|Profile|GET|**Yes**||{ Email: string, Username: string, CreatedOn: string, All Optional Properties }|
+|Logout|GET|**Yes**||Successful message|
 |Update|POST|**Yes**|An account optional property|Successful message|
-|Change (Email/Password/Username)|POST|**Yes**|An account required property|Successful message|
-|ResetPassword|GET|**Yes**|` `- |Successful message +  Emailed|
-|Delete|GET|**Yes**|` `- |Successful message|
-|DeleteAccount|GET|**Yes**|` `- |Successful message|
+|Change|POST|**Yes**|{ Key: Email/Password/Username, Old: string, New: string }|Successful message|
+|ResetPassword|GET|**Yes**||Successful message +  Emailed|
+|Delete|GET|**Yes**||Successful message|
+|DeleteAccount|GET|**Yes**||Successful message|
 ||||||
 |Member Extends User Endpoints|Method|JWT|Body|Response|
-|No more actions|` `-|` `-|` `-|` `-|
+|No more actions|` `-|` `-||` `-|
 ||||||
 |Admin Extends Member Endpoints|Method|JWT|Body|Response|
-|Profile|GET|**Yes**|` `- |Id, RoleName, Entries, BaseModels|
-|Update|POST|**Yes**|Id - update other account (optional)|Successful message|
-|Change (Email/Password/Username)|POST|**Yes**|Id - update other account (optional)|Successful message|
-|DeleteUser|POST|**Yes**|Id|Successful message|
-|DeleteUserAccount|POST|**Yes**|Id|Successful message|
-|ChangeRole|POST|**Yes**|Id, RoleName|Successful message|
-|Users|GET|**Yes**|` `- |An array of profile information|
-|Roles|GET|**Yes**|` `- |An array of [ Id, Name, MaxCount, BaseModels ]|
-|Entries|GET|**Yes**|` `- |An array of entries [ UserId, Username, Login, CreatedOn ]|
-|RightsChanges|POST|**Yes**|From, To, Role (optional)||
+|Profile|GET|**Yes**||{ Id: string, RoleName: string, BaseModels: {} }|
+|Update|POST|**Yes**|{ Id: string } - update other account (optional)|Successful message|
+|Change|POST|**Yes**|{ Id: string } - update other account (optional)|Successful message|
+|DeleteUser|POST|**Yes**|{ Id: string }|Successful message|
+|DeleteUserAccount|POST|**Yes**|{ Id: string }|Successful message|
+|ChangeRole|POST|**Yes**|{ Id: string, RoleName: string }|Successful message|
+|Users|GET|**Yes**||An array of profile information|
+|Roles|GET|**Yes**||An array of [{ Id: string, Name: string, MaxCount: number, BaseModels: {} }]|
+|Entries|GET|**Yes**||An array of entries [{ UserId: string, Username: string, Login: boolean, CreatedOn: string }]|
+|RightsChanges|POST|**Yes**|{ From: string, To: string, Role: string } (optional)|An array of changes [{ From: string, To: string, Role: string, Date: string }]|
 ||<p></p><p></p>||||
 |Owner Extends Admin Endpoints|Method|JWT|Body|Response|
-|SetRoleCounts|POST|**Yes**|Name, MaxCount|Successful message|
+|SetRoleCounts|POST|**Yes**|{ Name: string, MaxCount: number }|Successful message|
 
 Constraints:
 
