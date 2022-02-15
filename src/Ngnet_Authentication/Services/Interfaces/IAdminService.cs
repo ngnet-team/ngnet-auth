@@ -14,5 +14,7 @@ namespace Services.Interfaces
         public RoleModel[] GetRoles();
 
         public EntryModel[] GetEntries(string userId = null);
+
+        public RightsChangeModel[] GetRightsChanges(RightsChangeModel model = null);
     }
 }

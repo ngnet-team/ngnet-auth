@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
+using ApiModels.Users;
 using ApiModels.Admins;
 using Common.Enums;
 using Common.Json.Service;
 using Services.Email;
 using Services.Interfaces;
-using ApiModels.Users;
 
 namespace Web.Controllers
 {
@@ -42,19 +42,22 @@ namespace Web.Controllers
             return response;
         }
 
-        [HttpGet(nameof(GetUsers))]
-        public ActionResult<AdminResponseModel[]> GetUsers() => this.adminService.GetUsers();
+        [HttpGet(nameof(Users))]
+        public AdminResponseModel[] Users() => this.adminService.GetUsers();
 
-        [HttpGet(nameof(GetRoles))]
-        public RoleModel[] GetRoles() => this.adminService.GetRoles();
+        [HttpGet(nameof(Roles))]
+        public RoleModel[] Roles() => this.adminService.GetRoles();
 
-        [HttpGet(nameof(GetEntries))]
-        public EntryModel[] GetEntries() => this.adminService.GetEntries();
+        [HttpGet(nameof(Entries))]
+        public EntryModel[] Entries() => this.adminService.GetEntries();
+
+        [HttpPost(nameof(RightsChanges))]
+        public RightsChangeModel[] RightsChanges(RightsChangeModel model) => this.adminService.GetRightsChanges(model);
 
         [HttpPost(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
         {
-            if (!this.PermissionsToUser(model.Id))
+            if (!this.Rights(model.Id))
                 return this.BadRequest(this.GetErrors().NoPermissions);
 
             this.response = await this.adminService.ChangeRole(model, this.Claims.UserId);
@@ -68,13 +71,13 @@ namespace Web.Controllers
         public override async Task<ActionResult> Update(UpdateRequestModel model)
         {
             if (model.Id == null)
-                model.Id = this.Claims.UserId;
+                model.Id = this.Claims?.UserId;
             // Tring to make changes on other user
             else
             {
-                if (!this.PermissionsToUser(model.Id))
+                if (!this.Rights(model.Id))
                 {
-                    this.errors = this.GetErrors().UserNotFound;
+                    this.errors = this.GetErrors().NoPermissions;
                     return this.Unauthorized(this.errors);
                 }
             }
@@ -90,11 +93,11 @@ namespace Web.Controllers
         public override async Task<ActionResult> Change(ChangeRequestModel model)
         {
             if (model.Id == null)
-                model.Id = this.Claims.UserId;
+                model.Id = this.Claims?.UserId;
             // Tring to make changes on other user
             else
             {
-                if (!this.PermissionsToUser(model.Id))
+                if (!this.Rights(model.Id))
                 {
                     this.errors = this.GetErrors().UserNotFound;
                     return this.Unauthorized(this.errors);
@@ -111,7 +114,7 @@ namespace Web.Controllers
         [HttpPost(nameof(DeleteUser))]
         public async Task<ActionResult> DeleteUser(AdminRequestModel model)
         {
-            if (!this.PermissionsToUser(model.Id))
+            if (!this.Rights(model.Id))
                 return this.Unauthorized(this.GetErrors().NoPermissions);
 
             this.response = await this.adminService.Delete(model.Id);
@@ -124,7 +127,7 @@ namespace Web.Controllers
         [HttpPost(nameof(DeleteUserAccount))]
         public async Task<ActionResult> DeleteUserAccount(AdminRequestModel model)
         {
-            if (!this.PermissionsToUser(model.Id))
+            if (!this.Rights(model.Id))
                 return this.Unauthorized(this.GetErrors().NoPermissions);
 
             this.response = await this.adminService.DeleteAccount(model.Id);

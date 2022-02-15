@@ -33,12 +33,6 @@ namespace Web.Controllers
 
         protected override RoleType RoleRequired { get; } = RoleType.Auth;
 
-        [HttpGet]
-        public virtual ActionResult<string> GetRole()
-        {
-            return RoleType.Auth.ToString();
-        }
-
         [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
@@ -62,7 +56,7 @@ namespace Web.Controllers
             {
                 UserId = userDto.Id,
                 Username = userDto.Username,
-                RoleName = this.authService.GetUserRole(userDto.Id).Type.ToString(),
+                RoleName = this.authService.GetUserRoleType(userDto.Id)?.ToString(),
             };
             string token = this.authService.CreateJwtToken(tokenModel);
 

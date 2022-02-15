@@ -62,7 +62,7 @@ namespace Services
             //Add entries and role names
             foreach (var user in users)
             {
-                user.RoleName = this.GetUserRole(user.Id).Type.ToString();
+                user.RoleName = this.GetUserRoleType(user.Id)?.ToString();
             }
 
             return users;
@@ -100,12 +100,44 @@ namespace Services
 
             return entries
                    .OrderByDescending(x => x.Id)
-                   .Select(x => new EntryModel() 
+                   .Select(x => new EntryModel()
                    {
                        UserId = x.UserId,
                        Username = x.Username,
                        Login = x.Login,
-                       CreatedOn = x.CreatedOn.ToShortDateString() + " " + x.CreatedOn.ToLongTimeString(),
+                       CreatedOn = this.DateToString(x.CreatedOn),
+                   })
+                   .ToArray();
+        }
+
+        public RightsChangeModel[] GetRightsChanges(RightsChangeModel model = null)
+        {
+            var rightsChanges = this.database.RightsChanges;
+
+            if (model?.From != null)
+            {
+                rightsChanges.Where(x => x.From == model.From);
+            }
+
+            if (model?.To != null)
+            {
+                rightsChanges.Where(x => x.To == model.To);
+            }
+
+            if (model?.Role != null)
+            {
+                RoleType? roleType = this.GetRoleType(model?.Role);
+                rightsChanges.Where(x => x.Role == roleType);
+            }
+
+            return rightsChanges
+                   .OrderByDescending(x => x.Id)
+                   .Select(x => new RightsChangeModel()
+                   {
+                       From = x.From,
+                       To = x.To,
+                       Role = x.Role.ToString(),
+                       Date = this.DateToString(x.Date),
                    })
                    .ToArray();
         }

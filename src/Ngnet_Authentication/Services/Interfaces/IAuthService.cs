@@ -22,10 +22,6 @@ namespace Services.Interfaces
 
         public UserDto GetUserDtoByUsername(string username, bool allowDeleted = false);
 
-        public Role GetUserRole(string userId);
-
-        public Role GetRoleByString(string roleName);
-
-        public Role GetRoleByEnum(RoleType roleType);
+        public RoleType? GetUserRoleType(string userId);
     }
 }
