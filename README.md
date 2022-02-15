@@ -31,9 +31,9 @@ Role types:
 
 Account properties:
 
-- **Required**: Email, Username, Password
-- **Optional**: FirstName, LastName, MiddleName, Gender, Age, Address: { Country, City, Str }, Contact: { Mobile, Email, Website, Facebook, Instagram, TikTok, Youtube, Twitter }
-- **Base**: CreatedOn, ModifiedOn, DeletedOn, IsDeleted
+- **Required**: Email: string, Username: string, Password: string
+- **Optional**: FirstName: string, LastName: string, MiddleName: string, Gender: string, Age: number?, Address: { Country: string, City: string, Str: string }, Contact: { Mobile: string, Email: string, Website: string, Facebook: string, Instagram: string, TikTok: string, Youtube: string, Twitter: string }
+- **Base**: RoleId: string, CreatedOn: date, ModifiedOn: date, DeletedOn: date, IsDeleted: boolean
 
 
 
