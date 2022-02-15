@@ -6,6 +6,8 @@ namespace Web.Infrastructure.Models
     {
         public ApplicationCall[] ApplicationCalls { get; set; }
 
+        public string ApiKey { get; set; }
+
         public SeedingModel Seeding { get; set; }
     }
 }

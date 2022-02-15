@@ -1,8 +1,18 @@
-﻿NgNet Authorization [Demo version]
+﻿
+
+NgNet Authorization [Demo version]
+
+
+Description: This is a role-based server authentication API.
+
+ApiKey:
+
+- Server side: it should be stored in appsettings.Development.json file for development purposes.
+- Client side: it should be passed through out the X-Api-Key header. 
 
 Domain: http://localhost:7000
 
-Url: Domain/Role/Action
+Url construction: Domain/Role/Action
 
 Examples: 
 
@@ -14,23 +24,21 @@ Examples:
 Role types:
 
 - Owner (the CEO or Co-Founder of the app)
-- Admin (the Administrator who maintain the app)
-- Member ([NEW] a user who has paid a monthly fee to see more functionalities)
+- Admin (an Administrator who maintains the app)
+- Member [NEW] (a user who has paid a monthly fee to see more functionalities)
 - User (a simple user)
-- Auth (guest without profile)
-- GetEntries
-- SetMaxRoles
+- Auth (guest without authentication)
 
 Account properties:
 
 - **Required**: Email, Username, Password
-- **Optional**: FirstName, LastName, MiddleName, Gender, Age, Address: {Country, City, Str}, Contact: {Mobile, Email, Website, Facebook, Instagram, TikTok, Youtube, Twitter}
+- **Optional**: FirstName, LastName, MiddleName, Gender, Age, Address: { Country, City, Str }, Contact: { Mobile, Email, Website, Facebook, Instagram, TikTok, Youtube, Twitter }
 - **Base**: CreatedOn, ModifiedOn, DeletedOn, IsDeleted
 
 
 
 
-|Actions Permission|Owner|Admin|Member|User|Guest|
+|Actions Permission|Owner|Admin|Member|User|Auth|
 | :- | :-: | :-: | :-: | :-: | :-: |
 |Register|**No**|**No**|**No**|**No**|**Yes**|
 |Login|**No**|**No**|**No**|**No**|**Yes**|
@@ -44,10 +52,13 @@ Account properties:
 |DeleteUser|**Yes**|**Yes**|**No**|**No**|**No**|
 |DeleteUserAccount|**Yes**|**Yes**|**No**|**No**|**No**|
 |ChangeRole|**Yes**|**Yes**|**No**|**No**|**No**|
-|GetUsers|**Yes**|**Yes**|**No**|**No**|**No**|
-|GetRoles|**Yes**|**Yes**|**No**|**No**|**No**|
-|GetEntries|**Yes**|**Yes**|**No**|**No**|**No**|
+|Users|**Yes**|**Yes**|**No**|**No**|**No**|
+|Roles|**Yes**|**Yes**|**No**|**No**|**No**|
+|Entries|**Yes**|**Yes**|**No**|**No**|**No**|
+|RightsChanges|**Yes**|**Yes**|**No**|**No**|**No**|
 |SetMaxRoles|**Yes**|**No**|**No**|**No**|**No**|
+
+
 
 
 |Auth Endpoints|Method|JWT|Body|Response|
@@ -74,10 +85,11 @@ Account properties:
 |DeleteUser|POST|**Yes**|Id|Successful message|
 |DeleteUserAccount|POST|**Yes**|Id|Successful message|
 |ChangeRole|POST|**Yes**|Id, RoleName|Successful message|
-|GetUsers|GET|**Yes**|` `- |An array of profile information|
-|GetRoles|GET|**Yes**|` `- |An array of [ Id, Name, MaxCount, BaseModels ]|
-|GetEntries|GET|**Yes**|` `- |An array of entries [ UserId, Username, Login, CreatedOn ]|
-||||||
+|Users|GET|**Yes**|` `- |An array of profile information|
+|Roles|GET|**Yes**|` `- |An array of [ Id, Name, MaxCount, BaseModels ]|
+|Entries|GET|**Yes**|` `- |An array of entries [ UserId, Username, Login, CreatedOn ]|
+|RightsChanges|POST|**Yes**|From, To, Role (optional)||
+||<p></p><p></p>||||
 |Owner Extends Admin Endpoints|Method|JWT|Body|Response|
 |SetRoleCounts|POST|**Yes**|Name, MaxCount|Successful message|
 

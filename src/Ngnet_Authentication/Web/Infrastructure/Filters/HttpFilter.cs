@@ -28,6 +28,13 @@ namespace Web.Infrastructure.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            //Validate Api Key
+            if (!this.ValidApiKey(context))
+            {
+                context.Result = new UnauthorizedObjectResult(serverErrors.InvalidApiKey);
+                return;
+            }
+
             //Request Method
             string requestType = context.HttpContext.Request.Method;
             if (requestType.Equals("POST"))
@@ -96,7 +103,7 @@ namespace Web.Infrastructure.Filters
         {
             if (String.IsNullOrEmpty(this.token))
                 return;
-
+            //TODO: Adding token in every request can't expire it
             context.HttpContext.Response.Cookies.Append(constants.CookieKey, this.token,
                 new CookieOptions { Expires = DateTime.Now.AddDays(constants.TokenExpires) });
         }
@@ -163,6 +170,17 @@ namespace Web.Infrastructure.Filters
                 return null;
 
             return appCall?.Name;
+        }
+
+        private bool ValidApiKey(ActionExecutingContext context)
+        {
+            string serverApiKey = this.appSettings?.ApiKey;
+
+            string clientApiKey = context.HttpContext.Request.Headers
+                .FirstOrDefault(x => Global.AllCapital(x.Key) == constants.ApiKeyHeaderKey).Value
+                .ToString();
+
+            return serverApiKey == clientApiKey;
         }
 
         private ActionPath GetPath(string actionFullName)

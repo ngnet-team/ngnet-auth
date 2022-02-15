@@ -2,6 +2,8 @@
 {
     public class ServerErrorsModel
     {
+        public ResponseMessage InvalidApiKey { get; set; }
+
         public ResponseMessage MissingBody { get; set; }
 
         public ResponseMessage MissingToken { get; set; }

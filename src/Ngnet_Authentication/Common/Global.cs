@@ -3,6 +3,7 @@ using Common.Json.Models;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -94,6 +95,21 @@ namespace Common
                 return GenderType.Undefined;
 
             return genderType;
+        }
+
+        public static string AllCapital(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return null;
+
+            StringBuilder output = new StringBuilder();
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                output.Append(char.ToUpper(input[i]));
+            }
+
+            return output.ToString();
         }
 
         public static ConstantsModel Constants => Deserialiaze<ConstantsModel>(Paths.Constants);
