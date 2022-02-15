@@ -10,6 +10,8 @@
 
         public string AuthHeaderPreValue { get; set; }
 
+        public string ApiKeyHeaderKey { get; set; }
+
         public int HashBytes { get; set; }
 
         public string EmailPattern { get; set; }

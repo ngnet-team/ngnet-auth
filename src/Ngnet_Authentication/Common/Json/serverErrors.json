@@ -1,4 +1,7 @@
 ﻿{
+  "InvalidApiKey": {
+    "EN": "The api key is invalid!"
+  },
   "MissingBody": {
     "EN": "The body is missing!"
   },
