@@ -44,7 +44,7 @@ namespace Services
                 return new ServiceResponseModel(this.GetErrors().InvalidEmail, null);
 
             //Get role User
-            Role role = this.GetRoleByEnum(RoleType.User);
+            Role role = this.GetRole(RoleType.User.ToString());
             if (role == null)
                 return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
 
@@ -165,31 +165,17 @@ namespace Services
                 .FirstOrDefault();
         }
 
-        public Role GetUserRole(UserDto userDto)
+        public RoleType? GetUserRoleType(string userId)
         {
             User user = this.database.Users
-                .FirstOrDefault(x => x.Id == userDto.Id);
+                .FirstOrDefault(x => x.Id == userId);
 
             if (user == null)
                 return null;
 
             return this.database.Roles
-                .FirstOrDefault(x => x.Id == user.RoleId);
-        }
-
-        public Role GetRoleByString(string roleName)
-        {
-            RoleType roleType;
-            bool valid = Enum.TryParse<RoleType>(this.Capitalize(roleName), out roleType);
-            if (!valid)
-                return null;
-
-            return this.database.Roles.FirstOrDefault(x => x.Type == roleType);
-        }
-
-        public Role GetRoleByEnum(RoleType roleType)
-        {
-            return this.database.Roles.FirstOrDefault(x => x.Type == roleType);
+                .FirstOrDefault(x => x.Id == user.RoleId)
+                ?.Type;
         }
 
         // ------------------- Protected ------------------- 
@@ -216,6 +202,22 @@ namespace Services
             return user.FirstOrDefault();
         }
 
+        protected Role GetRole(string roleName)
+        {
+            RoleType? roleType = this.GetRoleType(roleName);
+            return this.database.Roles.FirstOrDefault(x => x.Type == roleType);
+        }
+
+        protected RoleType? GetRoleType(string roleName)
+        {
+            RoleType roleType;
+            bool valid = Enum.TryParse<RoleType>(this.Capitalize(roleName), out roleType);
+            if (!valid)
+                return null;
+
+            return roleType;
+        }
+
         protected User ModifyEntity(User user, UpdateRequestModel updateModel, ChangeRequestModel changeModel)
         {
             //Updatable entities
@@ -233,6 +235,8 @@ namespace Services
                     user.Gender = updateModel.Gender == null ? user.Gender : gender;
 
                 user.Age = updateModel.Age == null ? user.Age : updateModel.Age;
+
+                //TODO: Add address and contact
             }
             //Changable entities
             else if (!Global.NullableObject(changeModel))
@@ -270,22 +274,26 @@ namespace Services
 
         protected User AddUserToRole(User user, string roleName)
         {
-            //There's room for more roles or have permissions to do it.
-            if (this.CanAddRole(roleName) && this.HasPermissions(roleName))
-            {
-                Role role = this.GetRoleByString(roleName);
-                user.RoleId = role.Id;
-                return user;
-            }
+            if (!this.RoomForRole(roleName))
+                return null;
 
-            return null;
+            user.RoleId = this.GetRole(roleName).Id;
+            return user;
+        }
+
+        protected string DateToString(DateTime date)
+        {
+            return $"{date.ToShortDateString()} {date.ToLongTimeString()}";
         }
 
         // ------------------- Private ------------------- 
 
-        private bool CanAddRole(string roleName)
+        private bool RoomForRole(string roleName)
         {
-            Role role = this.GetRoleByString(roleName);
+            Role role = this.GetRole(roleName);
+            if (role == null)
+                return false;
+
             if (role?.MaxCount == null)
                 return true;
 
@@ -294,21 +302,7 @@ namespace Services
                 .Where(x => x.RoleId == role.Id)
                 .Count();
 
-            if (role.MaxCount <= usersInRole)
-                return false;
-
-            return true;
-        }
-
-        private bool HasPermissions(string roleName)
-        {
-            Role role = this.GetRoleByString(roleName);
-            if (role == null)
-                return false;
-            if (this.RoleType == RoleType.Owner)
-                return true;
-
-            return (int)this.RoleType < (int)role.Type;
+            return role.MaxCount > usersInRole;
         }
 
         // ------ Request Validations ------

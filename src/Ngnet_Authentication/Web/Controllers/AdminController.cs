@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
+using ApiModels.Users;
 using ApiModels.Admins;
 using Common.Enums;
 using Common.Json.Service;
 using Services.Email;
 using Services.Interfaces;
-using ApiModels.Users;
-using ApiModels.Dtos;
 
 namespace Web.Controllers
 {
@@ -43,46 +42,42 @@ namespace Web.Controllers
             return response;
         }
 
-        [HttpGet(nameof(GetUsers))]
-        public ActionResult<AdminResponseModel[]> GetUsers() =>  this.adminService.GetUsers();
+        [HttpGet(nameof(Users))]
+        public AdminResponseModel[] Users() => this.adminService.GetUsers();
 
-        [HttpGet(nameof(GetRoles))]
-        public RoleModel[] GetRoles() =>  this.adminService.GetRoles();
+        [HttpGet(nameof(Roles))]
+        public RoleModel[] Roles() => this.adminService.GetRoles();
 
-        [HttpGet(nameof(GetEntries))]
-        public EntryModel[] GetEntries() => this.adminService.GetEntries();
+        [HttpGet(nameof(Entries))]
+        public EntryModel[] Entries() => this.adminService.GetEntries();
+
+        [HttpPost(nameof(RightsChanges))]
+        public RightsChangeModel[] RightsChanges(RightsChangeModel model) => this.adminService.GetRightsChanges(model);
 
         [HttpPost(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
         {
-            //Set current logged user id if the model id is null
-            if (model.Id == null)
-            {
-                if (SeededOwner())
-                    return this.BadRequest(this.GetErrors().NoPermissions);
+            if (!this.Rights(model.Id))
+                return this.BadRequest(this.GetErrors().NoPermissions);
 
-                model.Id = this.Claims.UserId;
-            }
-
-            this.response = await this.adminService.ChangeRole(model);
+            this.response = await this.adminService.ChangeRole(model, this.Claims.UserId);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
             return this.Ok(this.response.Success);
         }
-        
+
         [HttpPost(nameof(Update))]
         public override async Task<ActionResult> Update(UpdateRequestModel model)
         {
             if (model.Id == null)
-                model.Id = this.Claims.UserId;
+                model.Id = this.Claims?.UserId;
             // Tring to make changes on other user
             else
             {
-                UserDto userDto = this.GetUser(model.Id);
-                if (!this.HasPermissionsToUser(userDto))
+                if (!this.Rights(model.Id))
                 {
-                    this.errors = this.GetErrors().UserNotFound;
+                    this.errors = this.GetErrors().NoPermissions;
                     return this.Unauthorized(this.errors);
                 }
             }
@@ -98,12 +93,11 @@ namespace Web.Controllers
         public override async Task<ActionResult> Change(ChangeRequestModel model)
         {
             if (model.Id == null)
-                model.Id = this.Claims.UserId;
+                model.Id = this.Claims?.UserId;
             // Tring to make changes on other user
             else
             {
-                UserDto userDto = this.GetUser(model.Id);
-                if (!this.HasPermissionsToUser(userDto))
+                if (!this.Rights(model.Id))
                 {
                     this.errors = this.GetErrors().UserNotFound;
                     return this.Unauthorized(this.errors);
@@ -120,11 +114,10 @@ namespace Web.Controllers
         [HttpPost(nameof(DeleteUser))]
         public async Task<ActionResult> DeleteUser(AdminRequestModel model)
         {
-            UserDto userDto = this.adminService.GetUserDtoById(model.Id, true);
-            if (!this.HasPermissionsToUser(userDto))
+            if (!this.Rights(model.Id))
                 return this.Unauthorized(this.GetErrors().NoPermissions);
 
-            this.response = await this.adminService.Delete(userDto.Id);
+            this.response = await this.adminService.Delete(model.Id);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 
@@ -134,11 +127,10 @@ namespace Web.Controllers
         [HttpPost(nameof(DeleteUserAccount))]
         public async Task<ActionResult> DeleteUserAccount(AdminRequestModel model)
         {
-            UserDto userDto = this.adminService.GetUserDtoById(model.Id, true);
-            if (!this.HasPermissionsToUser(userDto))
+            if (!this.Rights(model.Id))
                 return this.Unauthorized(this.GetErrors().NoPermissions);
 
-            this.response = await this.adminService.DeleteAccount(userDto.Id);
+            this.response = await this.adminService.DeleteAccount(model.Id);
             if (this.response.Errors != null)
                 return this.BadRequest(this.response.Errors);
 

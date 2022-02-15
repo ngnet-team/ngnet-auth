@@ -1,4 +1,4 @@
-﻿using ApiModels.Users;
+﻿using Services.Seeding.Models;
 
 namespace Web.Infrastructure.Models
 {
@@ -6,8 +6,6 @@ namespace Web.Infrastructure.Models
     {
         public ApplicationCall[] ApplicationCalls { get; set; }
 
-        public UserSeederModel[] Owners { get; set; }
-
-        public UserSeederModel[] Admins { get; set; }
+        public SeedingModel Seeding { get; set; }
     }
 }

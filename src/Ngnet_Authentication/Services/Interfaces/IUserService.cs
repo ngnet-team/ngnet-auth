@@ -7,6 +7,8 @@ namespace Services.Interfaces
 {
     public interface IUserService : IAuthService
     {
+        public int UsersCount { get; }
+
         public T Profile<T>(string userId);
 
         public Task<ServiceResponseModel> Logout(string userId, string username);

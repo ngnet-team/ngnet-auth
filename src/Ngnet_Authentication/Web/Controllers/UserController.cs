@@ -1,14 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
+using ApiModels.Dtos;
 using ApiModels.Users;
 using Common.Enums;
 using Common.Json.Service;
-using Database.Models;
 using Services.Email;
 using Services.Interfaces;
-using ApiModels.Dtos;
+using Services.Seeding.Models;
 
 namespace Web.Controllers
 {
@@ -54,7 +55,7 @@ namespace Web.Controllers
         [HttpPost(nameof(Update))]
         public virtual async Task<ActionResult> Update(UpdateRequestModel model)
         {
-            model.Id = this.Claims.UserId;
+            model.Id = this.Claims?.UserId;
 
             this.response = await this.userService.Update(model);
             if (this.response.Errors != null)
@@ -66,7 +67,7 @@ namespace Web.Controllers
         [HttpPost(nameof(Change))]
         public virtual async Task<ActionResult> Change(ChangeRequestModel model)
         {
-            model.Id = this.Claims.UserId;
+            model.Id = this.Claims?.UserId;
 
             this.response = await this.userService.Change(model);
             if (this.response.Errors != null)
@@ -105,27 +106,55 @@ namespace Web.Controllers
             return this.Ok(this.response); //TODO: Currently sending the new passowrd as a response but should be changed via Email only
         }
 
+        [HttpGet(nameof(UsersCount))]
+        public int UsersCount() => this.userService.UsersCount;
+
         // ---------------------- Protected ---------------------- 
 
         protected UserDto GetUser(string userId = null)
         {
             return this.userService.GetUserDtoById(userId) ??
-                   this.userService.GetUserDtoById(this.Claims.UserId);
+                   this.userService.GetUserDtoById(this.Claims?.UserId);
         }
 
-        protected bool HasPermissionsToUser(UserDto userDto)
+        protected bool Rights(string userId)
         {
             // No existing user
-            if (userDto == null)
+            if (userId == null)
                 return false;
             // Personal permission is always possible
-            if (this.Claims.UserId == userDto.Id)
+            if (this.Claims?.UserId == userId)
                 return true;
 
-            Role userRole = this.userService.GetUserRole(userDto);
-            RoleType currUserRole = this.Claims.RoleType;
-            //Higher than the wanted user
-            return currUserRole < userRole.Type;
+            RoleType? currUserRole = this.Claims?.RoleType;
+            RoleType? userRole = this.userService.GetUserRoleType(userId);
+            // No existing role
+            if (currUserRole == null || userRole == null)
+                return false;
+
+            return currUserRole < userRole;
+        }
+
+        protected bool IsSeeded(RoleType roleType, string userId = null)
+        {
+            string username = userId == null
+                ? this.Claims?.Username // Current user
+                : this.GetUser(userId)?.Username; // Other user from db
+
+            if (username == null)
+                return false;
+
+            UserSeederModel[] models =
+                  RoleType.Owner == roleType ? this.AppSettings?.Seeding?.Owners
+                : RoleType.Admin == roleType ? this.AppSettings?.Seeding?.Admins
+                : RoleType.Member == roleType ? this.AppSettings?.Seeding?.Members
+                : RoleType.User == roleType ? this.AppSettings?.Seeding?.Users
+                : null;
+
+            if (models != null && models.Any(x => x.Username == username))
+                return true;
+
+            return false;
         }
     }
 }

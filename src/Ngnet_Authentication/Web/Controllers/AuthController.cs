@@ -33,12 +33,6 @@ namespace Web.Controllers
 
         protected override RoleType RoleRequired { get; } = RoleType.Auth;
 
-        [HttpGet]
-        public virtual ActionResult<string> GetRole()
-        {
-            return RoleType.Auth.ToString();
-        }
-
         [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
@@ -62,22 +56,11 @@ namespace Web.Controllers
             {
                 UserId = userDto.Id,
                 Username = userDto.Username,
-                RoleName = this.authService.GetUserRole(userDto).Type.ToString(),
+                RoleName = this.authService.GetUserRoleType(userDto.Id)?.ToString(),
             };
             string token = this.authService.CreateJwtToken(tokenModel);
 
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };
-        }
-
-        // ---------------------- Protected ---------------------- 
-
-        protected bool SeededOwner()
-        {
-            string username = this.Claims.Username;
-            if (this.AppSettings.Owners.Any(x => x.Username == username))
-                return true;
-
-            return false;
         }
     }
 }
