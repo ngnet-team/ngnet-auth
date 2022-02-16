@@ -29,7 +29,7 @@ namespace Web.Controllers
         [HttpGet(nameof(Profile))]
         public override ActionResult<object> Profile()
         {
-            OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.Claims.UserId);
+            OwnerResponseModel response = (OwnerResponseModel)this.ownerService.GetAccounts<OwnerResponseModel>(this.Claims?.UserId);
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;

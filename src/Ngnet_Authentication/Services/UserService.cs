@@ -24,13 +24,25 @@ namespace Services
 
         public int UsersCount => this.database.Users.Where(x => !x.IsDeleted).Count();
 
-        public T Profile<T>(string userId)
+        public object GetAccounts<T>(string userId, int? count = null)
         {
-            return this.database.Users
-                .Where(x => x.Id == userId)
-                .Where(x => !x.IsDeleted)
-                .To<T>()
-                .FirstOrDefault();
+            IQueryable<User> users = this.database.Users
+                .Where(x => !x.IsDeleted);
+
+            if (users.Count() == 0)
+                return default(T[]);
+
+            if (count != null)
+                users = users.Take((int)count);
+
+            if (userId != null)
+            {
+                return users.Where(x => x.Id == userId).To<T>().FirstOrDefault();
+            }
+            else
+            {
+                return users.To<T>().ToArray();
+            }
         }
 
         public async Task<ServiceResponseModel> Logout(string userId, string username)
@@ -121,26 +133,6 @@ namespace Services
             }
             else
                 return new ServiceResponseModel(null, null);
-        }
-
-        public T[] GetUsers<T>(int? count = null)
-        {
-            IQueryable<User> users = this.database.Users;
-
-            if (users.Count() == 0)
-                return null;
-
-            if (count != null)
-                users = users.Take((int)count);
-
-            T[] results = users.To<T>().ToArray();
-
-            //foreach (var user in results)
-            //{
-            //    user.RoleName = this.GetUserRoleType(user.Id)?.ToString();
-            //}
-
-            return results;
         }
 
         // ------------------ Protected ------------------

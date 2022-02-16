@@ -30,7 +30,7 @@ namespace Web.Controllers
         [HttpGet(nameof(Profile))]
         public override ActionResult<object> Profile()
         {
-            AdminResponseModel response = this.adminService.Profile<AdminResponseModel>(this.Claims.UserId);
+            AdminResponseModel response = (AdminResponseModel)this.adminService.GetAccounts<AdminResponseModel>(this.Claims?.UserId);
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -45,7 +45,7 @@ namespace Web.Controllers
         [HttpGet(nameof(Users))]
         public override ActionResult<object> Users()
         {
-            AdminResponseModel[] users = this.adminService.GetUsers<AdminResponseModel>();
+            AdminResponseModel[] users = (AdminResponseModel[])this.adminService.GetAccounts<AdminResponseModel>(null);
 
             foreach (var user in users)
             {
