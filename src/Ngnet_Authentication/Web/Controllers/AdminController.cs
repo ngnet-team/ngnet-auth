@@ -39,6 +39,11 @@ namespace Web.Controllers
 
             response.RoleName = this.Claims.RoleType.ToString();
 
+            UserOptionalModel complicated = this.adminService.IncludeComplicated(this.Claims?.UserId);
+
+            response.Address = complicated.Address;
+            response.Contact = complicated.Contact;
+
             return response;
         }
 

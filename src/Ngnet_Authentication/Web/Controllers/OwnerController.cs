@@ -7,6 +7,7 @@ using Common.Enums;
 using Common.Json.Service;
 using Services.Email;
 using Services.Interfaces;
+using ApiModels.Users;
 
 namespace Web.Controllers
 {
@@ -37,6 +38,11 @@ namespace Web.Controllers
             }
 
             response.RoleName = this.Claims.RoleType.ToString();
+
+            UserOptionalModel complicated = this.ownerService.IncludeComplicated(this.Claims?.UserId);
+
+            response.Address = complicated.Address;
+            response.Contact = complicated.Contact;
 
             return response;
         }

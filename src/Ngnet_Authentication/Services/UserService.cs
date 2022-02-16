@@ -45,6 +45,30 @@ namespace Services
             }
         }
 
+        public UserOptionalModel IncludeComplicated(string userId)
+        {
+            User user = this.database.Users.FirstOrDefault(x => x.Id == userId);
+
+            Address address = this.database.Addresses.FirstOrDefault(x => x.Id == user.AddressId);
+            Contact contact = this.database.Contacts.FirstOrDefault(x => x.Id == user.ContactId);
+
+            return new UserOptionalModel()
+            {
+                Address = new AddressRequestModel()
+                {
+                    Country = address?.Country,
+                    City = address?.City,
+                    Str = address?.Str,
+                },
+                Contact = new ContactRequestModel()
+                {
+                    Mobile = contact?.Mobile,
+                    Email = contact?.Email,
+                    Website = contact?.Website,
+                },
+            };
+        }
+
         public async Task<ServiceResponseModel> Logout(string userId, string username)
         {
             await this.AddEntry(new Entry()

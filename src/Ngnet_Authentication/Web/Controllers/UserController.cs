@@ -39,6 +39,11 @@ namespace Web.Controllers
                 return this.Unauthorized(errors);
             }
 
+            UserOptionalModel complicated = this.userService.IncludeComplicated(this.Claims?.UserId);
+
+            response.Address = complicated.Address;
+            response.Contact = complicated.Contact;
+
             return response;
         }
 
