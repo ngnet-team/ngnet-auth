@@ -79,6 +79,7 @@ namespace Services
                 return null;
 
             return roles
+                .ToArray()
                 .Select(x => new RoleModel()
                 {
                     Id = x.Id,
@@ -101,8 +102,10 @@ namespace Services
             if (entries.Count() == 0)
                 return null;
 
-            return entries
+
+             return entries
                    .OrderByDescending(x => x.Id)
+                   .ToArray()
                    .Select(x => new EntryModel()
                    {
                        UserId = x.UserId,
@@ -124,6 +127,7 @@ namespace Services
 
             return rights
                    .OrderByDescending(x => x.Id)
+                   .ToArray()
                    .Select(x => new RightsChangeModel()
                    {
                        From = x.From,
