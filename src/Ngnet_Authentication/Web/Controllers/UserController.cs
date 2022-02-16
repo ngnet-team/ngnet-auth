@@ -76,6 +76,14 @@ namespace Web.Controllers
             return this.Ok(this.response.Success);
         }
 
+        [HttpGet(nameof(Users))]
+        public virtual ActionResult<object> Users()
+        {
+            UserResponseModel[] users = this.userService.GetUsers<UserResponseModel>();
+
+            return this.Ok(users);
+        }
+
         [HttpGet(nameof(Delete))] // Marked as deleted ONLY!
         public async Task<ActionResult> Delete()
         {

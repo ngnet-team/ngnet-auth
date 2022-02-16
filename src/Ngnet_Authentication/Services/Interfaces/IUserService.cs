@@ -22,5 +22,7 @@ namespace Services.Interfaces
         public Task<ServiceResponseModel> Update(UpdateRequestModel model);
 
         public Task<ServiceResponseModel> Change(ChangeRequestModel model);
+
+        public T[] GetUsers<T>(int? count = null);
     }
 }

@@ -123,6 +123,26 @@ namespace Services
                 return new ServiceResponseModel(null, null);
         }
 
+        public T[] GetUsers<T>(int? count = null)
+        {
+            IQueryable<User> users = this.database.Users;
+
+            if (users.Count() == 0)
+                return null;
+
+            if (count != null)
+                users = users.Take((int)count);
+
+            T[] results = users.To<T>().ToArray();
+
+            //foreach (var user in results)
+            //{
+            //    user.RoleName = this.GetUserRoleType(user.Id)?.ToString();
+            //}
+
+            return results;
+        }
+
         // ------------------ Protected ------------------
 
         protected async Task RemoveAllUserRelated(User user)

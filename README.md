@@ -88,7 +88,7 @@ Account properties:
 |Users|GET|**Yes**||An array of profile information|
 |Roles|GET|**Yes**||An array of [{ Id: string, Name: string, MaxCount: number, BaseModels: {} }]|
 |Entries|GET|**Yes**||An array of entries [{ UserId: string, Username: string, Login: boolean, CreatedOn: string }]|
-|RightsChanges|POST|**Yes**|{ From: string, To: string, Role: string } (optional)|An array of changes [{ From: string, To: string, Role: string, Date: string }]|
+|RightsChanges|GET|**Yes**||An array of rights changes [{ From: string, To: string, Role: string, Date: string }]|
 ||<p></p><p></p>||||
 |Owner Extends Admin Endpoints|Method|JWT|Body|Response|
 |SetRoleCounts|POST|**Yes**|{ Name: string, MaxCount: number }|Successful message|

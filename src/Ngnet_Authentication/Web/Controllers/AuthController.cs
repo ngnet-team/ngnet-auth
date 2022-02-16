@@ -52,7 +52,7 @@ namespace Web.Controllers
                 return this.BadRequest(this.response.Errors);
 
             UserDto userDto = (UserDto)this.response.RawData;
-            JwtTokenModel tokenModel = new JwtTokenModel(this.AppSettings.ApplicationCalls.FirstOrDefault().Key)
+            JwtTokenModel tokenModel = new JwtTokenModel(this.AppSettings.SecretKey)
             {
                 UserId = userDto.Id,
                 Username = userDto.Username,
