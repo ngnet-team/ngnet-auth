@@ -47,6 +47,11 @@ namespace Web.Controllers
         {
             AdminResponseModel[] users = this.adminService.GetUsers<AdminResponseModel>();
 
+            foreach (var user in users)
+            {
+                user.RoleName = this.adminService.GetUserRoleType(user.Id)?.ToString();
+            }
+
             return this.Ok(users);
         }
 
