@@ -15,6 +15,6 @@ namespace Services.Interfaces
 
         public EntryModel[] GetEntries(string userId = null);
 
-        public RightsChangeModel[] GetRightsChanges(RightsChangeModel model = null);
+        public RightsChangeModel[] GetRightsChanges(string author = null);
     }
 }

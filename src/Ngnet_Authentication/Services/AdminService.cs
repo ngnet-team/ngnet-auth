@@ -53,25 +53,25 @@ namespace Services
 
         public AdminResponseModel[] GetUsers(int? count = null)
         {
-            var users = this.database.Users
-            .To<AdminResponseModel>()
-            .ToArray();
+            IQueryable<AdminResponseModel> users = this.database.Users.To<AdminResponseModel>();
+
+            if (users.Count() == 0)
+                return null;
 
             if (count != null)
-                users.Take((int)count);
-            //Add entries and role names
+                users = users.Take((int)count);
+
             foreach (var user in users)
             {
                 user.RoleName = this.GetUserRoleType(user.Id)?.ToString();
             }
 
-            return users;
+            return users.ToArray();
         }
 
         public RoleModel[] GetRoles()
         {
-            var roles = this.database.Roles
-                //Can't apply custom mapping, should be fixed!
+            IQueryable<RoleModel> roles = this.database.Roles
                 .Select(x => new RoleModel()
                 {
                     Id = x.Id,
@@ -81,24 +81,22 @@ namespace Services
                     ModifiedOn = x.ModifiedOn,
                     DeletedOn = x.DeletedOn,
                     IsDeleted = x.IsDeleted,
-                })
-                .ToArray();
+                });
 
-            //var roles = this.database.Roles
-            //    .To<RoleResponseModel>()
-            //    .ToArray();
+            if (roles.Count() == 0)
+                return null;
 
-            return roles;
+            return roles.ToArray();
         }
 
         public EntryModel[] GetEntries(string userId = null)
         {
-            var entries = this.database.Entries;
+            IQueryable<Entry> entries = this.database.Entries;
 
             if (userId != null)
-                entries.Where(x => x.UserId == userId).Take(20);//To avoid too many records for single user
+                entries = entries.Where(x => x.UserId == userId);
 
-            return entries
+            IQueryable<EntryModel> models = entries
                    .OrderByDescending(x => x.Id)
                    .Select(x => new EntryModel()
                    {
@@ -106,40 +104,36 @@ namespace Services
                        Username = x.Username,
                        Login = x.Login,
                        CreatedOn = this.DateToString(x.CreatedOn),
-                   })
-                   .ToArray();
+                   });
+
+            int res = models.Count();
+
+            if (models.Count() == 0)
+                return null;
+
+            return models.ToArray();
         }
 
-        public RightsChangeModel[] GetRightsChanges(RightsChangeModel model = null)
+        public RightsChangeModel[] GetRightsChanges(string author = null)
         {
-            var rightsChanges = this.database.RightsChanges;
+            IQueryable<RightsChange> rights = this.database.RightsChanges;
 
-            if (model?.From != null)
-            {
-                rightsChanges.Where(x => x.From == model.From);
-            }
+            if (author != null)
+                rights = rights.Where(x => x.From == author);
 
-            if (model?.To != null)
-            {
-                rightsChanges.Where(x => x.To == model.To);
-            }
-
-            if (model?.Role != null)
-            {
-                RoleType? roleType = this.GetRoleType(model?.Role);
-                rightsChanges.Where(x => x.Role == roleType);
-            }
-
-            return rightsChanges
-                   .OrderByDescending(x => x.Id)
+            IQueryable<RightsChangeModel> models = rights.OrderByDescending(x => x.Id)
                    .Select(x => new RightsChangeModel()
                    {
                        From = x.From,
                        To = x.To,
                        Role = x.Role.ToString(),
                        Date = this.DateToString(x.Date),
-                   })
-                   .ToArray();
+                   });
+
+            if (models.Count() == 0)
+                return null;
+
+            return models.ToArray();
         }
     }
 }

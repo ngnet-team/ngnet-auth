@@ -36,32 +36,6 @@ namespace Web.Infrastructure
                 options.UseSqlServer(configuration.GetValue<string>("Database:SqlServer:ConnectionString")));
         }
 
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, ApplicationSettingsModel appSettings)
-        {
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
-            services
-                .AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(x =>
-                {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                    };
-                });
-
-            return services;
-        }
-
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             //chain the services
