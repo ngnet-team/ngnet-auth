@@ -130,8 +130,8 @@ namespace Services
                    .ToArray()
                    .Select(x => new RightsChangeModel()
                    {
-                       From = x.From,
-                       To = x.To,
+                       From = this.GetUserDtoById(x.From)?.Username,
+                       To = this.GetUserDtoById(x.To)?.Username,
                        Role = x.Role.ToString(),
                        Date = this.DateToString(x.Date),
                    }).ToArray();
