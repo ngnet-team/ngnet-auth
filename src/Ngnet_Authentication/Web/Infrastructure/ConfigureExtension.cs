@@ -20,7 +20,10 @@ namespace Web.Infrastructure
             dbContext.Database.Migrate();
 
             SeedingModel seeding = configuration.GetSection("Seeding").Get<SeedingModel>();
-            new DatabaseSeeder(seeding).SeedAsync(dbContext).GetAwaiter().GetResult();
+            if (seeding != null)
+            {
+                new DatabaseSeeder(seeding).SeedAsync(dbContext).GetAwaiter().GetResult();
+            }
         }
     }
 }

@@ -47,12 +47,12 @@ namespace Services.Seeding
             this.roleModels.Add(new RoleModel()
             {
                 Name = RoleType.Owner.ToString(),
-                MaxCount = this.seeding.Owners?.Length,
+                MaxCount = this.seeding?.Owners?.Length,
             });
             this.roleModels.Add(new RoleModel()
             {
                 Name = RoleType.Admin.ToString(),
-                MaxCount = this.seeding.Admins?.Length,
+                MaxCount = this.seeding?.Admins?.Length,
             });
         }
     }
