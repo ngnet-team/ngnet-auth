@@ -51,27 +51,15 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
-        public AdminResponseModel[] GetUsers(int? count = null)
-        {
-            var users = this.database.Users
-            .To<AdminResponseModel>()
-            .ToArray();
-
-            if (count != null)
-                users.Take((int)count);
-            //Add entries and role names
-            foreach (var user in users)
-            {
-                user.RoleName = this.GetUserRoleType(user.Id)?.ToString();
-            }
-
-            return users;
-        }
-
         public RoleModel[] GetRoles()
         {
-            var roles = this.database.Roles
-                //Can't apply custom mapping, should be fixed!
+            IQueryable<Role> roles = this.database.Roles;
+
+            if (roles.Count() == 0)
+                return null;
+
+            return roles
+                .ToArray()
                 .Select(x => new RoleModel()
                 {
                     Id = x.Id,
@@ -81,65 +69,52 @@ namespace Services
                     ModifiedOn = x.ModifiedOn,
                     DeletedOn = x.DeletedOn,
                     IsDeleted = x.IsDeleted,
-                })
-                .ToArray();
-
-            //var roles = this.database.Roles
-            //    .To<RoleResponseModel>()
-            //    .ToArray();
-
-            return roles;
+                }).ToArray();
         }
 
         public EntryModel[] GetEntries(string userId = null)
         {
-            var entries = this.database.Entries;
+            IQueryable<Entry> entries = this.database.Entries;
 
             if (userId != null)
-                entries.Where(x => x.UserId == userId).Take(20);//To avoid too many records for single user
+                entries = entries.Where(x => x.UserId == userId);
 
-            return entries
+            if (entries.Count() == 0)
+                return null;
+
+
+             return entries
                    .OrderByDescending(x => x.Id)
+                   .ToArray()
                    .Select(x => new EntryModel()
                    {
                        UserId = x.UserId,
                        Username = x.Username,
                        Login = x.Login,
                        CreatedOn = this.DateToString(x.CreatedOn),
-                   })
-                   .ToArray();
+                   }).ToArray();
         }
 
-        public RightsChangeModel[] GetRightsChanges(RightsChangeModel model = null)
+        public RightsChangeModel[] GetRightsChanges(string author = null)
         {
-            var rightsChanges = this.database.RightsChanges;
+            IQueryable<RightsChange> rights = this.database.RightsChanges;
 
-            if (model?.From != null)
-            {
-                rightsChanges.Where(x => x.From == model.From);
-            }
+            if (author != null)
+                rights = rights.Where(x => x.From == author);
 
-            if (model?.To != null)
-            {
-                rightsChanges.Where(x => x.To == model.To);
-            }
+            if (rights.Count() == 0)
+                return null;
 
-            if (model?.Role != null)
-            {
-                RoleType? roleType = this.GetRoleType(model?.Role);
-                rightsChanges.Where(x => x.Role == roleType);
-            }
-
-            return rightsChanges
+            return rights
                    .OrderByDescending(x => x.Id)
+                   .ToArray()
                    .Select(x => new RightsChangeModel()
                    {
-                       From = x.From,
-                       To = x.To,
+                       From = this.GetUserDtoById(x.From)?.Username,
+                       To = this.GetUserDtoById(x.To)?.Username,
                        Role = x.Role.ToString(),
                        Date = this.DateToString(x.Date),
-                   })
-                   .ToArray();
+                   }).ToArray();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Services.Seeding.Seeder
         {
             this.database = database;
 
-            if (this.seeding.Owners != null)
+            if (this.seeding?.Owners != null)
             {
                 foreach (var owner in this.seeding.Owners)
                 {
@@ -31,7 +31,7 @@ namespace Services.Seeding.Seeder
                 }
             }
 
-            if (this.seeding.Admins != null)
+            if (this.seeding?.Admins != null)
             {
                 foreach (var admin in this.seeding.Admins)
                 {
@@ -39,7 +39,7 @@ namespace Services.Seeding.Seeder
                 }
             }
 
-            if (this.seeding.Members != null)
+            if (this.seeding?.Members != null)
             {
                 foreach (var owner in this.seeding.Members)
                 {
@@ -47,7 +47,7 @@ namespace Services.Seeding.Seeder
                 }
             }
 
-            if (this.seeding.Users != null)
+            if (this.seeding?.Users != null)
             {
                 foreach (var admin in this.seeding.Users)
                 {

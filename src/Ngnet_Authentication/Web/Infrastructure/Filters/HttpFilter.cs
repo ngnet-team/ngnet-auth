@@ -125,9 +125,8 @@ namespace Web.Infrastructure.Filters
             var tokenHandler = new JwtSecurityTokenHandler().ReadJwtToken(this.token);
             var claims = tokenHandler.Claims;
             //Check secret key
-            string secretKey = claims.FirstOrDefault(x => x.Type == "aud")?.Value;
-            string appName = this.ReadSecretKey(secretKey);
-            if (string.IsNullOrEmpty(appName))
+            string tokenSecretKey = claims.FirstOrDefault(x => x.Type == "aud")?.Value;
+            if (this.appSettings?.SecretKey != tokenSecretKey)
             {
                 context.Result = new UnauthorizedObjectResult(serverErrors.InvalidSecretKey);
                 return null;
@@ -161,15 +160,6 @@ namespace Web.Infrastructure.Filters
             }
 
             return claimModel;
-        }
-
-        private string ReadSecretKey(string secretKey)
-        {
-            ApplicationCall appCall = this.appSettings.ApplicationCalls.FirstOrDefault(x => x.Key == secretKey);
-            if (appCall == null)
-                return null;
-
-            return appCall?.Name;
         }
 
         private bool ValidApiKey(ActionExecutingContext context)
