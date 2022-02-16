@@ -43,9 +43,9 @@ namespace Web.Controllers
         }
 
         [HttpGet(nameof(Users))]
-        public ActionResult<AdminResponseModel[]> Users()
+        public override ActionResult<object> Users()
         {
-            AdminResponseModel[] users = this.adminService.GetUsers();
+            AdminResponseModel[] users = this.adminService.GetUsers<AdminResponseModel>();
 
             return this.Ok(users);
         }

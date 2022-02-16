@@ -9,8 +9,6 @@ namespace Services.Interfaces
     {
         public Task<ServiceResponseModel> ChangeRole(AdminRequestModel model, string currUser);
 
-        public AdminResponseModel[] GetUsers(int? count = null);
-
         public RoleModel[] GetRoles();
 
         public EntryModel[] GetEntries(string userId = null);

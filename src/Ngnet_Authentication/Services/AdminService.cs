@@ -51,26 +51,6 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().Updated);
         }
 
-        public AdminResponseModel[] GetUsers(int? count = null)
-        {
-            IQueryable<User> users = this.database.Users;
-
-            if (users.Count() == 0)
-                return null;
-
-            if (count != null)
-                users = users.Take((int)count);
-
-            AdminResponseModel[] results = users.To<AdminResponseModel>().ToArray();
-
-            foreach (var user in results)
-            {
-                user.RoleName = this.GetUserRoleType(user.Id)?.ToString();
-            }
-
-            return results;
-        }
-
         public RoleModel[] GetRoles()
         {
             IQueryable<Role> roles = this.database.Roles;
