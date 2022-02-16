@@ -53,7 +53,7 @@ namespace Services
 
         public AdminResponseModel[] GetUsers(int? count = null)
         {
-            IQueryable<AdminResponseModel> users = this.database.Users.To<AdminResponseModel>();
+            IQueryable<User> users = this.database.Users;
 
             if (users.Count() == 0)
                 return null;
@@ -61,17 +61,24 @@ namespace Services
             if (count != null)
                 users = users.Take((int)count);
 
-            foreach (var user in users)
+            AdminResponseModel[] results = users.To<AdminResponseModel>().ToArray();
+
+            foreach (var user in results)
             {
                 user.RoleName = this.GetUserRoleType(user.Id)?.ToString();
             }
 
-            return users.ToArray();
+            return results;
         }
 
         public RoleModel[] GetRoles()
         {
-            IQueryable<RoleModel> roles = this.database.Roles
+            IQueryable<Role> roles = this.database.Roles;
+
+            if (roles.Count() == 0)
+                return null;
+
+            return roles
                 .Select(x => new RoleModel()
                 {
                     Id = x.Id,
@@ -81,12 +88,7 @@ namespace Services
                     ModifiedOn = x.ModifiedOn,
                     DeletedOn = x.DeletedOn,
                     IsDeleted = x.IsDeleted,
-                });
-
-            if (roles.Count() == 0)
-                return null;
-
-            return roles.ToArray();
+                }).ToArray();
         }
 
         public EntryModel[] GetEntries(string userId = null)
@@ -96,7 +98,10 @@ namespace Services
             if (userId != null)
                 entries = entries.Where(x => x.UserId == userId);
 
-            IQueryable<EntryModel> models = entries
+            if (entries.Count() == 0)
+                return null;
+
+            return entries
                    .OrderByDescending(x => x.Id)
                    .Select(x => new EntryModel()
                    {
@@ -104,14 +109,7 @@ namespace Services
                        Username = x.Username,
                        Login = x.Login,
                        CreatedOn = this.DateToString(x.CreatedOn),
-                   });
-
-            int res = models.Count();
-
-            if (models.Count() == 0)
-                return null;
-
-            return models.ToArray();
+                   }).ToArray();
         }
 
         public RightsChangeModel[] GetRightsChanges(string author = null)
@@ -121,19 +119,18 @@ namespace Services
             if (author != null)
                 rights = rights.Where(x => x.From == author);
 
-            IQueryable<RightsChangeModel> models = rights.OrderByDescending(x => x.Id)
+            if (rights.Count() == 0)
+                return null;
+
+            return rights
+                   .OrderByDescending(x => x.Id)
                    .Select(x => new RightsChangeModel()
                    {
                        From = x.From,
                        To = x.To,
                        Role = x.Role.ToString(),
                        Date = this.DateToString(x.Date),
-                   });
-
-            if (models.Count() == 0)
-                return null;
-
-            return models.ToArray();
+                   }).ToArray();
         }
     }
 }

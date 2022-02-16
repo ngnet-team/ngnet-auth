@@ -62,7 +62,12 @@ namespace Web.Controllers
         }
 
         [HttpGet(nameof(RightsChanges))]
-        public RightsChangeModel[] RightsChanges() => this.adminService.GetRightsChanges();
+        public ActionResult<RightsChangeModel[]> RightsChanges()
+        {
+            RightsChangeModel[] rights = this.adminService.GetRightsChanges();
+
+            return this.Ok(rights);
+        }
 
         [HttpPost(nameof(ChangeRole))]
         public async Task<ActionResult> ChangeRole(AdminRequestModel model)
