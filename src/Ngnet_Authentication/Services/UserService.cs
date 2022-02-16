@@ -65,6 +65,11 @@ namespace Services
                     Mobile = contact?.Mobile,
                     Email = contact?.Email,
                     Website = contact?.Website,
+                    Facebook = contact?.Facebook,
+                    Instagram = contact?.Instagram,
+                    TikTok = contact?.TikTok,
+                    Youtube = contact?.Youtube,
+                    Twitter = contact?.Twitter,
                 },
             };
         }
