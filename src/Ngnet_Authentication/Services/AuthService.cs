@@ -268,7 +268,7 @@ namespace Services
                 else if (ChangableType.Username.ToString().Equals(key))
                     user.Username = changeModel.New;
 
-                else if (ChangableType.Password.ToString().Equals(key))
+                else if (ChangableType.Password.ToString().Equals(key) || ChangableType.Resetpassword.ToString().Equals(key))
                     user.PasswordHash = Hash.CreatePassword(changeModel.New);
 
                 else
