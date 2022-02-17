@@ -9,7 +9,7 @@ namespace Services.Interfaces
     {
         public int UsersCount { get; }
 
-        public T Profile<T>(string userId);
+        public object GetAccounts<T>(string userId, int? count = null);
 
         public Task<ServiceResponseModel> Logout(string userId, string username);
 
@@ -23,6 +23,6 @@ namespace Services.Interfaces
 
         public Task<ServiceResponseModel> Change(ChangeRequestModel model);
 
-        public T[] GetUsers<T>(int? count = null);
+        public UserOptionalModel IncludeComplicated(string userId);
     }
 }

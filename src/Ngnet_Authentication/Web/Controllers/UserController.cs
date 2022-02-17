@@ -32,12 +32,17 @@ namespace Web.Controllers
         [HttpGet(nameof(Profile))]
         public virtual ActionResult<object> Profile()
         {
-            UserResponseModel response = this.userService.Profile<UserResponseModel>(this.Claims.UserId);
+            UserResponseModel response = (UserResponseModel)this.userService.GetAccounts<UserResponseModel>(this.Claims?.UserId);
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
                 return this.Unauthorized(errors);
             }
+
+            UserOptionalModel complicated = this.userService.IncludeComplicated(this.Claims?.UserId);
+
+            response.Address = complicated.Address;
+            response.Contact = complicated.Contact;
 
             return response;
         }
@@ -79,7 +84,7 @@ namespace Web.Controllers
         [HttpGet(nameof(Users))]
         public virtual ActionResult<object> Users()
         {
-            UserResponseModel[] users = this.userService.GetUsers<UserResponseModel>();
+            UserResponseModel[] users = (UserResponseModel[])this.userService.GetAccounts<UserResponseModel>(null);
 
             return this.Ok(users);
         }

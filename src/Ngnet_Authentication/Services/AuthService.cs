@@ -236,7 +236,26 @@ namespace Services
 
                 user.Age = updateModel.Age == null ? user.Age : updateModel.Age;
 
-                //TODO: Add address and contact
+                if (!Global.NullableObject(updateModel?.Address))
+                {
+                    Address address = this.database.Addresses.FirstOrDefault(x => x.Id == user.AddressId);
+                    address.Country = updateModel?.Address?.Country == null ? address.Country : updateModel?.Address?.Country;
+                    address.City = updateModel?.Address?.City == null ? address.City : updateModel?.Address?.City;
+                    address.Str = updateModel?.Address?.Str == null ? address.Str : updateModel?.Address?.Str;
+                }
+
+                if (!Global.NullableObject(updateModel?.Contact))
+                {
+                    Contact contact = this.database.Contacts.FirstOrDefault(x => x.Id == user.ContactId);
+                    contact.Mobile = updateModel?.Contact?.Mobile == null ? contact.Mobile : updateModel?.Contact?.Mobile;
+                    contact.Email = updateModel?.Contact?.Email == null ? contact.Email : updateModel?.Contact?.Email;
+                    contact.Website = updateModel?.Contact?.Website == null ? contact.Website : updateModel?.Contact?.Website;
+                    contact.Facebook = updateModel?.Contact?.Facebook == null ? contact.Facebook : updateModel?.Contact?.Facebook;
+                    contact.Instagram = updateModel?.Contact?.Instagram == null ? contact.Instagram : updateModel?.Contact?.Instagram;
+                    contact.TikTok = updateModel?.Contact?.TikTok == null ? contact.TikTok : updateModel?.Contact?.TikTok;
+                    contact.Youtube = updateModel?.Contact?.Youtube == null ? contact.Youtube : updateModel?.Contact?.Youtube;
+                    contact.Twitter = updateModel?.Contact?.Twitter == null ? contact.Twitter : updateModel?.Contact?.Twitter;
+                }
             }
             //Changable entities
             else if (!Global.NullableObject(changeModel))

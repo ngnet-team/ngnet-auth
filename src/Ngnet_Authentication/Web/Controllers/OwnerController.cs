@@ -7,6 +7,7 @@ using Common.Enums;
 using Common.Json.Service;
 using Services.Email;
 using Services.Interfaces;
+using ApiModels.Users;
 
 namespace Web.Controllers
 {
@@ -29,7 +30,7 @@ namespace Web.Controllers
         [HttpGet(nameof(Profile))]
         public override ActionResult<object> Profile()
         {
-            OwnerResponseModel response = this.ownerService.Profile<OwnerResponseModel>(this.Claims.UserId);
+            OwnerResponseModel response = (OwnerResponseModel)this.ownerService.GetAccounts<OwnerResponseModel>(this.Claims?.UserId);
             if (response == null)
             {
                 this.errors = this.GetErrors().UserNotFound;
@@ -37,6 +38,11 @@ namespace Web.Controllers
             }
 
             response.RoleName = this.Claims.RoleType.ToString();
+
+            UserOptionalModel complicated = this.ownerService.IncludeComplicated(this.Claims?.UserId);
+
+            response.Address = complicated.Address;
+            response.Contact = complicated.Contact;
 
             return response;
         }

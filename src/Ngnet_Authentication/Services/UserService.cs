@@ -24,13 +24,54 @@ namespace Services
 
         public int UsersCount => this.database.Users.Where(x => !x.IsDeleted).Count();
 
-        public T Profile<T>(string userId)
+        public object GetAccounts<T>(string userId, int? count = null)
         {
-            return this.database.Users
-                .Where(x => x.Id == userId)
-                .Where(x => !x.IsDeleted)
-                .To<T>()
-                .FirstOrDefault();
+            IQueryable<User> users = this.database.Users
+                .Where(x => !x.IsDeleted);
+
+            if (users.Count() == 0)
+                return default(T[]);
+
+            if (count != null)
+                users = users.Take((int)count);
+
+            if (userId != null)
+            {
+                return users.Where(x => x.Id == userId).To<T>().FirstOrDefault();
+            }
+            else
+            {
+                return users.To<T>().ToArray();
+            }
+        }
+
+        public UserOptionalModel IncludeComplicated(string userId)
+        {
+            User user = this.database.Users.FirstOrDefault(x => x.Id == userId);
+
+            Address address = this.database.Addresses.FirstOrDefault(x => x.Id == user.AddressId);
+            Contact contact = this.database.Contacts.FirstOrDefault(x => x.Id == user.ContactId);
+
+            return new UserOptionalModel()
+            {
+                Address = new AddressRequestModel()
+                {
+                    Country = address?.Country,
+                    City = address?.City,
+                    Str = address?.Str,
+                },
+                Contact = new ContactRequestModel()
+                {
+                    Mobile = contact?.Mobile,
+                    Email = contact?.Email,
+                    Website = contact?.Website,
+                    Facebook = contact?.Facebook,
+                    Instagram = contact?.Instagram,
+                    TikTok = contact?.TikTok,
+                    Youtube = contact?.Youtube,
+                    Twitter = contact?.Twitter,
+                },
+            };
         }
 
         public async Task<ServiceResponseModel> Logout(string userId, string username)
@@ -121,26 +162,6 @@ namespace Services
             }
             else
                 return new ServiceResponseModel(null, null);
-        }
-
-        public T[] GetUsers<T>(int? count = null)
-        {
-            IQueryable<User> users = this.database.Users;
-
-            if (users.Count() == 0)
-                return null;
-
-            if (count != null)
-                users = users.Take((int)count);
-
-            T[] results = users.To<T>().ToArray();
-
-            //foreach (var user in results)
-            //{
-            //    user.RoleName = this.GetUserRoleType(user.Id)?.ToString();
-            //}
-
-            return results;
         }
 
         // ------------------ Protected ------------------
