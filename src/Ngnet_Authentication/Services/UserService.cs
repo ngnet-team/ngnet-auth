@@ -187,7 +187,97 @@ namespace Services
             await this.database.SaveChangesAsync();
         }
 
+        protected User AddUserToRole(User user, string roleName)
+        {
+            if (!this.RoomForRole(roleName))
+                return null;
+
+            user.RoleId = this.GetRole(roleName).Id;
+            return user;
+        }
+
         // ----------------------- Private -----------------------
+
+        private bool RoomForRole(string roleName)
+        {
+            Role role = this.GetRole(roleName);
+            if (role == null)
+                return false;
+
+            if (role?.MaxCount == null)
+                return true;
+
+            int usersInRole = this.database.Users
+                .Where(x => !x.IsDeleted)
+                .Where(x => x.RoleId == role.Id)
+                .Count();
+
+            return role.MaxCount > usersInRole;
+        }
+
+        private User ModifyEntity(User user, UpdateRequestModel updateModel, ChangeRequestModel changeModel)
+        {
+            //Updatable entities
+            if (!Global.NullableObject(updateModel))
+            {
+                user.FirstName = updateModel.FirstName == null ? user.FirstName : updateModel.FirstName;
+
+                user.MiddleName = updateModel.MiddleName == null ? user.MiddleName : updateModel.MiddleName;
+
+                user.LastName = updateModel.LastName == null ? user.LastName : updateModel.LastName;
+
+                GenderType gender;
+                bool validGender = Enum.TryParse<GenderType>(this.Capitalize(updateModel.Gender), out gender);
+                if (validGender)
+                    user.Gender = updateModel.Gender == null ? user.Gender : gender;
+
+                user.Age = updateModel.Age == null ? user.Age : updateModel.Age;
+
+                if (!Global.NullableObject(updateModel?.Address))
+                {
+                    Address address = this.database.Addresses.FirstOrDefault(x => x.Id == user.AddressId);
+                    address.Country = updateModel?.Address?.Country == null ? address.Country : updateModel?.Address?.Country;
+                    address.City = updateModel?.Address?.City == null ? address.City : updateModel?.Address?.City;
+                    address.Str = updateModel?.Address?.Str == null ? address.Str : updateModel?.Address?.Str;
+                }
+
+                if (!Global.NullableObject(updateModel?.Contact))
+                {
+                    Contact contact = this.database.Contacts.FirstOrDefault(x => x.Id == user.ContactId);
+                    contact.Mobile = updateModel?.Contact?.Mobile == null ? contact.Mobile : updateModel?.Contact?.Mobile;
+                    contact.Email = updateModel?.Contact?.Email == null ? contact.Email : updateModel?.Contact?.Email;
+                    contact.Website = updateModel?.Contact?.Website == null ? contact.Website : updateModel?.Contact?.Website;
+                    contact.Facebook = updateModel?.Contact?.Facebook == null ? contact.Facebook : updateModel?.Contact?.Facebook;
+                    contact.Instagram = updateModel?.Contact?.Instagram == null ? contact.Instagram : updateModel?.Contact?.Instagram;
+                    contact.TikTok = updateModel?.Contact?.TikTok == null ? contact.TikTok : updateModel?.Contact?.TikTok;
+                    contact.Youtube = updateModel?.Contact?.Youtube == null ? contact.Youtube : updateModel?.Contact?.Youtube;
+                    contact.Twitter = updateModel?.Contact?.Twitter == null ? contact.Twitter : updateModel?.Contact?.Twitter;
+                }
+            }
+            //Changable entities
+            else if (!Global.NullableObject(changeModel))
+            {
+                string key = this.Capitalize(changeModel.Key);
+
+                if (ChangableType.Email.ToString().Equals(key))
+                    user.Email = changeModel.New;
+
+                else if (ChangableType.Username.ToString().Equals(key))
+                    user.Username = changeModel.New;
+
+                else if (ChangableType.Password.ToString().Equals(key) || ChangableType.Resetpassword.ToString().Equals(key))
+                    user.PasswordHash = Hash.CreatePassword(changeModel.New);
+
+                else
+                    return null;
+            }
+            else
+                return null;
+
+            user.ModifiedOn = DateTime.UtcNow;
+
+            return user;
+        }
 
         private ServiceResponseModel ValidUpdateModel(UpdateRequestModel model, User user)
         {
@@ -204,17 +294,17 @@ namespace Services
 
             if (ChangableType.Email.ToString().Equals(this.Capitalize(model.Key)))
             {
-                if (!this.ValidEmail(model, user))
+                if (!this.ValidExistingEmail(model, user))
                     response.Errors = this.GetErrors().InvalidEmail;
             }
             else if (ChangableType.Username.ToString().Equals(this.Capitalize(model.Key)))
             {
-                if (!this.ValidUsername(model, user))
+                if (!this.ValidExistingUsername(model, user))
                     response.Errors = this.GetErrors().InvalidUsername;
             }
             else if (ChangableType.Password.ToString().Equals(this.Capitalize(model.Key)))
             {
-                if (!this.ValidPassword(model, user))
+                if (!this.ValidExistingPassword(model, user))
                     response.Errors = this.GetErrors().InvalidPassword;
             }
             else if (ChangableType.Resetpassword.ToString().Equals(this.Capitalize(model.Key)))
@@ -229,7 +319,7 @@ namespace Services
             return response;
         }
 
-        private bool ValidEmail(ChangeRequestModel model, User user)
+        private bool ValidExistingEmail(ChangeRequestModel model, User user)
         {
             //Base change validator
             if (!this.ValidChange(model, user))
@@ -250,7 +340,7 @@ namespace Services
             return true;
         }
 
-        private bool ValidUsername(ChangeRequestModel model, User user)
+        private bool ValidExistingUsername(ChangeRequestModel model, User user)
         {
             //Base change validator
             if (!this.ValidChange(model, user))
@@ -268,7 +358,7 @@ namespace Services
             return true;
         }
 
-        private bool ValidPassword(ChangeRequestModel model, User user)
+        private bool ValidExistingPassword(ChangeRequestModel model, User user)
         {
             //Base change validator
             if (!this.ValidChange(model, user))
@@ -281,6 +371,15 @@ namespace Services
                 return false;
             //Current one is equal to new value
             if (user.PasswordHash == Hash.CreatePassword(model.New))
+                return false;
+
+            return true;
+        }
+
+        private bool ValidChange(ChangeRequestModel model, User user)
+        {
+            //User Not Exists
+            if (user == null || user.IsDeleted)
                 return false;
 
             return true;

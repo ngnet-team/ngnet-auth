@@ -1,8 +1,4 @@
 ﻿{
-  "NotEqualPasswords": {
-    "EN": "Both passwords should be equal!",
-    "BG": "Паролите трябва да бъдат еднакви!"
-  },
   "InvalidEmail": {
     "EN": "The email is invalid!",
     "BG": "Невалиден имейл!"
@@ -14,6 +10,30 @@
   "InvalidPassword": {
     "EN": "The password is invalid!",
     "BG": "Грешнa парола!"
+  },
+  "RequiredEmail": {
+    "EN": "The email is required!",
+    "BG": "Имейл адресът е задължителен!"
+  },
+  "RequiredUsername": {
+    "EN": "The username is required!",
+    "BG": "Потребителско име е задължително!"
+  },
+  "RequiredPassword": {
+    "EN": "The password is required!",
+    "BG": "Паролата е задължителна!"
+  },
+  "InvalidEmailLength": {
+    "EN": "The email lenght must be between ",
+    "BG": "Дължината на имейл адреса трябва да е между "
+  },
+  "InvalidUsernameLength": {
+    "EN": "The username lenght must be between ",
+    "BG": "Дължината на потребителското име трябва да е между "
+  },
+  "InvalidPasswordLength": {
+    "EN": "The password lenght must be between ",
+    "BG": "Дължината на паролата трябва да е между "
   },
   "UserNotFound": {
     "EN": "No user found!",
