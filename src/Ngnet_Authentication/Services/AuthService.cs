@@ -96,15 +96,20 @@ namespace Services
 
         public async Task<ServiceResponseModel> Login(LoginRequestModel model)
         {
-            //Username does Not exist
+            //Required fields
+            if (string.IsNullOrWhiteSpace(model.Username))
+                return new ServiceResponseModel(this.GetErrors().RequiredUsername, null);
+            if (string.IsNullOrWhiteSpace(model.Password))
+                return new ServiceResponseModel(this.GetErrors().RequiredPassword, null);
+            //User not found
             User user = this.GetUserByUsername(model.Username);
             if (user == null)
-                return new ServiceResponseModel(GetErrors().InvalidUsername, null);
+                return new ServiceResponseModel(GetErrors().UserNotFound, null);
             //Invalid password
-            string hashedPassword = Hash.CreatePassword(model.Password);
-            if (user.PasswordHash != hashedPassword)
+            string passwordHash = Hash.CreatePassword(model.Password);
+            if (user.PasswordHash != passwordHash)
                 return new ServiceResponseModel(GetErrors().InvalidPassword, null);
-
+            //Success
             await this.AddEntry(new Entry()
             {
                 UserId = user.Id,
@@ -231,7 +236,7 @@ namespace Services
             return roleType;
         }
 
-        // ------ Request Validations ------
+        // ------ Validations ------
 
         private ServiceResponseModel ValidNewUsername(string username)
         {
