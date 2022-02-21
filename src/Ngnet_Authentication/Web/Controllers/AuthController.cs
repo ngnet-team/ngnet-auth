@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ApiModels.Auth;
@@ -11,6 +10,9 @@ using Services.Email;
 using Services.Interfaces;
 using Web.Controllers.Base;
 using ApiModels.Dtos;
+using Microsoft.AspNetCore.Http;
+using System;
+using Common;
 
 namespace Web.Controllers
 {
@@ -59,6 +61,14 @@ namespace Web.Controllers
                 RoleName = this.authService.GetUserRoleType(userDto.Id)?.ToString(),
             };
             string token = this.authService.CreateJwtToken(tokenModel);
+
+            CookieOptions options = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(Global.Constants.TokenExpires),
+                HttpOnly = false,
+            };
+
+            this.HttpContext.Response.Cookies.Append(Global.Constants.CookieKey, token, options);
 
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };
         }

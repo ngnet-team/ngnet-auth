@@ -28,6 +28,7 @@ namespace Web.Infrastructure.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+
             //Validate Api Key
             if (!this.ValidApiKey(context))
             {
@@ -101,11 +102,6 @@ namespace Web.Infrastructure.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (String.IsNullOrEmpty(this.token))
-                return;
-            //TODO: Adding token in every request can't expire it
-            context.HttpContext.Response.Cookies.Append(constants.CookieKey, this.token,
-                new CookieOptions { Expires = DateTime.Now.AddDays(constants.TokenExpires) });
         }
 
         private bool NullsOnly(object instance)
