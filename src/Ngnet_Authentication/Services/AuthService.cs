@@ -122,6 +122,23 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedIn, userDto);
         }
 
+        public async Task<ServiceResponseModel> ResetPassword(string email)
+        {
+            User user = this.database.Users
+                .Where(x => !x.IsDeleted)
+                .FirstOrDefault(x => x.Email == email);
+
+            if (user == null)
+                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
+
+            string newPassword = Global.CreateRandom;
+            user.PasswordHash = Hash.CreatePassword(newPassword);
+
+            await this.database.SaveChangesAsync();
+
+            return new ServiceResponseModel(null, this.GetSuccessMsg().Updated, newPassword);
+        }
+
         public string CreateJwtToken(JwtTokenModel tokenModel)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

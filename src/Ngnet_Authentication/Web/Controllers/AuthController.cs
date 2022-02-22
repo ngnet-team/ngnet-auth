@@ -72,5 +72,15 @@ namespace Web.Controllers
 
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };
         }
+
+        [HttpPost(nameof(ResetPassword))]
+        public async Task<ActionResult> ResetPassword(RegisterRequestModel model)
+        {
+            this.response = await authService.ResetPassword(model.Email);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response); //TODO: Currently sending the new passowrd as a response but should be changed via Email only
+        }
     }
 }

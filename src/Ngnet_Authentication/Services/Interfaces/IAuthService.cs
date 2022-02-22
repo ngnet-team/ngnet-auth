@@ -14,6 +14,8 @@ namespace Services.Interfaces
 
         public Task<ServiceResponseModel> Login(LoginRequestModel model);
 
+        public Task<ServiceResponseModel> ResetPassword(string email);
+
         public string CreateJwtToken(JwtTokenModel tokenModel);
 
         public Task<ServiceResponseModel> AddEntry(Entry exp);

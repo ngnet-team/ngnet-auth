@@ -114,22 +114,6 @@ namespace Services
             return new ServiceResponseModel(null, this.GetSuccessMsg().Deleted);
         }
 
-        public async Task<ServiceResponseModel> ResetPassword(string userId)
-        {
-            string newPassword = Global.CreateRandom;
-            this.response = await this.Change(new ChangeRequestModel()
-            {
-                Id = userId,
-                Key = ChangableType.Resetpassword.ToString(),
-                New = newPassword,
-            });
-
-            if (this.response.Errors == null)
-                this.response.RawData = newPassword;
-
-            return this.response;
-        }
-
         public async Task<ServiceResponseModel> Update(UpdateRequestModel model)
         {
             User user = this.GetUserById(model.Id);
@@ -265,7 +249,7 @@ namespace Services
                 else if (ChangableType.Username.ToString().Equals(key))
                     user.Username = changeModel.New;
 
-                else if (ChangableType.Password.ToString().Equals(key) || ChangableType.Resetpassword.ToString().Equals(key))
+                else if (ChangableType.Password.ToString().Equals(key))
                     user.PasswordHash = Hash.CreatePassword(changeModel.New);
 
                 else
@@ -306,10 +290,6 @@ namespace Services
             {
                 if (!this.ValidExistingPassword(model, user))
                     response.Errors = this.GetErrors().InvalidPassword;
-            }
-            else if (ChangableType.Resetpassword.ToString().Equals(this.Capitalize(model.Key)))
-            {
-                //No need to validate this
             }
             else
             {
