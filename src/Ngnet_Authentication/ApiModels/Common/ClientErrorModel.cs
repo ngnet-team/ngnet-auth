@@ -32,6 +32,8 @@ namespace ApiModels.Common
 
         public ResponseMessage ExistingUserName { get; set; }
 
+        public ResponseMessage ExistingEmail { get; set; }
+
         public ResponseMessage NoPermissions { get; set; }
 
         public ResponseMessage NotEqualFields { get; set; }

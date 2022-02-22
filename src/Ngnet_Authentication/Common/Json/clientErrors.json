@@ -47,6 +47,10 @@
     "EN": "The Username is already taken!",
     "BG": "Потребителското име е вече заето!"
   },
+  "ExistingEmail": {
+    "EN": "The Email is already taken!",
+    "BG": "Имейл адресът е вече зает!"
+  },
   "NoPermissions": {
     "EN": "You do NOT have permissions!",
     "BG": "Отказан достъп!"

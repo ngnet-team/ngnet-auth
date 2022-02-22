@@ -217,6 +217,9 @@ namespace Services
 
         protected User GetUserById(string id, bool allowDeleted = false)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                return null;
+
             IQueryable<User> user = this.database.Users
                 .Where(x => x.Id == id);
 
@@ -228,8 +231,25 @@ namespace Services
 
         protected User GetUserByUsername(string username, bool allowDeleted = false)
         {
+            if (string.IsNullOrWhiteSpace(username))
+                return null;
+
             IQueryable<User> user = this.database.Users
                 .Where(x => x.Username == username);
+
+            if (!allowDeleted)
+                user.Where(x => !x.IsDeleted);
+
+            return user.FirstOrDefault();
+        }
+
+        protected User GetUserByEmail(string email, bool allowDeleted = false)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
+
+            IQueryable<User> user = this.database.Users
+                .Where(x => x.Email == email);
 
             if (!allowDeleted)
                 user.Where(x => !x.IsDeleted);
@@ -303,6 +323,10 @@ namespace Services
                 error.En += additional; error.Bg += additional;
                 return new ServiceResponseModel(error, null);
             }
+
+            User user = this.GetUserByEmail(email);
+            if (user != null)
+                return new ServiceResponseModel(this.GetErrors().ExistingEmail, null);
 
             if (!Global.EmailValidator(email))
                 return new ServiceResponseModel(this.GetErrors().InvalidEmail, null);
