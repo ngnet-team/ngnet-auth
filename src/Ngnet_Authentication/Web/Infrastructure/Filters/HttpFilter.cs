@@ -5,11 +5,10 @@ using System;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 
-using ApiModels.Auth;
+using ApiModels.Guest;
 using Common;
 using Common.Enums;
 using Web.Infrastructure.Models;
-using Microsoft.AspNetCore.Http;
 using Common.Json.Models;
 
 namespace Web.Infrastructure.Filters
@@ -66,7 +65,7 @@ namespace Web.Infrastructure.Filters
                 return;
             }
             //Guest
-            if (RoleType.Auth.Equals(roleInvoked))
+            if (RoleType.Guest.Equals(roleInvoked))
             {
                 //Token exists
                 if (!string.IsNullOrEmpty(this.token))

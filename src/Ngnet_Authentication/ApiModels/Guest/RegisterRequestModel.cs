@@ -2,7 +2,7 @@
 using Database.Models;
 using Mapper;
 
-namespace ApiModels.Auth
+namespace ApiModels.Guest
 {
     public class RegisterRequestModel : UserOptionalModel, IMapTo<User>
     {

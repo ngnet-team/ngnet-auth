@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-using ApiModels.Auth;
+using ApiModels.Guest;
 using Common;
 using Common.Enums;
 using Common.Json.Service;
@@ -20,14 +20,14 @@ using Common.Json.Models;
 
 namespace Services
 {
-    public class AuthService : BaseService, IAuthService
+    public class GuestService : BaseService, IGuestService
     {
-        public AuthService(NgnetAuthDbContext database, JsonService jsonService)
+        public GuestService(NgnetAuthDbContext database, JsonService jsonService)
             : base(database, jsonService)
         {
         }
 
-        public virtual RoleType RoleType { get; set; } = RoleType.Auth;
+        public virtual RoleType RoleType { get; set; } = RoleType.Guest;
 
         public async Task<ServiceResponseModel> Register(RegisterRequestModel model)
         {

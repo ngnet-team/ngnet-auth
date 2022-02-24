@@ -5,7 +5,7 @@ using Services.Base;
 
 namespace Services.Interfaces
 {
-    public interface IUserService : IAuthService
+    public interface IUserService : IGuestService
     {
         public int UsersCount { get; }
 

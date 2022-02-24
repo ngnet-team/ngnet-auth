@@ -16,7 +16,7 @@ Url construction: Domain/Role/Action
 
 Examples: 
 
-- http://localhost:7000/auth/register
+- http://localhost:7000/guest/register
 - http://localhost:7000/user/profile
 - http://localhost:7000/admin/changerole
 - http://localhost:7000/owner/setmaxroles
@@ -27,7 +27,7 @@ Role types:
 - Admin (an Administrator who maintains the app)
 - Member [NEW] (a user who has paid a monthly fee to see more functionalities)
 - User (a simple user)
-- Auth (guest without authentication)
+- Guest (without authentication)
 
 Account properties:
 
@@ -38,7 +38,7 @@ Account properties:
 
 
 
-|Actions Permission|Owner|Admin|Member|User|Auth|
+|Actions Permission|Owner|Admin|Member|User|Guest|
 | :- | :-: | :-: | :-: | :-: | :-: |
 |Register|**No**|**No**|**No**|**No**|**Yes**|
 |Login|**No**|**No**|**No**|**No**|**Yes**|
@@ -61,7 +61,7 @@ Account properties:
 
 
 
-|Auth Endpoints|Method|JWT|Body|Response|
+|Guest Endpoints|Method|JWT|Body|Response|
 | :- | :-: | :-: | :-: | :-: |
 |Register|POST|**No**|{ Email: string, Username: string, Password: string + Optional proparties }|Successful message|
 |Login|POST|**No**|{ Username: string, Password: string }|Successful message|

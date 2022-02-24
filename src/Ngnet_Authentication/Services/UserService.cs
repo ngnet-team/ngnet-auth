@@ -13,7 +13,7 @@ using Services.Interfaces;
 
 namespace Services
 {
-    public class UserService : AuthService, IUserService
+    public class UserService : GuestService, IUserService
     {
         public UserService(NgnetAuthDbContext database, JsonService jsonService)
             : base(database, jsonService)

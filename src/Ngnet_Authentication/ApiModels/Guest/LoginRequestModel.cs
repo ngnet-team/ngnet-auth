@@ -1,7 +1,7 @@
 ﻿using Database.Models;
 using Mapper;
 
-namespace ApiModels.Auth
+namespace ApiModels.Guest
 {
     public class LoginRequestModel : IMapTo<User>
     {

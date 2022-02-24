@@ -42,7 +42,7 @@ namespace Web.Infrastructure
             return services
                 .AddSingleton<JsonService>()
                 .AddSingleton<IEmailSenderService, EmailSenderService>(x => new EmailSenderService(configuration))
-                .AddTransient<IAuthService, AuthService>()
+                .AddTransient<IGuestService, GuestService>()
                 .AddTransient<IUserService, UserService>()
                 .AddTransient<IMemberService, MemberService>()
                 .AddTransient<IAdminService, AdminService>()

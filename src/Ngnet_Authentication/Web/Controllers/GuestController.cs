@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using ApiModels.Auth;
+using ApiModels.Guest;
 
 using Common.Json.Models;
 using Common.Json.Service;
@@ -16,14 +16,14 @@ using Common;
 
 namespace Web.Controllers
 {
-    public class AuthController : ApiController
+    public class GuestController : ApiController
     {
-        protected IAuthService authService;
+        protected IGuestService authService;
         protected IEmailSenderService emailSenderService;
         protected ResponseMessage errors;
 
-        public AuthController
-            (IAuthService authService,
+        public GuestController
+            (IGuestService authService,
              IEmailSenderService emailSenderService,
              IConfiguration configuration,
              JsonService jsonService)
@@ -33,7 +33,7 @@ namespace Web.Controllers
             this.emailSenderService = emailSenderService;
         }
 
-        protected override RoleType RoleRequired { get; } = RoleType.Auth;
+        protected override RoleType RoleRequired { get; } = RoleType.Guest;
 
         [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)

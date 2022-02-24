@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ApiModels.Auth
+namespace ApiModels.Guest
 {
     public class JwtTokenModel
     {
