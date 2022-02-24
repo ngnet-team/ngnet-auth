@@ -4,13 +4,23 @@ namespace ApiModels.Common
 {
     public class ClientErrorModel
     {
-        public ResponseMessage NotEqualPasswords { get; set; }
-
         public ResponseMessage InvalidEmail { get; set; }
 
         public ResponseMessage InvalidUsername { get; set; }
 
         public ResponseMessage InvalidPassword { get; set; }
+
+        public ResponseMessage RequiredEmail { get; set; }
+
+        public ResponseMessage RequiredUsername { get; set; }
+
+        public ResponseMessage RequiredPassword { get; set; }
+
+        public ResponseMessage InvalidEmailLength { get; set; }
+
+        public ResponseMessage InvalidUsernameLength { get; set; }
+
+        public ResponseMessage InvalidPasswordLength { get; set; }
 
         public ResponseMessage InvalidRole { get; set; }
 
@@ -21,6 +31,8 @@ namespace ApiModels.Common
         public ResponseMessage UsersNotFound { get; set; }
 
         public ResponseMessage ExistingUserName { get; set; }
+
+        public ResponseMessage ExistingEmail { get; set; }
 
         public ResponseMessage NoPermissions { get; set; }
 

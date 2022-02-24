@@ -1,6 +1,6 @@
 ﻿using Common.Json.Models;
 
-namespace ApiModels.Auth
+namespace ApiModels.Guest
 {
     public class LoginResponseModel
     {

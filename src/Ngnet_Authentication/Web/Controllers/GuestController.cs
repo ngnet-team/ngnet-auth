@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using ApiModels.Auth;
+using ApiModels.Guest;
 
 using Common.Json.Models;
 using Common.Json.Service;
@@ -11,17 +10,20 @@ using Services.Email;
 using Services.Interfaces;
 using Web.Controllers.Base;
 using ApiModels.Dtos;
+using Microsoft.AspNetCore.Http;
+using System;
+using Common;
 
 namespace Web.Controllers
 {
-    public class AuthController : ApiController
+    public class GuestController : ApiController
     {
-        protected IAuthService authService;
+        protected IGuestService authService;
         protected IEmailSenderService emailSenderService;
         protected ResponseMessage errors;
 
-        public AuthController
-            (IAuthService authService,
+        public GuestController
+            (IGuestService authService,
              IEmailSenderService emailSenderService,
              IConfiguration configuration,
              JsonService jsonService)
@@ -31,7 +33,7 @@ namespace Web.Controllers
             this.emailSenderService = emailSenderService;
         }
 
-        protected override RoleType RoleRequired { get; } = RoleType.Auth;
+        protected override RoleType RoleRequired { get; } = RoleType.Guest;
 
         [HttpPost(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
@@ -60,7 +62,25 @@ namespace Web.Controllers
             };
             string token = this.authService.CreateJwtToken(tokenModel);
 
+            CookieOptions options = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(Global.Constants.TokenExpires),
+                HttpOnly = false,
+            };
+
+            this.HttpContext.Response.Cookies.Append(Global.Constants.CookieKey, token, options);
+
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };
+        }
+
+        [HttpPost(nameof(ResetPassword))]
+        public async Task<ActionResult> ResetPassword(RegisterRequestModel model)
+        {
+            this.response = await authService.ResetPassword(model.Email);
+            if (this.response.Errors != null)
+                return this.BadRequest(this.response.Errors);
+
+            return this.Ok(this.response); //TODO: Currently sending the new passowrd as a response but should be changed via Email only
         }
     }
 }

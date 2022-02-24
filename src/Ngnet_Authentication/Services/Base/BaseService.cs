@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 using ApiModels.Common;
 using Common;
@@ -45,6 +46,11 @@ namespace Services.Base
             }
 
             return output.ToString();
+        }
+
+        protected string DateToString(DateTime date)
+        {
+            return $"{date.ToShortDateString()} {date.ToLongTimeString()}";
         }
     }
 }

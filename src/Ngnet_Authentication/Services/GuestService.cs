@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-using ApiModels.Auth;
+using ApiModels.Guest;
 using Common;
 using Common.Enums;
 using Common.Json.Service;
@@ -16,34 +16,37 @@ using Mapper;
 using Services.Base;
 using Services.Interfaces;
 using ApiModels.Dtos;
-using ApiModels.Users;
+using Common.Json.Models;
 
 namespace Services
 {
-    public class AuthService : BaseService, IAuthService
+    public class GuestService : BaseService, IGuestService
     {
-        public AuthService(NgnetAuthDbContext database, JsonService jsonService)
+        public GuestService(NgnetAuthDbContext database, JsonService jsonService)
             : base(database, jsonService)
         {
         }
 
-        public virtual RoleType RoleType { get; set; } = RoleType.Auth;
+        public virtual RoleType RoleType { get; set; } = RoleType.Guest;
 
         public async Task<ServiceResponseModel> Register(RegisterRequestModel model)
         {
-            if (!this.ValidPassword(model))
-                return new ServiceResponseModel(this.GetErrors().NotEqualPasswords, null);
+            this.response = this.ValidNewUsername(model.Username);
+            if (this.response?.Errors != null)
+                return this.response;
 
-            if (!this.ValidNames(model))
-                return new ServiceResponseModel(this.GetErrors().InvalidName, null);
+            this.response = this.ValidNewPassword(model.Password);
+            if (this.response?.Errors != null)
+                return this.response;
 
-            if (!this.ValidUsername(model))
-                return new ServiceResponseModel(this.GetErrors().ExistingUserName, null);
+            this.response = this.ValidNewEmail(model.Email);
+            if (this.response?.Errors != null)
+                return this.response;
 
-            if (!this.ValidEmail(model))
-                return new ServiceResponseModel(this.GetErrors().InvalidEmail, null);
+            this.response = this.ValidNewNames(model);
+            if (this.response?.Errors != null)
+                return this.response;
 
-            //Get role User
             Role role = this.GetRole(RoleType.User.ToString());
             if (role == null)
                 return new ServiceResponseModel(this.GetErrors().InvalidRole, null);
@@ -56,7 +59,17 @@ namespace Services
             };
             await this.database.Addresses.AddAsync(address);
 
-            Contact contact = new Contact();
+            Contact contact = new Contact()
+            {
+                Mobile = model?.Contact?.Mobile,
+                Email = model?.Contact?.Email,
+                Website = model?.Contact?.Website,
+                Facebook = model?.Contact?.Facebook,
+                Instagram = model?.Contact?.Instagram,
+                TikTok = model?.Contact?.TikTok,
+                Youtube = model?.Contact?.Youtube,
+                Twitter = model?.Contact?.Twitter,
+            };
             await this.database.Contacts.AddAsync(contact);
 
             User user = new User()
@@ -83,15 +96,20 @@ namespace Services
 
         public async Task<ServiceResponseModel> Login(LoginRequestModel model)
         {
-            //Username does Not exist
+            //Required fields
+            if (string.IsNullOrWhiteSpace(model.Username))
+                return new ServiceResponseModel(this.GetErrors().RequiredUsername, null);
+            if (string.IsNullOrWhiteSpace(model.Password))
+                return new ServiceResponseModel(this.GetErrors().RequiredPassword, null);
+            //User not found
             User user = this.GetUserByUsername(model.Username);
             if (user == null)
-                return new ServiceResponseModel(GetErrors().InvalidUsername, null);
+                return new ServiceResponseModel(GetErrors().UserNotFound, null);
             //Invalid password
-            string hashedPassword = Hash.CreatePassword(model.Password);
-            if (user.PasswordHash != hashedPassword)
+            string passwordHash = Hash.CreatePassword(model.Password);
+            if (user.PasswordHash != passwordHash)
                 return new ServiceResponseModel(GetErrors().InvalidPassword, null);
-
+            //Success
             await this.AddEntry(new Entry()
             {
                 UserId = user.Id,
@@ -102,6 +120,23 @@ namespace Services
 
             UserDto userDto = MappingFactory.Mapper.Map<UserDto>(user);
             return new ServiceResponseModel(null, this.GetSuccessMsg().LoggedIn, userDto);
+        }
+
+        public async Task<ServiceResponseModel> ResetPassword(string email)
+        {
+            User user = this.database.Users
+                .Where(x => !x.IsDeleted)
+                .FirstOrDefault(x => x.Email == email);
+
+            if (user == null)
+                return new ServiceResponseModel(this.GetErrors().UserNotFound, null);
+
+            string newPassword = Global.CreateRandom;
+            user.PasswordHash = Hash.CreatePassword(newPassword);
+
+            await this.database.SaveChangesAsync();
+
+            return new ServiceResponseModel(null, this.GetSuccessMsg().Updated, newPassword);
         }
 
         public string CreateJwtToken(JwtTokenModel tokenModel)
@@ -182,6 +217,9 @@ namespace Services
 
         protected User GetUserById(string id, bool allowDeleted = false)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                return null;
+
             IQueryable<User> user = this.database.Users
                 .Where(x => x.Id == id);
 
@@ -193,8 +231,25 @@ namespace Services
 
         protected User GetUserByUsername(string username, bool allowDeleted = false)
         {
+            if (string.IsNullOrWhiteSpace(username))
+                return null;
+
             IQueryable<User> user = this.database.Users
                 .Where(x => x.Username == username);
+
+            if (!allowDeleted)
+                user.Where(x => !x.IsDeleted);
+
+            return user.FirstOrDefault();
+        }
+
+        protected User GetUserByEmail(string email, bool allowDeleted = false)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
+
+            IQueryable<User> user = this.database.Users
+                .Where(x => x.Email == email);
 
             if (!allowDeleted)
                 user.Where(x => !x.IsDeleted);
@@ -218,152 +273,91 @@ namespace Services
             return roleType;
         }
 
-        protected User ModifyEntity(User user, UpdateRequestModel updateModel, ChangeRequestModel changeModel)
+        // ------ Validations ------
+
+        private ServiceResponseModel ValidNewUsername(string username)
         {
-            //Updatable entities
-            if (!Global.NullableObject(updateModel))
+            if (string.IsNullOrWhiteSpace(username))
+                return new ServiceResponseModel(this.GetErrors().RequiredUsername, null);
+
+            if (username?.Length < Global.UsernameMinLength || Global.UsernameMaxLength < username?.Length)
             {
-                user.FirstName = updateModel.FirstName == null ? user.FirstName : updateModel.FirstName;
-
-                user.MiddleName = updateModel.MiddleName == null ? user.MiddleName : updateModel.MiddleName;
-
-                user.LastName = updateModel.LastName == null ? user.LastName : updateModel.LastName;
-
-                GenderType gender;
-                bool validGender = Enum.TryParse<GenderType>(this.Capitalize(updateModel.Gender), out gender);
-                if (validGender)
-                    user.Gender = updateModel.Gender == null ? user.Gender : gender;
-
-                user.Age = updateModel.Age == null ? user.Age : updateModel.Age;
-
-                if (!Global.NullableObject(updateModel?.Address))
-                {
-                    Address address = this.database.Addresses.FirstOrDefault(x => x.Id == user.AddressId);
-                    address.Country = updateModel?.Address?.Country == null ? address.Country : updateModel?.Address?.Country;
-                    address.City = updateModel?.Address?.City == null ? address.City : updateModel?.Address?.City;
-                    address.Str = updateModel?.Address?.Str == null ? address.Str : updateModel?.Address?.Str;
-                }
-
-                if (!Global.NullableObject(updateModel?.Contact))
-                {
-                    Contact contact = this.database.Contacts.FirstOrDefault(x => x.Id == user.ContactId);
-                    contact.Mobile = updateModel?.Contact?.Mobile == null ? contact.Mobile : updateModel?.Contact?.Mobile;
-                    contact.Email = updateModel?.Contact?.Email == null ? contact.Email : updateModel?.Contact?.Email;
-                    contact.Website = updateModel?.Contact?.Website == null ? contact.Website : updateModel?.Contact?.Website;
-                    contact.Facebook = updateModel?.Contact?.Facebook == null ? contact.Facebook : updateModel?.Contact?.Facebook;
-                    contact.Instagram = updateModel?.Contact?.Instagram == null ? contact.Instagram : updateModel?.Contact?.Instagram;
-                    contact.TikTok = updateModel?.Contact?.TikTok == null ? contact.TikTok : updateModel?.Contact?.TikTok;
-                    contact.Youtube = updateModel?.Contact?.Youtube == null ? contact.Youtube : updateModel?.Contact?.Youtube;
-                    contact.Twitter = updateModel?.Contact?.Twitter == null ? contact.Twitter : updateModel?.Contact?.Twitter;
-                }
+                ResponseMessage error = this.GetErrors().InvalidUsernameLength;
+                string additional = $"{Global.UsernameMinLength}-{Global.UsernameMaxLength}";
+                error.En += additional; error.Bg += additional;
+                return new ServiceResponseModel(error, null);
             }
-            //Changable entities
-            else if (!Global.NullableObject(changeModel))
-            {
-                string key = this.Capitalize(changeModel.Key);
 
-                if (ChangableType.Email.ToString().Equals(key))
-                    user.Email = changeModel.New;
-
-                else if (ChangableType.Username.ToString().Equals(key))
-                    user.Username = changeModel.New;
-
-                else if (ChangableType.Password.ToString().Equals(key) || ChangableType.Resetpassword.ToString().Equals(key))
-                    user.PasswordHash = Hash.CreatePassword(changeModel.New);
-
-                else
-                    return null;
-            }
-            else
-                return null;
-
-            user.ModifiedOn = DateTime.UtcNow;
-            
-            return user;
-        }
-
-        protected bool ValidChange(ChangeRequestModel model, User user)
-        {
-            //User Not Exists
-            if (user == null || user.IsDeleted)
-                return false;
-
-            return true;
-        }
-
-        protected User AddUserToRole(User user, string roleName)
-        {
-            if (!this.RoomForRole(roleName))
-                return null;
-
-            user.RoleId = this.GetRole(roleName).Id;
-            return user;
-        }
-
-        protected string DateToString(DateTime date)
-        {
-            return $"{date.ToShortDateString()} {date.ToLongTimeString()}";
-        }
-
-        // ------------------- Private ------------------- 
-
-        private bool RoomForRole(string roleName)
-        {
-            Role role = this.GetRole(roleName);
-            if (role == null)
-                return false;
-
-            if (role?.MaxCount == null)
-                return true;
-
-            int usersInRole = this.database.Users
-                .Where(x => !x.IsDeleted)
-                .Where(x => x.RoleId == role.Id)
-                .Count();
-
-            return role.MaxCount > usersInRole;
-        }
-
-        // ------ Request Validations ------
-
-        private bool ValidUsername(RegisterRequestModel model)
-        {
-            User user = this.GetUserByUsername(model.Username);
+            User user = this.GetUserByUsername(username);
             if (user != null)
-                return false;
+                return new ServiceResponseModel(this.GetErrors().ExistingUserName, null);
 
-            return true;
+            return null;
         }
 
-        private bool ValidPassword(RegisterRequestModel model)
+        private ServiceResponseModel ValidNewPassword(string password)
         {
-            //Add password validation
-            return true;
+            if (string.IsNullOrWhiteSpace(password))
+                return new ServiceResponseModel(this.GetErrors().RequiredPassword, null);
+
+            if (password?.Length < Global.PasswordMinLength || Global.PasswordMaxLength < password?.Length)
+            {
+                ResponseMessage error = this.GetErrors().InvalidPasswordLength;
+                string additional = $"{Global.PasswordMinLength}-{Global.PasswordMaxLength}";
+                error.En += additional; error.Bg += additional;
+                return new ServiceResponseModel(error, null);
+            }
+
+            return null;
         }
 
-        private bool ValidEmail(RegisterRequestModel model)
+        private ServiceResponseModel ValidNewEmail(string email)
         {
-            //TODO: Email validator
-            return true;
+            if (string.IsNullOrWhiteSpace(email))
+                return new ServiceResponseModel(this.GetErrors().RequiredEmail, null);
+
+            if (email?.Length < Global.EmailMinLength || Global.EmailMaxLength < email?.Length)
+            {
+                ResponseMessage error = this.GetErrors().InvalidEmailLength;
+                string additional = $"{Global.EmailMinLength}-{Global.EmailMaxLength}";
+                error.En += additional; error.Bg += additional;
+                return new ServiceResponseModel(error, null);
+            }
+
+            User user = this.GetUserByEmail(email);
+            if (user != null)
+                return new ServiceResponseModel(this.GetErrors().ExistingEmail, null);
+
+            if (!Global.EmailValidator(email))
+                return new ServiceResponseModel(this.GetErrors().InvalidEmail, null);
+
+            return null;
         }
 
-        private bool ValidNames(RegisterRequestModel model)
+        private ServiceResponseModel ValidNewNames(RegisterRequestModel model)
         {
-            if (!string.IsNullOrWhiteSpace(model.FirstName))
+            if (!string.IsNullOrWhiteSpace(model?.FirstName))
             {
                 if (model.FirstName.Length < Global.NameMinLength ||
                     Global.NameMaxLength < model.FirstName.Length)
-                    return false;
+                    return new ServiceResponseModel(this.GetErrors().InvalidName, null);
             }
 
-            if (!string.IsNullOrWhiteSpace(model.LastName))
+            if (!string.IsNullOrWhiteSpace(model?.MiddleName))
+            {
+                if (model.MiddleName.Length < Global.NameMinLength ||
+                    Global.NameMaxLength < model.MiddleName.Length)
+                    return new ServiceResponseModel(this.GetErrors().InvalidName, null);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model?.LastName))
             {
                 if (model.LastName.Length < Global.NameMinLength ||
                     Global.NameMaxLength < model.LastName.Length)
-                    return false;
+                    return new ServiceResponseModel(this.GetErrors().InvalidName, null);
             }
 
-            return true;
+            return null;
         }
     }
 }

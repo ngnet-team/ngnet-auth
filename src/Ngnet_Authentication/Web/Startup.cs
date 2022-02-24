@@ -43,7 +43,8 @@ namespace Web
             app
                 .UseRouting()
                 .UseCors(options => options
-                      .AllowAnyOrigin()
+                      //.AllowAnyOrigin()
+                      .WithOrigins(new string[1] { "http://localhost:3000" })
                       .AllowAnyHeader()
                       .AllowAnyMethod())
                 .UseEndpoints(endpoints =>

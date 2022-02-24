@@ -5,7 +5,7 @@ using Services.Base;
 
 namespace Services.Interfaces
 {
-    public interface IUserService : IAuthService
+    public interface IUserService : IGuestService
     {
         public int UsersCount { get; }
 
@@ -16,8 +16,6 @@ namespace Services.Interfaces
         public Task<ServiceResponseModel> Delete(string userId);
 
         public Task<ServiceResponseModel> DeleteAccount(string userId);
-
-        public Task<ServiceResponseModel> ResetPassword(string userId);
 
         public Task<ServiceResponseModel> Update(UpdateRequestModel model);
 

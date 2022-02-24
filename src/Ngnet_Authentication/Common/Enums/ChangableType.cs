@@ -5,6 +5,5 @@
         Email = 1,
         Password = 2,
         Username = 3,
-        Resetpassword = 4,
     }
 }

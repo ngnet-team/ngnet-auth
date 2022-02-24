@@ -6,6 +6,6 @@
         Admin = 2,
         Member = 3,
         User = 4,
-        Auth = 5, //Guest
+        Guest = 5,
     }
 }

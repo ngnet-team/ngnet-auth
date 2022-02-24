@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 using ApiModels.Common;
-using ApiModels.Auth;
+using ApiModels.Guest;
 using Common;
 using Common.Json.Service;
 using Common.Enums;
 using Services.Base;
 using Web.Infrastructure.Models;
-using System.Collections.Generic;
 
 namespace Web.Controllers.Base
 {

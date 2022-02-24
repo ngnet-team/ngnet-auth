@@ -16,7 +16,7 @@ Url construction: Domain/Role/Action
 
 Examples: 
 
-- http://localhost:7000/auth/register
+- http://localhost:7000/guest/register
 - http://localhost:7000/user/profile
 - http://localhost:7000/admin/changerole
 - http://localhost:7000/owner/setmaxroles
@@ -27,7 +27,7 @@ Role types:
 - Admin (an Administrator who maintains the app)
 - Member [NEW] (a user who has paid a monthly fee to see more functionalities)
 - User (a simple user)
-- Auth (guest without authentication)
+- Guest (without authentication)
 
 Account properties:
 
@@ -38,15 +38,15 @@ Account properties:
 
 
 
-|Actions Permission|Owner|Admin|Member|User|Auth|
+|Actions Permission|Owner|Admin|Member|User|Guest|
 | :- | :-: | :-: | :-: | :-: | :-: |
 |Register|**No**|**No**|**No**|**No**|**Yes**|
 |Login|**No**|**No**|**No**|**No**|**Yes**|
+|ResetPassword|**No**|**No**|**No**|**No**|**Yes**|
 |Profile|**Yes**|**Yes**|**Yes**|**Yes**|**No**|
 |Logout|**Yes**|**Yes**|**Yes**|**Yes**|**No**|
 |Update|**Yes**|**Yes**|**Yes**|**Yes**|**No**|
 |Change (Email/Password/Username)|**Yes**|**Yes**|**Yes**|**Yes**|**No**|
-|ResetPassword|**Yes**|**Yes**|**Yes**|**Yes**|**No**|
 |Delete|**Yes**|**Yes**|**Yes**|**Yes**|**No**|
 |DeleteAccount|**Yes**|**Yes**|**Yes**|**Yes**|**No**|
 |DeleteUser|**Yes**|**Yes**|**No**|**No**|**No**|
@@ -61,17 +61,17 @@ Account properties:
 
 
 
-|Auth Endpoints|Method|JWT|Body|Response|
+|Guest Endpoints|Method|JWT|Body|Response|
 | :- | :-: | :-: | :-: | :-: |
 |Register|POST|**No**|{ Email: string, Username: string, Password: string + Optional proparties }|Successful message|
 |Login|POST|**No**|{ Username: string, Password: string }|Successful message|
+|ResetPassword|POST|**No**|{ Email: string }|Successful message + Emailed|
 ||||||
 |User Endpoints|Method|JWT|Body|Response|
 |Profile|GET|**Yes**||{ Email: string, Username: string, CreatedOn: string, All Optional Properties }|
 |Logout|GET|**Yes**||Successful message|
 |Update|POST|**Yes**|An account optional property|Successful message|
 |Change|POST|**Yes**|{ Key: Email/Password/Username, Old: string, New: string }|Successful message|
-|ResetPassword|GET|**Yes**||Successful message +  Emailed|
 |Delete|GET|**Yes**||Successful message|
 |DeleteAccount|GET|**Yes**||Successful message|
 ||||||

@@ -1,10 +1,10 @@
 ﻿using Common.Enums;
 
-namespace ApiModels.Auth
+namespace ApiModels.Guest
 {
     public class ClaimModel
     {
-        public ClaimModel(RoleType roleType = RoleType.Auth)
+        public ClaimModel(RoleType roleType = RoleType.Guest)
         {
             this.RoleType = roleType;
         }

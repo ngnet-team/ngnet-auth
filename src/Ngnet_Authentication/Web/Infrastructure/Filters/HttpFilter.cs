@@ -5,11 +5,10 @@ using System;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 
-using ApiModels.Auth;
+using ApiModels.Guest;
 using Common;
 using Common.Enums;
 using Web.Infrastructure.Models;
-using Microsoft.AspNetCore.Http;
 using Common.Json.Models;
 
 namespace Web.Infrastructure.Filters
@@ -28,6 +27,7 @@ namespace Web.Infrastructure.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+
             //Validate Api Key
             if (!this.ValidApiKey(context))
             {
@@ -65,7 +65,7 @@ namespace Web.Infrastructure.Filters
                 return;
             }
             //Guest
-            if (RoleType.Auth.Equals(roleInvoked))
+            if (RoleType.Guest.Equals(roleInvoked))
             {
                 //Token exists
                 if (!string.IsNullOrEmpty(this.token))
@@ -101,11 +101,6 @@ namespace Web.Infrastructure.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (String.IsNullOrEmpty(this.token))
-                return;
-            //TODO: Adding token in every request can't expire it
-            context.HttpContext.Response.Cookies.Append(constants.CookieKey, this.token,
-                new CookieOptions { Expires = DateTime.Now.AddDays(constants.TokenExpires) });
         }
 
         private bool NullsOnly(object instance)
