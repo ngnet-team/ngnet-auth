@@ -13,7 +13,6 @@ using Web.Infrastructure.Models;
 namespace Web.Controllers.Base
 {
     [ApiController]
-    [Route("[controller]")]
     public abstract class ApiController : ControllerBase
     {
         protected readonly JsonService jsonService;

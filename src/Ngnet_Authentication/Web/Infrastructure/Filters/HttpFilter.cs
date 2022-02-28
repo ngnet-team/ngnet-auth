@@ -1,15 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Text;
+using System.Linq;
+using System;
 
 using ApiModels.Guest;
 using Common;
 using Common.Enums;
-using Web.Infrastructure.Models;
 using Common.Json.Models;
+using Web.Infrastructure.Models;
 
 namespace Web.Infrastructure.Filters
 {
@@ -27,7 +31,6 @@ namespace Web.Infrastructure.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-
             //Validate Api Key
             if (!this.ValidApiKey(context))
             {
@@ -110,29 +113,21 @@ namespace Web.Infrastructure.Filters
 
         private ClaimModel GetClaims(ActionExecutingContext context)
         {
-            //No token
             if (string.IsNullOrEmpty(this.token))
             {
                 context.Result = new UnauthorizedObjectResult(serverErrors.MissingToken);
                 return null;
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler().ReadJwtToken(this.token);
-            var claims = tokenHandler.Claims;
-            //Check secret key
-            string tokenSecretKey = claims.FirstOrDefault(x => x.Type == "aud")?.Value;
-            if (this.appSettings?.SecretKey != tokenSecretKey)
+            if (!this.ValidToken(this.token))
             {
-                context.Result = new UnauthorizedObjectResult(serverErrors.InvalidSecretKey);
+                context.Result = new UnauthorizedObjectResult(serverErrors.InvalidToken);
                 return null;
             }
-            //Check if token is expired
-            bool expired = tokenHandler.ValidTo.Date < DateTime.UtcNow;
-            if (expired)
-            {
-                context.Result = new UnauthorizedObjectResult(serverErrors.TokenExpired);
-                return null;
-            }
+
+            JwtSecurityToken handler = new JwtSecurityTokenHandler().ReadJwtToken(this.token);
+            IEnumerable<Claim> claims = handler.Claims;
+
             //Get role from token
             RoleType roleType;
             bool validRole = Enum.TryParse(claims.FirstOrDefault(x => x.Type == "role")?.Value, out roleType);
@@ -144,8 +139,8 @@ namespace Web.Infrastructure.Filters
             //Assign claims
             ClaimModel claimModel = new ClaimModel(roleType)
             {
-                UserId = claims.FirstOrDefault(x => x.Type == "nameid")?.Value,
-                Username = claims.FirstOrDefault(x => x.Type == "unique_name")?.Value,
+                UserId = claims.FirstOrDefault(x => x.Type == "userid")?.Value,
+                Username = claims.FirstOrDefault(x => x.Type == "username")?.Value,
             };
             //Check all claims are assigned
             if (Global.AnyNullObject(claimModel))
@@ -155,6 +150,32 @@ namespace Web.Infrastructure.Filters
             }
 
             return claimModel;
+        }
+
+        private bool ValidToken(string token)
+        {
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken validatedToken;
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    RequireExpirationTime = true,
+                    ValidIssuer = this.appSettings.Issuer,
+                    ValidAudience = this.appSettings.SecretKey, //TODO: for audience should be used the client domain 
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.appSettings.SecretKey))
+                }, out validatedToken);
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine(err.Message);
+                //TODO: Log error
+                return false;
+            }
+            return true;
         }
 
         private bool ValidApiKey(ActionExecutingContext context)

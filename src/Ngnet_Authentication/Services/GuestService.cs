@@ -146,12 +146,14 @@ namespace Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Audience = tokenModel.SecretKey,
+                IssuedAt = DateTime.UtcNow,
+                Issuer = tokenModel?.Issuer,
+                Audience = tokenModel?.SecretKey,
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, tokenModel.UserId),
-                    new Claim(ClaimTypes.Name, tokenModel.Username),
-                    new Claim(ClaimTypes.Role, tokenModel.RoleName),
+                    new Claim("userid", tokenModel?.UserId),
+                    new Claim("username", tokenModel?.Username),
+                    new Claim("role", tokenModel?.RoleName),
                 }),
                 Expires = DateTime.UtcNow.AddDays(Global.Constants.TokenExpires),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
