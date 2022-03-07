@@ -70,5 +70,9 @@
   "InvalidRole": {
     "EN": "The role is invalid!",
     "BG": "Ролята не е валидна!"
+  },
+  "InvalidLogin": {
+    "EN": "Incorrect username or password!",
+    "BG": "Невалидно потребителско име или параола!"
   }
 }

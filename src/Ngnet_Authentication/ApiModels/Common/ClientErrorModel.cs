@@ -39,5 +39,7 @@ namespace ApiModels.Common
         public ResponseMessage NotEqualFields { get; set; }
 
         public ResponseMessage AlreadyLoggedIn { get; set; }
+
+        public ResponseMessage InvalidLogin { get; set; }
     }
 }

@@ -104,11 +104,11 @@ namespace Services
             //User not found
             User user = this.GetUserByUsername(model.Username);
             if (user == null)
-                return new ServiceResponseModel(GetErrors().UserNotFound, null);
+                return new ServiceResponseModel(GetErrors().InvalidLogin, null);
             //Invalid password
             string passwordHash = Hash.CreatePassword(model.Password);
             if (user.PasswordHash != passwordHash)
-                return new ServiceResponseModel(GetErrors().InvalidPassword, null);
+                return new ServiceResponseModel(GetErrors().InvalidLogin, null);
             //Success
             await this.AddEntry(new Entry()
             {
