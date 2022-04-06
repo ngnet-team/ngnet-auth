@@ -16,6 +16,7 @@ using Common;
 
 namespace Web.Controllers
 {
+    [Route("")]
     public class GuestController : ApiController
     {
         protected IGuestService authService;
@@ -54,8 +55,9 @@ namespace Web.Controllers
                 return this.BadRequest(this.response.Errors);
 
             UserDto userDto = (UserDto)this.response.RawData;
-            JwtTokenModel tokenModel = new JwtTokenModel(this.AppSettings.SecretKey)
+            JwtTokenModel tokenModel = new JwtTokenModel(this.AppSettings?.SecretKey)
             {
+                Issuer = this.AppSettings?.Issuer,
                 UserId = userDto.Id,
                 Username = userDto.Username,
                 RoleName = this.authService.GetUserRoleType(userDto.Id)?.ToString(),
@@ -67,7 +69,6 @@ namespace Web.Controllers
                 Expires = DateTime.Now.AddDays(Global.Constants.TokenExpires),
                 HttpOnly = false,
             };
-
             this.HttpContext.Response.Cookies.Append(Global.Constants.CookieKey, token, options);
 
             return new LoginResponseModel { Token = token, ResponseMessage = this.response.Success };

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ApiModels.Guest
+﻿namespace ApiModels.Guest
 {
     public class JwtTokenModel
     {
@@ -8,6 +6,8 @@ namespace ApiModels.Guest
         {
             this.SecretKey = secretKey;
         }
+
+        public string Issuer { get; set; }
 
         public string SecretKey { get; set; }
 

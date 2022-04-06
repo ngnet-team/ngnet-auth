@@ -12,11 +12,14 @@ ApiKey:
 
 Domain: http://localhost:7000
 
-Url construction: Domain/Role/Action
+Url construction types:
+
+- Guest: Domain/Action
+- Logged user: Domain/Role/Action
 
 Examples: 
 
-- http://localhost:7000/guest/register
+- http://localhost:7000/register
 - http://localhost:7000/user/profile
 - http://localhost:7000/admin/changerole
 - http://localhost:7000/owner/setmaxroles

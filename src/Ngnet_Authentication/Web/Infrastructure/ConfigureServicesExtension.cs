@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Web.Infrastructure.Filters;
 
 using Common.Json.Service;
 using Database;
@@ -12,7 +10,6 @@ using Mapper;
 using Services;
 using Services.Email;
 using Services.Interfaces;
-using Web.Infrastructure.Filters;
 
 namespace Web.Infrastructure
 {
@@ -51,7 +48,9 @@ namespace Web.Infrastructure
 
         public static IServiceCollection RegisterFilters(this IServiceCollection services, IConfiguration configuration)
         {
-            return services.AddMvc(opt => opt.Filters.Add(new HttpFilter(configuration))).Services;
+            return services
+                .AddMvc(opt => opt.Filters.Add(new HttpFilter(configuration))).Services
+                .AddMvc(opt => opt.Filters.Add(new AuthFilter(configuration))).Services;
         }
     }
 }

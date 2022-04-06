@@ -13,6 +13,7 @@ using Services.Seeding.Models;
 
 namespace Web.Controllers
 {
+    [Route("[controller]")]
     public class UserController : GuestController
     {
         private readonly IUserService userService;

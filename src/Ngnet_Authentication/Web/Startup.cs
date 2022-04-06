@@ -44,7 +44,13 @@ namespace Web
                 .UseRouting()
                 .UseCors(options => options
                       //.AllowAnyOrigin()
-                      .WithOrigins(new string[1] { "http://localhost:3000" })
+                      .WithOrigins(new string[4]
+                      {
+                          "http://localhost:3000",
+                          "http://localhost:4200",
+                          "http://localhost:5000",
+                          "http://localhost:5001",
+                      })
                       .AllowAnyHeader()
                       .AllowAnyMethod())
                 .UseEndpoints(endpoints =>
