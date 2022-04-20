@@ -314,8 +314,8 @@ namespace Services
             if (user.Email == model.New)
                 return false;
             //Additional validator
-            if (!Global.EmailValidator(model.New))
-                return false;
+            //if (!Global.EmailValidator(model.New))
+                //return false;
 
             return true;
         }
