@@ -1,4 +1,38 @@
-﻿
+﻿/--------------------------------------------------------/
+
+Development purposes:
+
+1. Add appsettings.Development.json and add below struccture for seeding.
+
+"Seeding": {
+    "Owners": [
+      {
+        "Email": "ceo.ngnet@gmail.com",
+        "Username": "dsotirov",
+        "Password": "dsotirov123",
+        "FirstName": "Dimitar",
+        "LastName": "Sotirov"
+      }
+    ],
+    "Admins": [
+      {
+        "Email": "admin.ngnet@gmail.com",
+        "Username": "dsotirov",
+        "Password": "admin123"
+      }
+    ]
+}
+
+2. Add first migration.
+
+dotnet ef migrations add Initial
+
+or
+
+Execute bat file in ~\src\Ngnet_Authentication\Database\CreateMigration.bat
+
+/--------------------------------------------------------/
+
 
 NgNet Authorization [Demo version]
 
